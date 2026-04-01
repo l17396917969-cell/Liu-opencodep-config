@@ -7,6 +7,30 @@
 
 > **注意**：Windows 用户请使用 **CMD** 或 **PowerShell** 运行安装命令，不要使用 Git Bash。
 
+---
+
+## 🤖 30 秒快速安装（让 AI 帮你装）
+
+**别自己动手了，让 AI 来！**
+
+复制以下内容，粘贴到你的 AI IDE (Claude Code、Cursor、AmpCode、Windsurf 等)：
+
+```
+请帮我安装 oh-my-opencode：
+1. 从 https://github.com/l17396917969-cell/Liu-opencodep-config 下载项目
+2. 运行安装脚本并完成配置
+3. 需要输入 API Key 时提示我
+
+项目说明：一键配置 OpenCode 的自动化工具，包含 20+ Skills 和交互式模型配置向导。
+```
+
+**完事。** AI 会帮你处理所有步骤。
+
+<details>
+<summary>🤔 没 AI IDE？点击查看手动安装指南</summary>
+
+---
+
 ## ✨ 特性
 
 - 🎯 **交互式模型配置向导** - 支持一键导入 Codex、MiniMax、Kimi、DeepSeek 等主流模型
@@ -406,3 +430,5 @@ C:\Users\<用户名>\AppData\Roaming\opencode\opencode.json
 
 - [OpenCode](https://opencode.ai/) - AI 原生 IDE
 - [Oh My OpenAgent](https://github.com/code-yeongyu/oh-my-openagent) - Agent 框架
+
+</details>
