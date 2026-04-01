@@ -1,0 +1,55 @@
+id: badge_status_indicator
+name_zh: 徽章与状态指示器规范
+summary_zh: >
+  徽章（Badge）用于表达工单、数据条目、流程节点的离散状态（如"进行中"、"已延迟"）；
+  状态点（Status Dot）用于表达实时在线/离线/异常等持续运行状态。
+  两者均为无操作的纯展示组件，不承载点击行为。
+
+states:
+  - id: success
+    label_zh: 成功/正常态
+    description_zh: "绿色，表示通过、完成、在线、正常。"
+  - id: warning
+    label_zh: 警告态
+    description_zh: "橙色，表示待确认、接近阈值、需关注。"
+  - id: error
+    label_zh: 错误/危险态
+    description_zh: "红色，表示已延迟、失败、离线、越限。"
+  - id: primary
+    label_zh: 主状态（进行中）
+    description_zh: "品牌蓝色，表示进行中、激活、当前。"
+  - id: neutral
+    label_zh: 中性态
+    description_zh: "灰色，表示未开始、历史记录、已归档等。"
+
+interactions:
+  - id: no_interaction
+    name_zh: 纯展示，无交互
+    description_zh: "徽章与状态点本身不可点击，不具备 hover/active 状态。"
+    requirements_zh:
+      - "若状态点所在行/卡片本身可点击，由父容器承载点击行为，状态点不单独响应。"
+      - "禁止在徽章上绑定 onClick 实现导航或操作，应另设专用按钮/链接。"
+
+content_guidelines:
+  badge_text:
+    - "徽章文案 ≤4 个汉字（如'进行中'、'已完成'、'已延迟'），禁止超长文案折行。"
+    - "状态含义必须文字可见，不得仅靠颜色区分（可访问性要求）。"
+    - "动词时态统一：优先用"已+动词"（已完成、已延迟）或状态名词（进行中、待确认）。"
+
+meta:
+  related_lingjing_core_classes:
+    - "badge"
+    - "badge-success"
+    - "badge-warning"
+    - "badge-error"
+    - "badge-primary"
+    - "b-status-dot"
+    - "b-status-dot--online"
+    - "b-status-dot--idle"
+    - "b-status-dot--offline"
+    - "b-status-dot--error"
+  notes_zh:
+    - "badge 修饰符使用单破折号：badge-success / badge-warning / badge-error / badge-primary；禁止双破折号写法（badge--success）。"
+    - "b-status-dot 用于持续运行状态（在线/离线），badge 用于离散业务状态（工单/流程）；两者语义不同，不可混用。"
+    - "B 端场景：badge 通常嵌套在 data-table 的 <td> 内；UE5 场景：使用 alert-center__severity 表达告警级别，不使用 badge。"
+    - "在 data-table 行中，单个 <td> 内放一个 badge 即可；禁止在同一格内叠放多个 badge（改用 tooltip 或弹出层展示多状态）。"

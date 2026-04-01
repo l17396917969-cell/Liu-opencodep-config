@@ -1,0 +1,66 @@
+id: navigation_interaction
+name_zh: 导航组件交互规范
+summary_zh: >
+  核心页面路由与系统结构展示组件，用于承载多级菜单、面包屑及全局搜索。
+  支持侧边、顶部及混合布局变体。
+
+states:
+  - id: idle
+    label_zh: 空闲
+    description_zh: "导航菜单未选中或折叠状态。"
+  - id: expanded
+    label_zh: 已展开
+    description_zh: "多级子菜单展开，显示更多层级列表。"
+  - id: collapsed
+    label_zh: 已折叠
+    description_zh: "仅展示一级菜单图标，节省内容区域空间。"
+  - id: active
+    label_zh: 当前选中
+    description_zh: "用户当前所在的页面或最后一次点击的项，通常高亮展示。"
+  - id: hovering
+    label_zh: 鼠标移入
+    description_zh: "鼠标指针经过菜单项，显示高亮或预览。折叠状态下展示悬停浮窗。"
+
+interactions:
+  - id: toggle_collapse
+    name_zh: 折叠/展开切换
+    description_zh: "点击底部或顶部的触发按钮（如：‘收起’、‘菜单’）。"
+    requirements_zh:
+      - "折叠后应通过工具提示 (Tooltip) 显示菜单文字。"
+      - "折叠动效应平滑（建议控制在 250ms-350ms）。"
+  - id: submenu_expand
+    name_zh: 子菜单展开
+    description_zh: "点击父级项展开关联子菜单。"
+    requirements_zh:
+      - "支持‘手风琴’模式：展开当前子菜单时自动关闭其他已展开菜单。"
+      - "点击已展开的父项应能收起该子菜单。"
+  - id: breadcrumb_jump
+    name_zh: 面包屑跳转
+    description_zh: "点击路径导航快速回到上一级页面。"
+    requirements_zh:
+      - "当前页名称在面包屑中不可点击。"
+      - "层级过深时应支持中间层级省略。推荐路径最多显示 3-5 级。"
+  - id: global_nav_search
+    name_zh: 全局导航搜索
+    description_zh: "在导航栏快速搜索并定位功能模块。"
+    requirements_zh:
+      - "支持 Ctrl+K 或 / 键快速呼出。"
+
+accessibility_zh:
+  - "Skip Links: 应支持‘跳至主内容’的快捷链接。"
+  - "ARIA Roles: 导航容器应具备 role='navigation'。"
+  - "Focus Indicator: 聚焦时必须有明显的视觉样式（如：虚线框或底色）。"
+
+performance_constraints:
+  fps: "在折叠/展开动画过程中保持 60fps。"
+  routing: "切换菜单项后的路由响应时延 ≤ 300ms。"
+
+meta:
+  related_lingjing_core_classes:
+    - "b-sidebar"
+    - "b-sidebar-nav"
+    - "b-breadcrumb"
+    - "b-topbar"
+  notes_zh:
+    - "针对航空系统，核心操作（如：首页、工单、监控）应常驻一级导航。"
+    - "菜单项文字不宜过长，如需超长应自动裁剪并显示省略号。"

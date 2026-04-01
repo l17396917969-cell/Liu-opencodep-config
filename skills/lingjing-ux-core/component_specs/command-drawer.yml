@@ -1,0 +1,41 @@
+id: command-drawer
+name_zh: 命令/分派抽屉交互规范
+summary_zh: >
+  用于承载分派、批量操作、详情编辑的侧边抽屉，强调确认与审计。
+
+states:
+  - id: viewing
+    label_zh: 查看
+    description_zh: "展示详情与操作入口。"
+  - id: editing
+    label_zh: 编辑/分派
+    description_zh: "可编辑表单，选择责任人/预案等。"
+  - id: submitting
+    label_zh: 提交中
+    description_zh: "提交中，按钮禁用并显示加载。"
+
+interactions:
+  - id: open_from_alert
+    name_zh: 告警打开
+    description_zh: "从告警/列表项打开抽屉。"
+    requirements_zh:
+      - "保持来源筛选状态，便于返回。"
+  - id: confirm_dispatch
+    name_zh: 分派确认
+    description_zh: "提交前二次确认影响范围。"
+  - id: audit_trail
+    name_zh: 审计记录
+    description_zh: "记录分派/改派/升级的操作日志。"
+
+accessibility_zh:
+  - "焦点管理：打开聚焦标题，Esc 关闭返回触发点。"
+
+config_options:
+  - id: approval_required
+    name_zh: 需要审批
+    description_zh: "是否需要上级确认。"
+    allowed_values: ["true", "false"]
+
+meta:
+  related_lingjing_core_classes:
+    - "command-drawer"

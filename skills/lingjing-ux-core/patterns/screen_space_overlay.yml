@@ -1,0 +1,95 @@
+id: screen_space_overlay
+scene: ops-console
+dimension: physical_digital_fusion
+name_zh: 屏幕空间 Overlay 模式
+summary_zh: >
+  定义 UE5 Web Overlay 在屏幕空间中的布局分区、安全区、中心视野保护区与信息弱化策略，
+  用于指导 TopBar、Alert Center、Detail Panel 与 Layer Switcher 的位置和密度。
+
+goals_zh:
+  - "保证高密度主界面下的信息可扫读性。"
+  - "保证右侧详情面板具备中密度阅读体验，不与主界面争抢节奏。"
+  - "以深色驾驶舱/数字孪生风格统一视觉秩序。"
+
+viewport_safe_areas:
+  top:
+    height: "72px - 96px"
+    purpose_zh: "承载 TopBar 与全局状态，不压入中心视区。"
+  left:
+    width: "320px - 360px"
+    purpose_zh: "承载高密度 Alert Center / 运行摘要。"
+  right:
+    width: "360px - 420px"
+    purpose_zh: "承载中密度 Detail Panel。"
+  bottom:
+    height: "64px - 88px"
+    purpose_zh: "承载轻量视角控制与状态提示。"
+
+center_guard_zone:
+  width_ratio: 0.42
+  height_ratio: 0.38
+  description_zh: "中心视野保护区，用于保留三维主体观察空间。"
+  rules_zh:
+    - "TopBar、Alert Center、Detail Panel 不得持续侵入该区域。"
+    - "Marker 展开卡片仅可短时覆盖边缘，不可长时间遮挡中心主体。"
+
+hud_regions:
+  - id: topbar
+    anchor: top
+    purpose_zh: "展示场景名称、时间、全局状态、视角快捷操作。"
+    density: high
+    recommended_components:
+      - topbar_hud_interaction
+  - id: left_alert_stack
+    anchor: left
+    purpose_zh: "展示高优先级告警、筛选、简报与处置入口。"
+    density: high
+    recommended_components:
+      - alert_center_interaction
+  - id: right_detail
+    anchor: right
+    purpose_zh: "展示选中对象的结构化详情、趋势和历史。"
+    density: medium
+    recommended_components:
+      - detail_panel_interaction
+  - id: floating_layer_switcher
+    anchor: top-right
+    purpose_zh: "展示图层开关与同步状态。"
+    density: low
+    recommended_components:
+      - layer_switcher_interaction
+  - id: bottom_assist
+    anchor: bottom-center
+    purpose_zh: "承载视角控制、桥接状态、短时系统提示。"
+    density: low
+
+visual_direction:
+  primary_theme: "dark_cockpit_digital_twin"
+  material: "glassmorphism_with_prism_highlight"
+  accent_colors:
+    - "aero_blue"
+    - "pulse_cyan"
+    - "warning_amber"
+    - "error_red"
+  motion_profile: "medium"
+  motion_rules_zh:
+    - "普通 hover 与选中反馈使用短时位移/描边增强，不做重动画。"
+    - "告警反馈允许更明显的脉冲、扫光与边框能量增强。"
+    - "动态效果应服务于状态识别，不做大面积炫技性流光。"
+
+information_weakening_rules:
+  - condition: "scene_degraded_or_alert_peak"
+    action_zh: "弱化 ambient 层与低优先级 marker 的透明度与文案密度。"
+  - condition: "camera_fast_moving"
+    action_zh: "将 marker 文本折叠为点位/简短编号，停止复杂展开动画。"
+  - condition: "detail_panel_opened"
+    action_zh: "右侧详情打开后，非选中 marker 降低亮度，避免注意力冲突。"
+
+readability_rules_zh:
+  - "TopBar 与 Alert Center 使用高密度节奏，但一屏最多保留 2 个主焦点。"
+  - "Detail Panel 使用中密度分组卡片，优先可读性而不是堆叠更多指标。"
+  - "文本对比度须满足深色背景下的读屏与长时间观察需求。"
+
+notes_zh:
+  - "本模式默认采用‘轻量点位，选中后再展开卡片’的 Marker 策略。"
+  - "如需参考视觉案例，可优先参考 Pencil demo 的深色拟态玻璃与顶部棱镜高光方向，再映射到灵境现有令牌。"

@@ -1,0 +1,98 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'manifests/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'manifests/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install packaging
+
+      - name: Validate Skills Registry
+        run: |
+          python -c "
+          import json
+          import sys
+          
+          with open('manifests/skills-registry.json') as f:
+              registry = json.load(f)
+          
+          # Validate structure
+          assert 'version' in registry, 'Missing version'
+          assert 'skills' in registry, 'Missing skills'
+          assert 'collections' in registry, 'Missing collections'
+          assert 'presets' in registry, 'Missing presets'
+          
+          # Validate skills
+          for name, skill in registry['skills'].items():
+              assert 'name' in skill, f'Skill {name} missing name'
+              assert 'description' in skill, f'Skill {name} missing description'
+              assert 'type' in skill, f'Skill {name} missing type'
+              assert 'source' in skill, f'Skill {name} missing source'
+          
+          # Validate presets
+          for name, preset in registry['presets'].items():
+              assert 'name' in preset, f'Preset {name} missing name'
+              assert 'description' in preset, f'Preset {name} missing description'
+              assert 'skills' in preset, f'Preset {name} missing skills'
+          
+          print('✅ Skills registry validation passed')
+          "
+
+      - name: Check Skills Exist
+        run: |
+          python -c "
+          import json
+          from pathlib import Path
+          
+          with open('manifests/skills-registry.json') as f:
+              registry = json.load(f)
+          
+          errors = []
+          
+          # Check individual skills
+          for name, skill in registry['skills'].items():
+              source = Path(skill['source'])
+              if not source.exists():
+                  errors.append(f'Missing skill: {name} at {source}')
+              elif not (source / 'SKILL.md').exists():
+                  errors.append(f'SKILL.md missing for: {name}')
+          
+          # Check collections
+          for name, coll in registry['collections'].items():
+              source = Path(coll['source'])
+              if not source.exists():
+                  errors.append(f'Missing collection: {name} at {source}')
+          
+          if errors:
+              print('❌ Validation errors:')
+              for e in errors:
+                  print(f'  - {e}')
+              exit(1)
+          
+          print('✅ All skills exist')
+          "
+
+      - name: Test Installation Script
+        run: |
+          python install/install.py doctor || true

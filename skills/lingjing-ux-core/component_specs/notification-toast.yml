@@ -1,0 +1,52 @@
+id: notification-toast
+name_zh: 通知/Toast 交互规范
+summary_zh: >
+  用于轻量通知与操作反馈，支持优先级区分、自动消失与操作按钮。
+
+states:
+  - id: info
+    label_zh: 信息
+    description_zh: "常规提示，可自动消失。"
+  - id: success
+    label_zh: 成功
+    description_zh: "操作成功反馈，短暂展示。"
+  - id: warning
+    label_zh: 警告
+    description_zh: "提醒风险，通常需手动关闭。"
+  - id: error
+    label_zh: 错误
+    description_zh: "错误提示，需保留直至用户确认或修复。"
+
+interactions:
+  - id: auto_dismiss
+    name_zh: 自动消失
+    description_zh: "低风险提示在超时后自动隐藏。"
+    requirements_zh:
+      - "鼠标悬停时暂停计时；错误/警告默认不自动消失。"
+  - id: action_button
+    name_zh: 操作按钮
+    description_zh: "在通知内提供操作（重试/查看详情）。"
+    requirements_zh:
+      - "点击操作后给出反馈，若失败可重试。"
+  - id: stack
+    name_zh: 堆叠
+    description_zh: "多条通知的显示策略。"
+    requirements_zh:
+      - "限制堆叠数，超出队列需折叠或滚动。"
+
+accessibility_zh:
+  - "出现时朗读文案；提供键盘可关闭/聚焦。"
+
+config_options:
+  - id: position
+    name_zh: 位置
+    description_zh: "展示区域。"
+    allowed_values: ["top-right", "top-center", "bottom-right", "bottom-center"]
+  - id: duration
+    name_zh: 持续时间
+    description_zh: "自动消失时间，错误可设为 0（不自动消失）。"
+    allowed_values: ["0", "3s", "5s", "custom"]
+
+meta:
+  related_lingjing_core_classes:
+    - "notification-toast"

@@ -1,0 +1,32 @@
+id: ops_multi_source_monitor
+scene: ops-console
+dimension: data_intelligence
+name_zh: 多源态势监控模式
+summary_zh: >
+  用于运控/驾驶舱多源实时监控，聚合指标、地图/热力与告警，支持分级响应。
+
+goals_zh:
+  - "在一屏内看清关键指标与分区状态，并区分正常/预警/严重。"
+  - "支持跨分区/设备的快速定位与钻取。"
+  - "提供一键静音/暂停刷新等安全控制。"
+
+key_interactions_zh:
+  - "自动刷新可暂停/恢复，告警分级标色，支持全局静音。"
+  - "点击地图/热力/列表项联动详情抽屉，保持筛选状态。"
+  - "分区筛选与快速定位（搜索/标签）减少信息噪声。"
+  - "支持全屏/大屏展示，切换布局不丢失上下文。"
+
+applicable_scenarios_zh:
+  - "运控驾驶舱、生产监控、供应链控制塔。"
+
+ui_components:
+  - role: map_heat
+    lingjing_core_class: "ops-alert-heatmap"
+  - role: alert_list
+    lingjing_core_class: "alert-center-panel"
+  - role: kpi_band
+    lingjing_core_class: "flight-metric-card"
+
+notes_zh:
+  - "需定义刷新策略与数据延迟容忍度。"
+  - "大屏场景注意对比度与无干扰动效。"

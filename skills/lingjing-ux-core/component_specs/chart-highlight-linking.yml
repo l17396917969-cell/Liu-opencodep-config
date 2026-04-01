@@ -1,0 +1,53 @@
+id: chart-highlight-linking
+name_zh: 图表高亮与联动交互规范
+summary_zh: >
+  规范图表在联动、钻取、放大时的交互反馈，减少信息割裂。
+
+states:
+  - id: normal
+    label_zh: 正常
+    description_zh: "常规浏览，无联动。"
+  - id: highlighted
+    label_zh: 高亮
+    description_zh: "鼠标悬停/选中时高亮数据点/区域。"
+  - id: linked
+    label_zh: 联动
+    description_zh: "与其他组件联动过滤或同步视图。"
+  - id: focused
+    label_zh: 聚焦/放大
+    description_zh: "放大当前视图或进入细节层级。"
+
+interactions:
+  - id: hover_highlight
+    name_zh: 悬停高亮
+    description_zh: "悬停显示 tooltip，突出数据点。"
+  - id: click_link
+    name_zh: 点击联动
+    description_zh: "点击触发其他组件过滤/钻取。"
+    requirements_zh:
+      - "明确联动目标（列表/地图/表格），保持选中态。"
+  - id: drilldown
+    name_zh: 下钻/返回
+    description_zh: "点击或按钮进入下一级；提供返回。"
+  - id: spotlight
+    name_zh: 聚焦放大
+    description_zh: "放大当前图/区域，弱化背景。"
+
+accessibility_zh:
+  - "键盘可聚焦数据点并触发 tooltip；提供高对比度模式。"
+
+config_options:
+  - id: link_targets
+    name_zh: 联动目标
+    description_zh: "可联动的组件。"
+    allowed_values: ["table", "map", "list", "chart"]
+  - id: drill_levels
+    name_zh: 下钻层级
+    description_zh: "支持的层级深度。"
+    allowed_values: ["1", "2", "3"]
+
+meta:
+  related_lingjing_core_classes:
+    - "chart-card"
+    - "ops-alert-heatmap"
+    - "flight-metric-card"

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "oh-my-openagent@latest"
+  ],
+  "provider": {
+    "anthropic": {
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "baseURL": "{{ anthropic_baseurl | default('https://api.anthropic.com') }}",
+        "apiKey": "{{ anthropic_apikey }}"
+      }
+    },
+    "my-codex": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "{{ codex_baseurl }}",
+        "apiKey": "{{ codex_apikey }}"
+      },
+      "models": {
+        "gpt53": {
+          "id": "gpt-5.3-codex"
+        },
+        "gpt54": {
+          "id": "gpt-5.4"
+        }
+      }
+    }
+  },
+  "model": "{{ default_model | default('my-codex/gpt54') }}",
+  "mcp": {
+    "MiniMax": {
+      "type": "local",
+      "command": [
+        "{{ uvx_path }}",
+        "minimax-coding-plan-mcp",
+        "-y"
+      ],
+      "environment": {
+        "MINIMAX_API_KEY": "{{ minimax_apikey }}",
+        "MINIMAX_API_HOST": "{{ minimax_host | default('https://api.minimaxi.com') }}"
+      },
+      "enabled": {{ minimax_enabled | default('true') }}
+    }
+  }
+}

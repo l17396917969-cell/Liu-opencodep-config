@@ -1,0 +1,115 @@
+id: world_marker_interaction
+name_zh: World Marker 交互规范
+summary_zh: >
+  面向 UE5 三维对象的世界锚点组件，默认以轻量点位存在，在选中、预警或严重告警时
+  扩展为信息卡片，用于串联三维对象与 Web Overlay 详情层。
+
+states:
+  - id: normal
+    label_zh: 普通态
+    description_zh: "以轻量点位或简短标签展示对象基础信息。"
+  - id: warning
+    label_zh: 预警态
+    description_zh: "采用琥珀色高亮与轻度脉冲反馈。"
+  - id: critical
+    label_zh: 严重告警态
+    description_zh: "采用红色高亮、明显能量边框与更强提醒。"
+  - id: selected
+    label_zh: 选中展开态
+    description_zh: "点位展开为卡片，显示对象名称、状态与关键动作。"
+  - id: occluded
+    label_zh: 遮挡态
+    description_zh: "对象被遮挡时切换为弱化点位或轮廓引导。"
+  - id: offscreen
+    label_zh: 离屏态
+    description_zh: "对象离开视野时转为边缘指示。"
+  - id: collapsed
+    label_zh: 聚类折叠态
+    description_zh: "高密度场景下多个点位合并为聚类标记。"
+
+entry_conditions:
+  - "object.updated 根据 risk_level 进入 normal/warning/critical。"
+  - "object.selected 进入 selected。"
+  - "projection.is_occluded / is_offscreen 触发遮挡态或离屏态。"
+  - "同屏密度超阈值时进入 collapsed。"
+
+exit_conditions:
+  - "取消选中或 focus 结束后由 selected 返回风险对应态。"
+  - "重回视口或解除遮挡后由 offscreen/occluded 返回普通或风险态。"
+
+interactions:
+  - id: hit_select
+    name_zh: 点位选中
+    description_zh: "点击点位后聚焦对象并展开卡片。"
+    requirements_zh:
+      - "命中热区需明显大于视觉点位。"
+      - "展开卡片时不得遮挡中心主视野超过短时阈值。"
+  - id: cluster_expand
+    name_zh: 聚类展开
+    description_zh: "点击聚类标记后解散或进入区域聚焦。"
+    requirements_zh:
+      - "聚类数需可读，且优先展示 critical 成员数量。"
+  - id: edge_guidance
+    name_zh: 离屏引导
+    description_zh: "离屏态在屏幕边缘提供方向与距离提示。"
+    requirements_zh:
+      - "仅对高优先级对象持续显示离屏引导。"
+  - id: quick_actions
+    name_zh: 快捷动作
+    description_zh: "选中展开态提供查看详情、聚焦镜头、打开业务页等操作。"
+    requirements_zh:
+      - "动作不应超过 3 个，防止卡片过重。"
+
+bridge_events:
+  subscribe:
+    - camera.changed
+    - object.hovered
+    - object.selected
+    - object.updated
+    - alert.raised
+    - alert.cleared
+  publish:
+    - ui.focus_object
+    - ui.open_detail
+
+data_contract:
+  consume_fields:
+    - object.object_id
+    - object.object_name
+    - object.risk_level
+    - object.status_text
+    - projection.screen_position
+    - projection.is_occluded
+    - projection.is_offscreen
+    - projection.distance_to_camera
+  expose_fields:
+    - selected_object_id
+    - marker_state
+
+accessibility_zh:
+  - "每个 marker 必须提供对象名称、状态与风险等级的可读文本。"
+  - "选中展开卡片中的操作按钮必须可键盘聚焦。"
+  - "critical marker 的文案提示不得仅依赖闪烁，需有明确文本。"
+
+config_options:
+  - id: cluster_threshold
+    name_zh: 聚类阈值
+    description_zh: "定义何时将多点位聚类。"
+    allowed_values: ["8", "12", "16"]
+  - id: label_distance_mode
+    name_zh: 标签距离策略
+    description_zh: "定义标签在远距离时的折叠方式。"
+    allowed_values: ["fade", "dot_only", "priority_only"]
+
+performance_constraints:
+  ui_latency: "<= 150ms"
+  projection_update: "camera.changed 节流建议 120ms 内"
+
+meta:
+  related_lingjing_core_classes:
+    - "world-marker"
+    - "world-space-tag"
+    - "state-warning"
+    - "state-critical"
+  notes_zh:
+    - "本组件默认采用‘轻量点位，选中后再展开卡片’策略。"

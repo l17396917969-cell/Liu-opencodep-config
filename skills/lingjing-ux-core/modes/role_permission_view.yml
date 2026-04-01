@@ -1,0 +1,51 @@
+id: role_permission_view
+scene: b-system
+dimension: security_compliance
+name_zh: 权限视图模式
+summary_zh: >
+  用于在复杂航空工业系统中，以安全、可审计的方式展示和管理角色权限，
+  帮助用户理解“谁可以在什么范围做什么事”，降低误操作与越权风险。
+
+goals_zh:
+  - "让业务与管理人员一眼看清各角色的权限边界与风险点。"
+  - "支持安全地申请、调整和回收权限，并留下完整审计记录。"
+
+states:
+  - id: overview
+    label_zh: 权限总览
+    description_zh: "展示当前系统中的角色、资源类型与权限分布，支持按角色/系统模块快速筛选。"
+  - id: role_detail
+    label_zh: 角色详情
+    description_zh: "查看某一角色在各系统模块中的具体权限，包括只读/可写/审批等粒度。"
+  - id: permission_request
+    label_zh: 权限申请中
+    description_zh: "用户正在发起新增或调整权限的申请，需要展示最小必要权限原则与审批链。"
+  - id: audit_trace
+    label_zh: 审计追踪
+    description_zh: "查看某用户/角色在一段时间内的关键操作记录与权限变更历史。"
+
+key_interactions_zh:
+  - "支持按角色、组织、系统模块、敏感级别等多维度过滤和搜索权限信息。"
+  - "在权限申请时，明确标出当前权限差异（申请前 vs 申请后），并提示潜在风险。"
+  - "对高风险操作提供二次确认与原因说明输入框，必要时要求多级审批。"
+  - "在审计视图中支持按时间轴查看权限变更与关键操作事件，并可导出审计报告。"
+
+applicable_scenarios_zh:
+  - "军品采购系统的角色与权限管理界面。"
+  - "生产运控平台中对高危操作（如停线、调拨）的权限配置与审计。"
+  - "供应链控制台中针对跨组织协同的访问控制配置。"
+
+ui_components:
+  - role: permission_tree
+    lingjing_core_class: "advanced-data-table"
+    description_zh: "以树形或分组表格形式展示角色与资源的权限矩阵，支持展开/收起、批量勾选。"
+  - role: role_summary_card
+    lingjing_core_class: "flight-metric-card"
+    description_zh: "展示单个角色的关键信息与风险摘要，如敏感权限数量、最近变更时间等。"
+  - role: audit_timeline
+    lingjing_core_class: "timeline-card"
+    description_zh: "展示与权限相关的关键操作与变更事件时间轴。"
+
+notes_zh:
+  - "本模式聚焦二维管理界面中的权限可视化与操作流程，不涉及具体加密/认证实现细节。"
+  - "在涉及军品或高度敏感数据的场景，应与安全合规模块联动，提供额外的合规提示与约束。"

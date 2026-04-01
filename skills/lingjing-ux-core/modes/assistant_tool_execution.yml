@@ -1,0 +1,28 @@
+id: assistant_tool_execution
+scene: ai-assistant
+dimension: business_process
+name_zh: 工具编排模式
+summary_zh: >
+  用于 AI 助手在计划确认后，调用工具/接口执行任务，报告进度与结果。
+
+goals_zh:
+  - "让用户透明看到每步工具调用与结果。"
+  - "支持失败重试与回滚。"
+  - "结果可审计并可复用。"
+
+key_interactions_zh:
+  - "展示执行日志（工具名、参数、结果摘要），支持展开详情。"
+  - "失败时提供重试/替代路径，关键操作需确认。"
+  - "完成后输出总结与可下载/复制的结果。"
+
+applicable_scenarios_zh:
+  - "数据处理、文档生成、外部 API 调用、自动化脚本。"
+
+ui_components:
+  - role: exec_log
+    lingjing_core_class: "tool-call-card"
+  - role: result_view
+    lingjing_core_class: "content-card"
+
+notes_zh:
+  - "对外部调用需标明风险提示，必要时遮盖敏感信息。"

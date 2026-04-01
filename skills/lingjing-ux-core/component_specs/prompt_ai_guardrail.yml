@@ -1,0 +1,40 @@
+id: prompt-ai-guardrail
+name_zh: AI 提示与防护交互规范
+summary_zh: >
+  规范在 AI 助手/生成场景下的提示、风险告警与可撤销机制，保障可控性。
+
+states:
+  - id: info
+    label_zh: 提示
+    description_zh: "常规提示，说明行为或限制。"
+  - id: warning
+    label_zh: 风险警告
+    description_zh: "潜在敏感/高风险操作，需确认。"
+  - id: blocked
+    label_zh: 拦截
+    description_zh: "违反政策/安全规则，被阻止并给出原因。"
+
+interactions:
+  - id: confirm_high_risk
+    name_zh: 高风险确认
+    description_zh: "对外部调用/写入等敏感操作进行二次确认。"
+  - id: undo
+    name_zh: 可撤销
+    description_zh: "在短时间内提供撤销入口。"
+  - id: rationale
+    name_zh: 说明原因
+    description_zh: "向用户解释拦截/限制原因，并提供替代方案。"
+
+accessibility_zh:
+  - "提示应可被朗读，确认/取消可键盘操作。"
+
+config_options:
+  - id: risk_levels
+    name_zh: 风险级别
+    description_zh: "区分提示/警告/拦截。"
+    allowed_values: ["info", "warning", "blocked"]
+
+meta:
+  related_lingjing_core_classes:
+    - "notification-toast"
+    - "content-card"

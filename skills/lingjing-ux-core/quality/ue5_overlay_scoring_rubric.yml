@@ -1,0 +1,89 @@
+id: ue5_overlay_scoring_rubric
+version: 0.1.0
+description_zh: >
+  UE5 Web Overlay 一期质量评分标准，用于评估联动准确性、视觉层级、性能、无障碍与协议完整性。
+  总分 100 分，80 分以下不通过。
+
+dimensions:
+  - id: linkage_accuracy
+    name_zh: 联动准确性
+    weight: 30
+    criteria:
+      - label: "选中对象后，Marker / Detail Panel / TopBar 是否同步"
+        points: 12
+      - label: "告警触发后，Alert Center / Marker / Detail Panel 是否同步"
+        points: 10
+      - label: "图层切换后，Web 与 UE5 状态是否一致"
+        points: 8
+
+  - id: visual_hierarchy
+    name_zh: 视觉层级与可读性
+    weight: 20
+    criteria:
+      - label: "是否满足深色驾驶舱 / 数字孪生风，并保持中心视野保护"
+        points: 8
+      - label: "主界面高密度、详情面板中密度的节奏是否成立"
+        points: 6
+      - label: "Marker 是否采用轻量点位，选中后再展开卡片"
+        points: 6
+
+  - id: performance
+    name_zh: 性能
+    weight: 20
+    criteria:
+      - label: "Overlay FPS 是否 >= 60"
+        points: 8
+      - label: "对象状态变更到 UI 生效是否 <= 150ms"
+        points: 6
+      - label: "告警到 UI 呈现是否 <= 300ms"
+        points: 6
+
+  - id: resilience
+    name_zh: 稳定性与恢复能力
+    weight: 15
+    criteria:
+      - label: "Bridge 断开时是否进入 degraded 态并给出提示"
+        points: 5
+      - label: "数据陈旧时是否展示 stale 态"
+        points: 5
+      - label: "scene.ready 前页面是否保持安全占位，不抛错"
+        points: 5
+
+  - id: accessibility
+    name_zh: 无障碍与易用性
+    weight: 10
+    criteria:
+      - label: "关键按钮是否支持键盘操作与 aria-label"
+        points: 5
+      - label: "critical / degraded / stale 是否具备文本级提示"
+        points: 5
+
+  - id: contract_integrity
+    name_zh: 协议完整性
+    weight: 5
+    criteria:
+      - label: "schema、bridge、mock、UI DOM 映射是否一致"
+        points: 5
+
+scoring_levels:
+  - range: [90, 100]
+    label: "卓越"
+    action: "可直接作为一期基线发布"
+  - range: [80, 89]
+    label: "合格"
+    action: "完成微调后可发布"
+  - range: [0, 79]
+    label: "不通过"
+    action: "必须返工"
+
+hard_fail_conditions_zh:
+  - "任一核心联动链路无法复现"
+  - "协议字段与 mock/UI DOM 映射不一致"
+  - "degraded / stale 状态不可见"
+  - "中心视野长期被固定浮层遮挡"
+
+automation_hooks:
+  - trigger: "On mock bridge verification"
+    check: "linkage_accuracy + contract_integrity"
+  - trigger: "On visual review"
+    check: "visual_hierarchy + accessibility"

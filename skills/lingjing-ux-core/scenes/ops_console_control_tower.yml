@@ -1,0 +1,34 @@
+id: ops_console_control_tower
+name_zh: 运控驾驶舱
+product_scene: ops-console
+summary_zh: >
+  面向运控/供应链/生产指挥的驾驶舱，聚合多源态势、分级告警与指挥分发闭环。
+
+primary_roles:
+  - id: ops_lead
+    name_zh: 运控负责人
+  - id: dispatcher
+    name_zh: 指挥调度员
+
+interaction_modes:
+  - id: ops_multi_source_monitor
+    purpose_zh: "负责多源态势与告警联动。"
+  - id: ops_command_dispatch
+    purpose_zh: "负责分派、执行跟踪与复盘。"
+
+main_flow:
+  id: ops_alert_to_action
+  description_zh: "发现→研判→分派→执行→复盘的闭环。"
+
+ux_goals_zh:
+  - "一屏掌握态势与优先级。"
+  - "分派与执行进度清晰、可审计。"
+  - "支持暂停刷新、全屏与安全提示。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/ops-console.html"
+    description_zh: "运控驾驶舱布局参考，可映射到热力/告警/任务区域。"
+
+notes_zh:
+  - "强调操作安全，分派需确认，批量操作需提示影响范围。"

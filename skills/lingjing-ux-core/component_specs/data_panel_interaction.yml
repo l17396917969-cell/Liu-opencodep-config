@@ -1,0 +1,53 @@
+id: data_panel_interaction
+name_zh: 数据面板组件交互规范
+summary_zh: >
+  用于展示结构化核心指标（KPI）的卡片容器，支持多级风险状态绑定。
+  适用于监控仪表盘、KPI 概览区等。
+
+states:
+  - id: normal
+    label_zh: 正常 (Normal)
+    description_zh: "指标处于安全区间。视觉：中性边框，无特殊动画。"
+  - id: warning
+    label_zh: 预警 (Warning)
+    description_zh: "指标接近阈值。视觉：琥珀色/橙色边框，伴随呼吸脉冲动效。"
+  - id: critical
+    label_zh: 严重告警 (Critical)
+    description_zh: "指标超出阈值。视觉：红色边框及背景高亮，伴随高频闪烁。"
+  - id: loading
+    label_zh: 加载中
+    description_zh: "正在通过 API 获取最新数值，显示骨架屏或 Loading 占位。"
+
+interactions:
+  - id: hover_scaling
+    name_zh: 悬停缩放
+    description_zh: "鼠标移入面板，产生轻微放大或阴影加深效果。"
+    requirements_zh:
+      - "提升交互的物理感与响应感。"
+  - id: click_action
+    name_zh: 点击钻取
+    description_zh: "点击面板标题或数值区域，跳转或在侧边弹出详细趋势分析图表。"
+    requirements_zh:
+      - "联动侧边抽屉 (Drawer) 时，面板应保持高亮状态。"
+  - id: risk_binding
+    name_zh: 风险绑定
+    description_zh: "根据 data-risk-level 属性自动切换视觉状态。"
+    requirements_zh:
+      - "状态变更时应平滑过渡，不产生布局跳动。"
+
+accessibility_zh:
+  - "Label: 必须具备 <h3 class='data-panel-title'> 作为读屏器标题。"
+  - "Aria-live: 当 data-risk-level 从 normal 变为 critical 时，应自动朗读告警信息。"
+  - "Semantic Markers: 为重要指标提供文字描述（如：‘主轴温度 - 严重告警’）。"
+
+performance_constraints:
+  animation: "呼吸动效 (lingjing-pulse) 必须开启 GPU 加速，确保在大规模面板展示时不掉帧。"
+  ui_latency: "属性变更到样式生效延迟 ≤ 100ms。"
+
+meta:
+  related_lingjing_core_classes:
+    - "data-panel"
+    - "kpi-hero-card"
+  notes_zh:
+    - "针对航空系统，建议在面板底部预留‘上次更新时间’说明。"
+    - "禁止在面板内放置过于复杂的长文本或多选操作。"

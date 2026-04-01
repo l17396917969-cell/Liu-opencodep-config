@@ -1,0 +1,60 @@
+id: button_interaction
+name_zh: 按钮组件交互规范
+summary_zh: >
+  基础动作触发组件，用于执行特定的业务逻辑、提交表单或导航。
+  支持主、次、文字、图标等多种变体。
+
+states:
+  - id: default
+    label_zh: 默认
+    description_zh: "初始可点击状态，等待用户操作。"
+  - id: hover
+    label_zh: 悬停
+    description_zh: "鼠标移入，视觉反馈以提示可点击性。"
+  - id: active
+    label_zh: 按下
+    description_zh: "鼠标左键按下未抬起，模拟物理按键反馈。"
+  - id: disabled
+    label_zh: 禁用
+    description_zh: "不可点击，通常由于权限限制、表单校验不通过或逻辑前置条件未满足。"
+  - id: loading
+    label_zh: 加载中
+    description_zh: "异步任务执行中（如：保存中、查询中），此时应阻断重复点击。"
+  - id: focused
+    label_zh: 已聚焦
+    description_zh: "通过键盘 Tab 键进入，需展示明显的聚焦环 (Focus Ring)。"
+
+interactions:
+  - id: click_action
+    name_zh: 点击执行
+    description_zh: "用户触发核心业务逻辑。"
+    requirements_zh:
+      - "点击后必须提供视觉或动效反馈（如：波纹、位移、状态变更）。"
+      - "关键操作（如：删除、格式化）建议在点击后触发二次确认弹窗。"
+  - id: async_loading
+    name_zh: 异步加载反馈
+    description_zh: "在执行耗时操作时，按钮应自动进入 loading 状态。"
+    requirements_zh:
+      - "加载中状态应保留按钮宽度，避免布局抖动。"
+      - "加载完成后应根据结果展示‘成功’或‘失败’的提示信息。"
+
+accessibility_zh:
+  - "Keyboard: 支持 Tab 键聚焦，Enter 或 Space 键触发点击。"
+  - "Screen Reader: 应朗读按钮的文字内容及当前状态（如：‘已禁用’、‘正在保存中’）。"
+  - "Color Contrast: 文本与背景对比度需符合 WCAG 2.1 AA (≥ 4.5:1)。"
+
+performance_constraints:
+  latency: "点击反馈延迟 ≤ 100ms"
+  rendering: "在高频点击场景下保持帧率稳定。"
+
+meta:
+  related_lingjing_core_classes:
+    - "btn-primary"
+    - "btn-outline"
+    - "btn-text"
+    - "btn-ghost"
+    - "btn-icon"
+  notes_zh:
+    - "危险操作按钮（如：删除）应采用红色警示色。"
+    - "按钮文本必须采用"动词+宾语"短语（如：’立即保存’、’下载报告’、’新建工单’），字符数严格控制在 ≤6 个汉字（含标点），禁止超长文案。超长文案不会自动折行——UI 层已对所有 btn-* 类强制 white-space: nowrap + flex-shrink: 0；若文案超长，按钮将溢出容器，属设计错误。"
+    - "图标按钮（btn-icon）仅放单个图标，无文字；需提供 aria-label 描述操作语义。"

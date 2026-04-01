@@ -1,0 +1,103 @@
+id: information_layer_hierarchy
+scene: ops-console
+dimension: physical_digital_fusion
+name_zh: 信息层级规范
+summary_zh: >
+  定义 UE5 Web Overlay 的 5 层信息分层模型，统一 z-order、交互优先级、显隐逻辑、
+  点击穿透与遮挡约束，避免高密度信息破坏三维主视野。
+
+goals_zh:
+  - "建立稳定的层级秩序，保证告警、选中对象与背景信息在视觉上可区分。"
+  - "控制 Overlay 对三维视口的遮挡面积，尤其保护中心视野。"
+  - "让世界锚点与屏幕空间 HUD 在语义和优先级上保持一致。"
+
+layers:
+  - id: ambient
+    label_zh: 环境态势层
+    z_order: 10
+    content_types:
+      - "背景网格"
+      - "轻量场景标签"
+      - "弱化态势提示"
+    interaction_priority: "lowest"
+    visibility_rules_zh:
+      - "默认可见，但在 critical 态可自动弱化透明度。"
+      - "不得覆盖中心保护区中的主要对象轮廓。"
+    pointer_events: "none"
+    occlusion_rules_zh:
+      - "仅承担氛围与空间参照，不承载关键操作。"
+  - id: marker
+    label_zh: 世界锚点层
+    z_order: 30
+    content_types:
+      - "对象点位"
+      - "轻量标签"
+      - "离屏指示"
+      - "聚类标记"
+    interaction_priority: "high_when_selected_or_alerted"
+    visibility_rules_zh:
+      - "默认显示轻量点位；选中后展开卡片。"
+      - "遮挡态、离屏态、聚类态需切换到简化呈现。"
+      - "critical marker 可突破一般弱化规则，但仍应避免遮挡中心。"
+    pointer_events: "auto_on_hit_target"
+    occlusion_rules_zh:
+      - "世界锚点命中热区应小于展开卡片区域。"
+      - "同屏高密度点位应优先聚类，再允许展开。"
+  - id: hud
+    label_zh: HUD 主操作层
+    z_order: 50
+    content_types:
+      - "TopBar"
+      - "全局摘要"
+      - "轻量控制条"
+    interaction_priority: "high"
+    visibility_rules_zh:
+      - "持续可见，但在场景加载/降级时切换为简化态。"
+      - "顶部信息密度可高，但不应超过安全区定义。"
+    pointer_events: "auto"
+    occlusion_rules_zh:
+      - "限制在顶部安全区与底部辅助区，不进入中心保护区。"
+  - id: detail
+    label_zh: 详情钻取层
+    z_order: 70
+    content_types:
+      - "Detail Panel"
+      - "对象历史与趋势"
+      - "上下文操作"
+    interaction_priority: "highest_for_current_context"
+    visibility_rules_zh:
+      - "由 object.selected、alert.focused 或用户固定操作触发。"
+      - "未选中对象时允许折叠或空态，不长期占据注意力。"
+    pointer_events: "auto"
+    occlusion_rules_zh:
+      - "默认停靠侧边，避免侵入中心视口。"
+      - "高密度主界面下详情层维持中密度阅读节奏。"
+  - id: critical
+    label_zh: 严重告警层
+    z_order: 90
+    content_types:
+      - "全局严重告警横幅"
+      - "必须确认的风险提示"
+      - "恢复/降级状态提示"
+    interaction_priority: "emergency_override"
+    visibility_rules_zh:
+      - "仅在 critical 或 degraded 等关键系统态出现。"
+      - "告警解除后应自动降回普通层级，不可残留。"
+    pointer_events: "auto"
+    occlusion_rules_zh:
+      - "优先使用条带、角标、局部浮层，不默认全屏遮罩。"
+      - "如必须强提醒，应保留最小视口上下文与关闭/确认路径。"
+
+cross_layer_rules_zh:
+  - "selected object 的 marker、detail、topbar 状态必须同步。"
+  - "alert.raised 触发时，marker 层与 critical 层可同时抬升，但 detail 仍应停靠侧边。"
+  - "同一对象在多层出现时，颜色与风险等级语义必须一致。"
+  - "层级切换不得导致元素瞬移或大幅布局跳动。"
+
+acceptance_signals_zh:
+  - "中心保护区无遮挡面积保持在可接受范围。"
+  - "100 个 marker 场景下仍能区分 selected / critical / normal 三类优先级。"
+  - "degraded 与 stale 状态在 TopBar、Marker、Detail Panel 至少两处可见。"
+
+notes_zh:
+  - "本文件是 screen_space_overlay、world_marker_interaction、detail_panel_interaction 等规范的上位约束。"

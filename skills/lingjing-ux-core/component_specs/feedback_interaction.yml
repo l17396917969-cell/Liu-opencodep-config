@@ -1,0 +1,60 @@
+id: feedback_interaction
+name_zh: 反馈提示组件交互规范
+summary_zh: >
+  包括消息提示 (Toast)、警告对话框 (Alert) 及全局通知 (Notification) 等基础反馈组件。
+  用于向用户告知系统状态、操作结果或关键风险。
+
+states:
+  - id: entering
+    label_zh: 出现中
+    description_zh: "顶部、底部或中心淡入弹出。"
+  - id: idle
+    label_zh: 空闲/停留
+    description_zh: "在屏幕停留特定时长，等待用户操作或自动消失。"
+  - id: leaving
+    label_zh: 退出中
+    description_zh: "淡出消失或向右滑动滑出。"
+  - id: fixed
+    label_zh: 常驻
+    description_zh: "除非用户手动关闭或系统重置，否则始终展示在界面顶部。"
+
+interactions:
+  - id: auto_dismiss
+    name_zh: 自动关闭 (Auto-dismiss)
+    description_zh: "提示信息在展示 3s-5s 后自动消失。"
+    requirements_zh:
+      - "针对成功 (Success) 或常规信息 (Info) 的 Toast 建议开启自动关闭。"
+      - "针对严重错误 (Error) 或警告 (Warning) 必须由用户手动关闭。"
+  - id: user_dismiss
+    name_zh: 手动关闭 (User-dismiss)
+    description_zh: "点击右上角‘X’或‘确定’按钮主动关闭提示。"
+    requirements_zh:
+      - "关闭按钮应具备明显的交互样式。"
+  - id: interaction_linking
+    name_zh: 交互联动 (Action Link)
+    description_zh: "提示信息内包含点击操作（如：‘查看详情’、‘立即重试’）。"
+    requirements_zh:
+      - "包含交互动作的提示应适当延长停留时长。"
+  - id: queue_stacking
+    name_zh: 队列堆叠 (Queue Stacking)
+    description_zh: "当同时产生多个提示时，按时间顺序排列或堆叠展示。"
+    requirements_zh:
+      - "建议最多同时展示 3 个 Toast，超出部分按先进先出 (FIFO) 自动替换。"
+
+accessibility_zh:
+  - "ARIA: 必须具备 role='status' 或 role='alert'。"
+  - "Aria-live: 动态产生的重要通知应设置为 aria-live='assertive'。"
+  - "Keyboard: 支持 Esc 键关闭当前焦点所在的提示弹窗。"
+
+performance_constraints:
+  animation: "淡入淡出动画控制在 200ms-500ms 之间。"
+  z-index: "提示组件应具备全局最高的 z-index，确保不被任何弹窗遮挡。"
+
+meta:
+  related_lingjing_core_classes:
+    - "toast"
+    - "alert-center-panel"
+    - "notification-toast"
+  notes_zh:
+    - "提示文字应直接、明确（如：‘已成功保存’、‘连接已断开’），字数控制在 10-25 字。"
+    - "相同类型的提示信息应在短时间内合并展示，避免屏内信息过载。"

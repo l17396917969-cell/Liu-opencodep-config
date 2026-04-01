@@ -1,0 +1,28 @@
+id: assistant_multi_turn_planning
+scene: ai-assistant
+dimension: data_intelligence
+name_zh: 多轮规划模式
+summary_zh: >
+  用于 AI 助手在接受任务后，澄清需求、拆分子任务、形成计划并与用户对齐。
+
+goals_zh:
+  - "在执行前明确目标与约束。"
+  - "可视化子任务与状态，便于用户监督。"
+  - "支持随时调整/撤销计划。"
+
+key_interactions_zh:
+  - "助手提出澄清问题，生成子任务列表并标记状态。"
+  - "用户可勾选/调整子任务，计划锁定后进入执行。"
+  - "出现阻塞时，助手暂停并请求决策。"
+
+applicable_scenarios_zh:
+  - "AI 助手处理文档、数据分析、自动化脚本等多步骤任务。"
+
+ui_components:
+  - role: task_outline
+    lingjing_core_class: "task-status-card"
+  - role: clarifications
+    lingjing_core_class: "message-bubble"
+
+notes_zh:
+  - "计划应包含安全检查点；对高风险动作需用户确认。"

@@ -1,0 +1,48 @@
+id: exception_handling
+scene: b-system
+dimension: business_process
+name_zh: 异常处理流模式
+summary_zh: >
+  用于供应链或制造运控场景中，从发现异常到完成处置和复盘的标准化处理流程。
+
+goals_zh:
+  - "确保异常被快速发现、正确归类并分配到合适责任人。"
+  - "提供清晰的处理路径与升级机制，避免异常被遗忘。"
+  - "形成可审计、可回溯的处理记录。"
+
+states:
+  - id: detected
+    label_zh: 已发现
+    description_zh: "异常已被系统或人工发现，但尚未分派与确认。"
+  - id: triaged
+    label_zh: 已分派
+    description_zh: "异常已被归类并分派给具体处理人或小组。"
+  - id: in_progress
+    label_zh: 处理中
+    description_zh: "责任人在处理中，有进展记录与沟通。"
+  - id: resolved
+    label_zh: 已解决
+    description_zh: "异常已处理完毕，结果已经记录。"
+  - id: closed
+    label_zh: 已关闭
+    description_zh: "异常完成复盘与审核，正式关闭。"
+
+key_interactions_zh:
+  - "允许在告警列表中一键将异常创建为处理任务，并分派责任人。"
+  - "支持在处理过程中记录评论、上传证据和变更状态。"
+  - "提供升级路径（如超时未处理自动升级给上级）。"
+  - "处理完成后，支持复盘记录与标注根因。"
+
+applicable_scenarios_zh:
+  - "供应商交付延迟异常处理。"
+  - "关键物料库存低于安全库存线的异常处理。"
+  - "物流节点堵塞或设备故障引起的异常处理。"
+
+ui_components:
+  - role: alert_list
+    lingjing_core_class: "mission-status-board"
+  - role: task_detail_panel
+    lingjing_core_class: "content-card"
+
+notes_zh:
+  - "本模式应与实时监控模式配合使用，从告警到任务的创建与闭环处理。"

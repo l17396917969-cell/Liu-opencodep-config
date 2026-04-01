@@ -1,0 +1,48 @@
+id: drawer-filter-bar
+name_zh: 抽屉与筛选条交互规范
+summary_zh: >
+  用于侧边抽屉的详情/分派/创建，以及顶部筛选条的条件过滤，避免遮挡主视图。
+
+states:
+  - id: closed
+    label_zh: 关闭
+    description_zh: "抽屉未展开，筛选条可折叠。"
+  - id: open
+    label_zh: 打开
+    description_zh: "抽屉展开，主内容可滚动受限；筛选条展开可编辑条件。"
+
+interactions:
+  - id: open_close
+    name_zh: 打开/关闭
+    description_zh: "点击触发抽屉；Esc/点击蒙层关闭。"
+    requirements_zh:
+      - "关闭前若有未保存更改需提示。"
+  - id: submit
+    name_zh: 提交/保存
+    description_zh: "抽屉表单提交，或筛选条应用条件。"
+    requirements_zh:
+      - "提交时校验并提示错误；成功后可刷新列表或保持筛选。"
+  - id: reset
+    name_zh: 重置
+    description_zh: "清空筛选或恢复默认。"
+  - id: responsive
+    name_zh: 响应式
+    description_zh: "在小屏收起为全屏模态。"
+
+accessibility_zh:
+  - "打开时聚焦首个可编辑控件；关闭时返回触发点。"
+
+config_options:
+  - id: width_mode
+    name_zh: 抽屉宽度模式
+    description_zh: "固定/自适应。"
+    allowed_values: ["400px", "520px", "auto"]
+  - id: filter_presets
+    name_zh: 筛选预设
+    description_zh: "常用条件保存与快捷应用。"
+    allowed_values: ["none", "recent", "team_shared"]
+
+meta:
+  related_lingjing_core_classes:
+    - "command-drawer"
+    - "filter-bar"

@@ -1,0 +1,105 @@
+id: topbar_hud_interaction
+name_zh: TopBar HUD 交互规范
+summary_zh: >
+  面向 UE5 Web Overlay 顶部全局工具栏，负责场景标题、运行状态、时间、视角切换与全局提醒。
+  该组件属于高密度主界面区域，但不得破坏中心视野。
+
+states:
+  - id: default
+    label_zh: 默认态
+    description_zh: "展示场景名称、时间、桥接状态、关键摘要与主操作入口。"
+  - id: compact
+    label_zh: 紧凑态
+    description_zh: "在告警高峰或窄屏条件下降低信息密度，仅保留高优先级摘要。"
+  - id: context_locked
+    label_zh: 上下文锁定态
+    description_zh: "当对象被选中时，顶部栏展示当前对象摘要与视角定位反馈。"
+  - id: degraded
+    label_zh: 降级态
+    description_zh: "桥接中断或场景未就绪时，以横幅方式展示 degraded 提示与恢复状态。"
+
+entry_conditions:
+  - "scene.ready 后进入 default。"
+  - "对象选中或 focus_object 成功后进入 context_locked。"
+  - "场景降级、桥接中断、数据快照回退时进入 degraded。"
+
+exit_conditions:
+  - "取消选中或超时恢复后由 context_locked 返回 default。"
+  - "恢复稳定连接后由 degraded 返回 default 或 compact。"
+
+interactions:
+  - id: switch_view
+    name_zh: 视角切换
+    description_zh: "触发预设视角切换，如全局、顶视、剖切、跟随。"
+    requirements_zh:
+      - "切换反馈需即时可见，并在 150ms 内更新按钮状态。"
+      - "切换结果由桥接事件回执或最新 camera.changed 驱动确认。"
+  - id: reveal_scene_status
+    name_zh: 场景状态揭示
+    description_zh: "展示 ready、syncing、degraded、stale 等系统状态。"
+    requirements_zh:
+      - "状态词必须文字可见，不得仅靠颜色区分。"
+  - id: focus_feedback
+    name_zh: 聚焦反馈
+    description_zh: "当选中对象或从告警定位对象时，顶部栏应显示对象名称与风险等级。"
+    requirements_zh:
+      - "选中反馈应与 World Marker、Detail Panel 同步。"
+
+bridge_events:
+  subscribe:
+    - scene.ready
+    - scene.degraded
+    - camera.changed
+    - object.selected
+    - layer.visibility.changed
+  publish:
+    - ui.change_view
+    - ui.focus_object
+
+data_contract:
+  consume_fields:
+    - scene_id
+    - runtime_mode
+    - degraded_state
+    - object.object_name
+    - object.risk_level
+    - layer.layer_name
+    - layer.sync_status
+  expose_fields:
+    - current_view_id
+    - focused_object_id
+
+accessibility_zh:
+  - "所有顶栏按钮必须支持 Tab 焦点与 Enter/Space 激活。"
+  - "degraded / syncing / ready 必须提供 aria-live polite 提示。"
+  - "图标按钮必须带 aria-label，不得仅依赖图标含义。"
+
+config_options:
+  - id: compact_breakpoint
+    name_zh: 紧凑态断点
+    description_zh: "用于决定何时收缩顶部信息密度。"
+    allowed_values: ["1280px", "1440px", "1600px"]
+  - id: view_presets
+    name_zh: 视角预设集合
+    description_zh: "定义可供切换的视角集合。"
+    allowed_values: ["global", "top", "section", "follow", "custom"]
+
+performance_constraints:
+  ui_latency: "<= 150ms"
+  animation_budget: "普通状态切换动画 <= 240ms"
+
+meta:
+  related_lingjing_core_classes:
+    - "topbar-hud"
+    - "topbar-hud__signal-strip"
+    - "topbar-hud__stat"
+    - "topbar-hud__stat-label"
+    - "topbar-hud__stat-value"
+    - "topbar-hud__stat-meta"
+    - "topbar-hud__headline"
+    - "ue-status-indicator"
+    - "ue-control-panel"
+  notes_zh:
+    - "视觉上采用深色拟态玻璃 + 顶部棱镜高光，但不应形成厚重实心栏。"
+    - "KPI 指标卡使用 topbar-hud__signal-strip 作为行容器，每个指标用 topbar-hud__stat；状态修饰符：--brand / --success / --warning / --critical，对应品牌蓝 / 绿 / 橙 / 红。"
+    - "topbar-hud__stat 在宽屏（2K+）下需均分剩余空间（flex: 1 1 0），禁止固定像素宽度。"

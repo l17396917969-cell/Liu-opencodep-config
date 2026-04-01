@@ -1,0 +1,63 @@
+id: modal_interaction
+name_zh: 弹窗组件交互规范
+summary_zh: >
+  模态对话框组件，用于承载复杂表单、详情预览或二次确认等需要用户立即响应的业务流。
+  支持单步、分步、带蒙层的变体。
+
+states:
+  - id: opening
+    label_zh: 打开中
+    description_zh: "背景淡入，主体缩放或位移至中心位置。"
+  - id: normal
+    label_zh: 正常
+    description_zh: "内容加载完成，等待用户交互操作。"
+  - id: loading
+    label_zh: 内容加载中
+    description_zh: "弹窗内数据通过异步接口获取中，显示局部骨架屏。"
+  - id: submitting
+    label_zh: 提交中
+    description_zh: "执行表单提交或保存操作，遮罩内部操作按钮。"
+  - id: closing
+    label_zh: 关闭中
+    description_zh: "背景淡出，主体执行反向位移或缩放动画。"
+
+interactions:
+  - id: click_outside_close
+    name_zh: 点击外部关闭
+    description_zh: "点击弹窗外的半透明蒙层，触发关闭动作。"
+    requirements_zh:
+      - "针对‘核心业务表单’或‘二次确认弹窗’，建议禁用点击外部关闭，防止误操作导致数据丢失。"
+      - "非模态弹窗或轻量预览，支持点击外部关闭。"
+  - id: esc_close
+    name_zh: ESC 键退出
+    description_zh: "按下 Esc 键关闭弹窗。"
+    requirements_zh:
+      - "始终支持 Esc 退出（除极个别强交互引导弹窗外）。"
+  - id: dragging
+    name_zh: 面板拖拽
+    description_zh: "点击头部标题区可自由移动弹窗位置。"
+    requirements_zh:
+      - "限制拖拽范围在可视窗口内，避免弹窗‘丢失’。"
+  - id: confirm_action
+    name_zh: 确认/取消
+    description_zh: "提供明确的行为操作按钮（如：‘确定’、‘取消’）。"
+    requirements_zh:
+      - "‘确定’按钮应始终在‘取消’按钮的右侧（针对 Win/Web 用户习惯）。"
+
+accessibility_zh:
+  - "Focus Trap: 弹窗打开后，焦点应被锁定在弹窗内，不可移至背景页。"
+  - "Initial Focus: 默认焦点应在‘确认’按钮或第一个输入框。"
+  - "Roles: 必须具备 role='dialog' 与 aria-modal='true'。"
+
+performance_constraints:
+  animation: "开启/关闭动画时长建议控制在 200ms-400ms 之间。"
+  dom: "弹窗关闭后应根据配置决定是否从 DOM 中移除，以减少长列表页面的内存开销。"
+
+meta:
+  related_lingjing_core_classes:
+    - "modal-dialog"
+    - "modal-header"
+    - "modal-footer"
+  notes_zh:
+    - "标题应言简意赅（如：‘新增单据’、‘风险确认’），字数控制在 4-8 字。"
+    - "内容区高度若超过视窗高度，应支持内部垂直滚动。"

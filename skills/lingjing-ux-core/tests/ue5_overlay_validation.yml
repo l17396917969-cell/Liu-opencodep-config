@@ -1,0 +1,106 @@
+test_suite: ue5_overlay_validation_suite
+version: 0.1.0
+description_zh: >
+  用于验证 UE5 Web Overlay 一期能力的联动正确性、显示正确性、性能与异常恢复。
+  供 mock 联动页、UI 示例页与后续自动化检查共同复用。
+
+test_cases:
+  - id: UE5-VAL-001
+    title: 场景就绪基线验证
+    target_scene: scenes/ue5_factory_overlay_scene.yml
+    criteria:
+      - check_field: "pages[ue5_overlay_dashboard].component_roles"
+        expected: ["topbar_hud", "world_marker", "detail_panel", "alert_center", "layer_switcher"]
+      - check_field: "design_request.constraints_zh"
+        expected: "Must include dark cockpit theme and lightweight marker strategy"
+    pass_threshold: 100%
+
+  - id: UE5-VAL-002
+    title: 对象选中联动验证
+    target_interface: interfaces/ue5_web_bridge.json
+    criteria:
+      - check_field: "events.ue5_to_web.object.selected.ui_targets"
+        expected: ["world_marker", "detail_panel", "topbar_hud"]
+      - check_field: "acceptance_bindings.selected_object_sync"
+        expected: ["world_marker", "detail_panel", "topbar_hud"]
+    pass_threshold: 100%
+
+  - id: UE5-VAL-003
+    title: 告警触发联动验证
+    target_interface: interfaces/ue5_web_bridge.json
+    criteria:
+      - check_field: "events.ue5_to_web.alert.raised.ui_targets"
+        expected: ["alert_center", "world_marker", "detail_panel", "topbar_hud"]
+      - check_field: "acceptance_bindings.alert_sync"
+        expected: ["world_marker", "alert_center", "detail_panel"]
+    pass_threshold: 100%
+
+  - id: UE5-VAL-004
+    title: 图层切换同步验证
+    target_interface: interfaces/ue5_web_bridge.json
+    criteria:
+      - check_field: "events.web_to_ue5.ui.toggle_layer.payload"
+        expected: ["layer_id", "visibility"]
+      - check_field: "acceptance_bindings.layer_sync"
+        expected: ["layer_switcher", "ue5_runtime"]
+    pass_threshold: 100%
+
+  - id: UE5-VAL-005
+    title: 降级态可见性验证
+    target_pattern: patterns/web_overlay_runtime.yml
+    criteria:
+      - check_field: "degradation_policy.degraded_states[*].id"
+        expected: ["bridge_disconnected", "data_stale", "scene_not_ready"]
+      - check_field: "degradation_policy.recovery_rules_zh"
+        expected: "Must include replay latest snapshot"
+    pass_threshold: 100%
+
+  - id: UE5-VAL-006
+    title: 性能基线验证
+    target_pattern: patterns/web_overlay_runtime.yml
+    criteria:
+      - check_field: "performance_constraints.overlay_fps"
+        expected: ">= 60"
+      - check_field: "sync_policy.ui_apply_latency_target_ms"
+        expected: 150
+      - check_field: "sync_policy.alert_to_ui_target_ms"
+        expected: 300
+    pass_threshold: 100%
+
+  - id: UE5-VAL-007
+    title: Mock Bridge 事件覆盖验证
+    target_ui_file: ../lingjing-ui-core/examples/ue5_overlay_mock_bridge.html
+    criteria:
+      - check_field: "mock_events"
+        expected: ["scene.ready", "object.selected", "alert.raised", "layer.visibility.changed", "scene.degraded", "alert.cleared"]
+    pass_threshold: 100%
+
+  - id: UE5-VAL-008
+    title: Overlay 样式入口验证
+    target_ui_file: ../lingjing-ui-core/components/src/styles/05-entry/index-ue5-overlay.css
+    criteria:
+      - check_field: "imports"
+        expected: ["ue5-overlay.css", "topbar-hud.css", "world-marker.css", "detail-panel.css", "alert-center.css", "layer-switcher.css"]
+    pass_threshold: 100%
+
+validation_dimensions:
+  - id: linkage_correctness
+    name_zh: 联动正确性
+    minimum_cases: 3
+  - id: display_correctness
+    name_zh: 显示正确性
+    minimum_cases: 3
+  - id: performance
+    name_zh: 性能
+    minimum_cases: 3
+  - id: exception_recovery
+    name_zh: 异常恢复
+    minimum_cases: 3
+
+validation_execution_rules:
+  - run_frequency: "Each overlay iteration"
+  - output_format: "YAML Summary / Markdown Report"
+  - fail_action: "Block overlay phase completion"
+
+notes_zh:
+  - "D-03 联调时应至少演示对象选中、告警触发、图层切换、degraded 四条关键链路。"

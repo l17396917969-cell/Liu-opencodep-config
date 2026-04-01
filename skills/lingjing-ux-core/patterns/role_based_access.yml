@@ -1,0 +1,55 @@
+id: role_based_access
+name_zh: 角色权限模式
+summary_zh: >
+  针对航空工业高敏感数据与分级操作场景设计的权限管控体系，通过 RBAC 模型实现职责分离 (SoD) 与操作留痕。
+
+goals_zh:
+  - "确保不同职责的角色（如：维修员、质量主管、安全官）仅能访问授权范围内的数据。"
+  - "提供动态权限预览与即时越权警示，防止信息误读或误操作。"
+  - "支持细粒度的操作授权（如：仅可查看但不可导出）。"
+
+states:
+  - id: authorized
+    label_zh: 已授权 (Authorized)
+    description_zh: "用户具备当前页面或功能的操作权限。"
+    ui_behavior: "正常展示组件，支持所有交互动作。"
+
+  - id: view_only
+    label_zh: 仅查看 (View Only)
+    description_zh: "用户具备读取权限，但受限于角色或合规要求，无法执行修改、删除或导出操作。"
+    ui_behavior: "禁用‘操作类’按钮，鼠标悬浮显示：‘您当前仅具备查看权限’。"
+
+  - id: unauthorized
+    label_zh: 无权限 (Unauthorized)
+    description_zh: "用户未被授权访问该模块或特定数据行。"
+    ui_behavior: "隐藏组件或展示占位卡片，引导用户发起权限申请 (Access Request)。"
+
+  - id: elevated_warning
+    label_zh: 提权预警 (Elevation Alert)
+    description_zh: "用户正尝试访问涉及军事秘密或核心型号的高敏感数据。"
+    ui_behavior: "弹出全屏‘合规须知’，要求签署临时保密协议或输入二次验证码。"
+
+key_interactions_zh:
+  - "权限预览 (Permission Preview)：在后台配置界面，管理人员可一键模拟‘计划员’视角，校验权限分配准确性。"
+  - "即时申请 (Instant Request)：在无权限或仅查看状态下，提供快捷申请入口，自动携带当前上下文信息。"
+  - "水印覆盖 (Watermark Overlay)：针对高敏感数据（如：航材库存成本），页面强制覆盖用户姓名+工号+时间的动态水印。"
+  - "操作屏蔽 (Action Masking)：对特定敏感字段（如：联系方式、采购单价）进行脱敏显示，需点击‘查看原件’并记录审计流水。"
+
+applicable_scenarios_zh:
+  - "军品采购合同详情页（对普通员工屏蔽单价）。"
+  - "飞机维修工单操作权限（仅持证工程师可确认结案）。"
+  - "研发型号资料库访问（根据保密协议动态调整访问权限）。"
+
+ui_components:
+  - role: overlay
+    lingjing_core_class: "modal-dialog"
+  - role: access_denied
+    lingjing_core_class: "empty-state"
+  - role: watermark
+    lingjing_core_class: "utilities"
+  - role: toggle
+    lingjing_core_class: "buttons"
+
+notes_zh:
+  - "权限校验必须在前端与后端双重闭环，UX 负责前端的感知、引导与防御。"
+  - "脱敏逻辑必须在 API 层面执行，严禁在前端通过 CSS 简单隐藏。"

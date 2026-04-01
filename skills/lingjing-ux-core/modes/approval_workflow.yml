@@ -1,0 +1,55 @@
+id: approval_workflow
+scene: b-system
+dimension: business_process
+name_zh: 多级审批流程模式
+summary_zh: >
+  用于军品采购等高风险、高合规要求场景中，从申请发起到多级审批、驳回与归档的标准化流程，
+  强调可追溯、可解释与权限边界清晰。
+
+goals_zh:
+  - "确保每一笔军品采购申请都经过符合制度的审批链路。"
+  - "让申请人和审批人清楚当前所处环节与下一步责任人。"
+  - "提供完整、可审计的审批记录，满足合规检查需要。"
+
+states:
+  - id: draft
+    label_zh: 草稿
+    description_zh: "申请人正在填写或修改采购申请，尚未提交审批。"
+  - id: pending_approval
+    label_zh: 待审批
+    description_zh: "申请已提交，按既定流程等待一位或多位审批人处理。"
+  - id: returned
+    label_zh: 退回修改
+    description_zh: "审批人退回申请，申请人需根据意见修改后重新提交。"
+  - id: approved
+    label_zh: 已批准
+    description_zh: "所有必需审批节点已通过，申请进入执行阶段。"
+  - id: rejected
+    label_zh: 已驳回
+    description_zh: "审批人明确否决该申请，流程结束。"
+
+key_interactions_zh:
+  - "申请人在表单中填写必要信息，支持保存草稿与校验必填字段。"
+  - "提交后按配置好的审批链路依次或并行推送给相关审批人。"
+  - "审批人可以查看申请详情、历史记录与附件，并给出审批意见（同意/驳回/退回修改）。"
+  - "所有审批操作（包括意见、时间、审批人）需被完整记录，便于后续审计。"
+  - "支持查看审批进度轨迹，清晰展示当前节点与已完成节点。"
+
+applicable_scenarios_zh:
+  - "军品采购审批。"
+  - "关键物资集中采购审批。"
+  - "重要合同签署审批。"
+
+ui_components:
+  - role: request_form
+    lingjing_core_class: "form-layout"           # 承载采购申请表单
+  - role: approval_timeline
+    lingjing_core_class: "activity-timeline"     # 展示审批节点与历史
+  - role: approval_list
+    lingjing_core_class: "advanced-data-table"   # 审批待办/已办列表
+  - role: status_badge
+    lingjing_core_class: "status-dot"            # 在列表中展示当前审批状态
+
+notes_zh:
+  - "审批链路配置本身不由本模式定义，但本模式约束前端需要展示清晰的流程与状态。"
+  - "适用于二维后台管理界面，不涉及三维场景交互。"

@@ -1,0 +1,33 @@
+id: world_space_ui
+scene: ops-console
+dimension: physical_digital_fusion
+name_zh: 世界空间UI模式
+summary_zh: >
+  用于在三维场景中以世界空间方式叠加信息标签和数据看板，强调不遮挡关键信息、保持可读性与空间感。
+
+goals_zh:
+  - "让用户在三维场景中就近获得与对象相关的关键信息。"
+  - "避免遮挡关键视野，保证场景主体始终清晰可见。"
+  - "在摄像机移动/缩放时，保持UI的可读性与相对位置合理。"
+
+states:
+  - id: default
+    label_zh: 默认
+    description_zh: "标签以中性状态展示基本信息，不抢占注意力。"
+  - id: highlighted
+    label_zh: 高亮
+    description_zh: "当对象被选中或告警时，对应标签增强视觉权重。"
+
+key_interactions_zh:
+  - "标签位置与三维对象绑定，摄像机移动时保持合理的屏幕位置和缩放。"
+  - "在距离过近或过远时，标签可渐隐/折叠为简化形态，避免遮挡。"
+  - "允许通过点击标签打开二维详情面板或跳转到相关仪表盘页面。"
+
+applicable_scenarios_zh:
+  - "智慧工厂三维鸟瞰视图中的设备标签。"
+  - "机场运行态势可视化中的航班/机位状态标记。"
+
+integration_notes_zh:
+  - "本模式主要为未来三维交互Skill预留，当前UX技能包仅描述概念与约束，不直接生成UE5实现代码。"
+  - "当与二维仪表盘联动时，应保证告警优先级和状态语义在2D/3D视图之间一致。"
+

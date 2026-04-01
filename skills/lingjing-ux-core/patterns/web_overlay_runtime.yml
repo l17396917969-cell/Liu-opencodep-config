@@ -1,0 +1,126 @@
+id: web_overlay_runtime
+scene: ops-console
+dimension: physical_digital_fusion
+name_zh: Web Overlay 运行模式
+summary_zh: >
+  定义 UE5 三维场景上层 Web 信息展示层在生产态、开发态与异常态下的运行基线，
+  统一桥接策略、指针策略、同步节奏、降级规则与性能门槛。
+
+goals_zh:
+  - "保证 Web Overlay 与 UE5 三维视口同屏协作，且不遮挡中心核心视区。"
+  - "保证开发态可脱离 UE5 独立调试，生产态与开发态共享同一套 UX/UI 规则。"
+  - "在断链、延迟、数据陈旧等异常情况下保持可感知、可恢复、可审计。"
+
+runtime_modes:
+  - id: production_embedded
+    label_zh: 生产态内嵌运行
+    description_zh: "UE5 内嵌 WebView/浏览器组件，Overlay 叠加于三维视口上方。"
+    bridge_transport: "native_bridge"
+    data_source: "live_scene_events"
+    guarantees_zh:
+      - "事件驱动优先，不依赖高频全量轮询。"
+      - "Web 层与 UE5 共享同一 scene_id 与 object_id 真相源。"
+  - id: development_mock
+    label_zh: 开发态 Mock 调试
+    description_zh: "独立浏览器页面 + Mock Bridge，用于前端/UI 并行开发与联调。"
+    bridge_transport: "mock_event_bus"
+    data_source: "mock_payloads"
+    guarantees_zh:
+      - "所有核心事件均需可通过 mock 复现。"
+      - "mock 字段命名必须与正式协议一致。"
+  - id: degraded_safe_mode
+    label_zh: 异常降级态
+    description_zh: "桥接中断、数据超时、事件乱序时的安全降级模式。"
+    bridge_transport: "last_known_snapshot"
+    data_source: "cache_or_snapshot"
+    guarantees_zh:
+      - "界面保留最后一次可信状态，并显式标记 degraded/stale。"
+      - "禁止在不可信状态下展示误导性的正常态。"
+
+bridge_strategy:
+  source_of_truth: "interfaces/ue5_web_bridge.json"
+  envelope_required_fields:
+    - schema_version
+    - event_version
+    - event_id
+    - event_type
+    - timestamp
+    - scene_id
+    - source
+    - payload
+  ordering_rules_zh:
+    - "按 timestamp + event_id 去重与排序。"
+    - "同一 object_id 的 selected/update 事件以后到覆盖先到。"
+  idempotency_rules_zh:
+    - "alert.raised、alert.cleared、layer.visibility.changed 必须支持幂等消费。"
+    - "重复 scene.ready 不应造成 UI 重置抖动。"
+
+pointer_event_strategy:
+  root_rule: "Overlay 根容器默认 pointer-events: none，仅交互组件开启 pointer-events: auto。"
+  pass_through_zones:
+    - "中心视口保护区"
+    - "非交互背景装饰层"
+  interactive_zones:
+    - "TopBar"
+    - "Alert Center"
+    - "Detail Panel"
+    - "Layer Switcher"
+    - "World Marker 命中热区"
+  constraints_zh:
+    - "不得出现整屏不可点击遮罩长期覆盖三维视口。"
+    - "Critical 告警允许临时抬升交互优先级，但仍需保留最小视口上下文。"
+
+sync_policy:
+  default_refresh_seconds: 30
+  pause_supported: true
+  ui_apply_latency_target_ms: 150
+  alert_to_ui_target_ms: 300
+  stale_after_ms: 5000
+  camera_sync:
+    mode: "event_driven"
+    throttling_ms: 120
+  object_projection:
+    mode: "per_frame_projection_with_visibility_gate"
+    rules_zh:
+      - "仅对可见或高优先级对象更新 marker 投影。"
+      - "离屏对象切换为边缘指示或折叠态。"
+
+visual_baseline:
+  theme: "dark_cockpit_digital_twin"
+  density: "high_density_main_medium_density_detail"
+  marker_style: "lightweight_point_expand_to_card_on_select"
+  motion_level: "medium_with_clear_alert_feedback"
+  material_keywords:
+    - "拟态玻璃"
+    - "顶部棱镜高光"
+    - "低饱和蓝青色光晕"
+
+information_priority:
+  - level: critical
+    rule_zh: "严重告警优先于普通信息，允许抬升至 L5。"
+  - level: selected_object
+    rule_zh: "用户当前选中对象优先于未选中对象。"
+  - level: ambient
+    rule_zh: "背景态势信息仅作弱提示，不争抢焦点。"
+
+degradation_policy:
+  degraded_states:
+    - id: bridge_disconnected
+      ui_feedback_zh: "显示桥接中断提示条，冻结实时状态更新。"
+    - id: data_stale
+      ui_feedback_zh: "在 Detail Panel、Marker、TopBar 中显示 stale 标记与最后更新时间。"
+    - id: scene_not_ready
+      ui_feedback_zh: "禁止展示可操作业务态，显示场景初始化占位。"
+  recovery_rules_zh:
+    - "恢复后优先重放 scene.ready、object.selected、alert.raised 的最新快照。"
+    - "恢复成功需提示‘场景已重新同步’，但不打断用户当前操作。"
+
+performance_constraints:
+  overlay_fps: ">= 60"
+  marker_count_baseline: "100 active markers acceptable"
+  panel_animation_budget: "单次状态动画不应造成明显掉帧或布局抖动"
+  cpu_overhead: "Web Overlay 动效额外 CPU 开销建议 <= 15%"
+
+notes_zh:
+  - "本模式为 UE5 Web Overlay 的运行真相源，供 patterns、component_specs、scene 装配与 UI 示例共同引用。"
+  - "Pencil demo 可作为深色拟态玻璃与顶部棱镜高光的视觉参考，但最终实现应优先复用 lingjing-ui-core 现有令牌与类体系。"

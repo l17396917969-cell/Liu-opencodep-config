@@ -1,0 +1,62 @@
+id: input_interaction
+name_zh: 输入框交互规范
+summary_zh: >
+  基础数据录入组件，用于承载文本、数值、密码等单行或多行内容的录入。
+  支持搜索、搜索建议及带前/后置图标的变体。
+
+states:
+  - id: default
+    label_zh: 默认
+    description_zh: "初始等待录入，显示占位符文字 (Placeholder)。"
+  - id: focused
+    label_zh: 已聚焦
+    description_zh: "用户点击或通过 Tab 键移入，激活光标录入模式。"
+  - id: typing
+    label_zh: 录入中
+    description_zh: "用户输入内容，实时同步显示。可选的一键清除按钮显示。"
+  - id: error
+    label_zh: 校验失败
+    description_zh: "内容不符合正则或业务逻辑要求，展示红色边框与错误信息。"
+  - id: disabled
+    label_zh: 禁用
+    description_zh: "不可编辑状态，背景置灰，无法获取焦点。"
+  - id: success
+    label_zh: 校验通过
+    description_zh: "内容符合要求，可选的绿色边框或钩子图标提示。"
+
+interactions:
+  - id: text_input
+    name_zh: 文本录入
+    description_zh: "用户输入任意文本或符合规则的字符。"
+    requirements_zh:
+      - "支持快捷键：Ctrl+A (全选)、Ctrl+C (复制)、Ctrl+V (粘贴)。"
+      - "多行输入框应支持按比例纵向拉伸。"
+  - id: clear_action
+    name_zh: 一键清除
+    description_zh: "点击清除按钮快速清空所有内容。"
+    requirements_zh:
+      - "清除动作触发后应自动保留焦点 (Auto Focus)。"
+  - id: search_suggestion
+    name_zh: 搜索联想
+    description_zh: "录入时下拉展示匹配的建议项。"
+    requirements_zh:
+      - "支持通过键盘方向键选择建议项，并点击 Enter 确认。"
+      - "建议项加载时应显示 loading 状态。"
+
+accessibility_zh:
+  - "Labeling: 每个输入框应有对应的 <label> 标签或 aria-label。"
+  - "Focus: 高亮边框颜色与背景对比度 ≥ 3:1。"
+  - "Error Messaging: 错误信息应在 aria-describedby 中描述，以便读屏软件朗读。"
+
+performance_constraints:
+  latency: "按键回显延迟 ≤ 50ms"
+  rendering: "录入过程中不应由于校验过于繁重导致打字卡顿。"
+
+meta:
+  related_lingjing_core_classes:
+    - "form-input"
+    - "form-textarea"
+    - "search-input"
+  notes_zh:
+    - "占位符应使用名词短语（如：‘请输入单号’、‘搜索料号’），字数控制在 4-12 字。"
+    - "密码框必须提供‘显示/隐藏密码’的切换图标。"

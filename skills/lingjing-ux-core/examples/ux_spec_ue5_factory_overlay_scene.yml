@@ -1,0 +1,156 @@
+version: 0.1.0
+updated: 2026-03-23
+
+design_request:
+  id: "ue5-overlay-001"
+  business_context_zh: "在 UE5 工厂总装三维场景上叠加 Web 信息展示层，以 C919 总装协同总览为首批示例。"
+  product_scene: "ops-console"
+  target_scene_id: "ue5_factory_overlay_scene"
+  roles:
+    - id: ops_lead
+      name_zh: "总装运控负责人"
+    - id: quality_lead
+      name_zh: "质量门禁负责人"
+  constraints_zh:
+    - "必须叠加在 UE5 WebView 上，不单独作为后台页面使用。"
+    - "需保留三维视口中心安全区，禁止固定面板长期遮挡。"
+    - "所有关键联动必须经由 ue5_web_bridge.json 定义的事件与字段。"
+  non_goals_zh:
+    - "不覆盖 UE5 内部相机、碰撞与物理交互细节。"
+
+scene:
+  id: ue5_factory_overlay_scene
+  name_zh: "C919 总装协同 Overlay 场景"
+  summary_zh: "在总装三维场景上叠加 HUD / 世界锚点 / 告警与详情信息层。"
+  ux_goals_zh:
+    - "让运控与质量人员在三维场景上快速感知告警与工位状态。"
+    - "通过世界锚点与详情面板形成从场景 → 对象 → 处置的闭环。"
+  interaction_modes:
+    - id: web_overlay_runtime
+      purpose_zh: "统一场景运行模式、降级策略与性能约束。"
+    - id: world_space_ui
+      purpose_zh: "在三维对象上叠加轻量锚点与详情入口。"
+  main_flow:
+    id: ops_alert_to_action
+    description_zh: "从三维场景发现异常，到联动处置与复盘的运控主链路。"
+
+flows:
+  - id: ops_alert_to_action
+    name_zh: "三维总装告警到行动任务流"
+    steps:
+      - id: detect
+        name_zh: "在三维场景与 HUD 中发现异常"
+      - id: triage
+        name_zh: "通过告警中心与详情面板完成研判"
+      - id: dispatch
+        name_zh: "根据对象与告警信息发起处置/复核"
+      - id: execute
+        name_zh: "在现场或系统中执行并跟踪进度"
+      - id: review
+        name_zh: "回看 Overlay 联动记录并复盘"
+
+pages:
+  - id: ue5_overlay_dashboard
+    name_zh: "C919 总装协同 Overlay 主界面"
+    route_path: "/ue5/overlay/dashboard"
+    page_goal_zh: "在三维场景上以最小干扰方式呈现关键告警与工位详情。"
+    zones:
+      - id: hud_bar
+        name_zh: "顶部 HUD 区"
+        responsibility_zh: "展示当前焦点工位、节拍与运行状态。"
+      - id: alert_column
+        name_zh: "左侧告警列"
+        responsibility_zh: "以折叠列表呈现按优先级排序的事件队列。"
+      - id: detail_panel
+        name_zh: "右侧详情面板"
+        responsibility_zh: "呈现当前选中工位的核心指标与协同摘要。"
+      - id: marker_layer
+        name_zh: "世界锚点层"
+        responsibility_zh: "在三维视口上标记关键工位与异常位置。"
+      - id: layer_switcher
+        name_zh: "图层开关区"
+        responsibility_zh: "控制工位标记、风险热区、AGV 动线等图层显隐。"
+    component_roles:
+      - role: overlay_root
+        lingjing_core_class: "ue5-overlay-root"
+        mode_id: web_overlay_runtime
+        interactions_zh:
+          - "根据 Bridge 状态切换 ready / degraded，控制整体可交互性。"
+      - role: topbar_hud
+        lingjing_core_class: "topbar-hud"
+        mode_id: web_overlay_runtime
+        interactions_zh:
+          - "接收 scene.ready 与 scene.degraded 事件更新文案与状态。"
+          - "根据当前选中对象与告警等级展示节拍与处置时限。"
+        action_targets:
+          - event: "click"
+            target_type: "bridge_event"
+            event_type: "ui.change_view"
+            description_zh: "切换预设视角并联动 UE5 相机。"
+      - role: alert_center
+        lingjing_core_class: "alert-center"
+        mode_id: web_overlay_runtime
+        interactions_zh:
+          - "接收 alert.raised / alert.cleared 事件，维护按优先级排序的事件队列。"
+          - "展开最高优先级告警，其余默认折叠，避免抢占视野。"
+        action_targets:
+          - event: "click"
+            target_type: "bridge_event"
+            event_type: "ui.ack_alert"
+            description_zh: "确认并回写告警处理结果。"
+      - role: detail_panel
+        lingjing_core_class: "detail-panel"
+        mode_id: world_space_ui
+        interactions_zh:
+          - "接收 object.selected / object.updated 事件，刷新对象详情与指标。"
+          - "支持 pinned / stale / error 等状态提示。"
+        action_targets:
+          - event: "click"
+            target_type: "bridge_event"
+            event_type: "ui.navigate_business_page"
+            description_zh: "从 Overlay 跳转到工艺卡或业务详情页。"
+      - role: world_marker_layer
+        lingjing_core_class: "world-marker"
+        mode_id: world_space_ui
+        interactions_zh:
+          - "根据场景数据绘制 normal / warning / critical / selected 等状态的锚点。"
+          - "支持折叠、遮挡与离屏时的简化展示。"
+        action_targets:
+          - event: "click"
+            target_type: "bridge_event"
+            event_type: "ui.focus_object"
+            description_zh: "聚焦到对应工位并触发 object.selected。"
+      - role: layer_switcher
+        lingjing_core_class: "layer-switcher"
+        mode_id: web_overlay_runtime
+        interactions_zh:
+          - "展示工位标记、风险热区、AGV 动线等图层的 on/off/disabled/syncing 状态。"
+        action_targets:
+          - event: "click"
+            target_type: "bridge_event"
+            event_type: "ui.toggle_layer"
+            description_zh: "切换图层可见性并等待 UE5 同步回执。"
+
+navigation:
+  entry_page_id: "ue5_overlay_dashboard"
+  global_navigation:
+    - label_zh: "总装协同 Overlay"
+      target_id: "ue5_overlay_dashboard"
+  page_links: []
+
+
+dev_handoff:
+  api_expectations_zh:
+    - "所有联动事件必须符合 schema/ue5_web_overlay_contract.yml 定义的事件信封与字段。"
+    - "interfaces/ue5_web_bridge.json 作为唯一真相源，UI 与 UE5 不得各自扩展私有字段。"
+  edge_cases_zh:
+    - "Bridge 断开时，Overlay 必须进入 degraded 态但仍保留基本导航与提示。"
+    - "当对象数据陈旧 (stale) 时，需在详情面板中给予清晰文本提示。"
+  tracking_requirements_zh:
+    - "记录对象选中、告警确认、图层切换等关键操作，便于后续复盘。"
+
+meta:
+  generated_by: "lingjing-ux-core"
+  linked_scene_file: "scenes/ue5_factory_overlay_scene.yml"
+  linked_flow_files:
+    - "flows/ops_alert_to_action.yml"

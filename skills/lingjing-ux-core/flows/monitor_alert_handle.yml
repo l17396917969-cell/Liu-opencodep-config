@@ -1,0 +1,29 @@
+id: monitor_alert_handle
+name_zh: 监控→预警→分析→处置任务流
+scene: supply_chain_monitoring
+summary_zh: >
+  描述在供应链监控战情室中，从实时监控到预警发现、原因分析、模拟决策与最终处置的标准任务流。
+
+steps:
+  - id: monitor
+    name_zh: 实时监控
+    from_mode: real_time_monitor
+    description_zh: "通过仪表盘实时观察关键指标与告警列表。"
+  - id: alert_review
+    name_zh: 预警审查
+    from_mode: real_time_monitor
+    description_zh: "审查新出现的预警，判断优先级与是否需要建立处理任务。"
+  - id: analyze
+    name_zh: 原因分析
+    description_zh: "查看相关数据与上下文信息，分析异常根因与影响范围。"
+  - id: handle
+    name_zh: 处置与协作
+    from_mode: exception_handling
+    description_zh: "将异常纳入异常处理与协作任务流，推动解决并记录过程。"
+  - id: review
+    name_zh: 复盘与关闭
+    from_mode: collaboration_task
+    description_zh: "复盘整个处理过程，记录经验并关闭任务。"
+
+notes_zh:
+  - "本任务流为骨架定义，可在具体项目中补充更多细节与分支条件。"

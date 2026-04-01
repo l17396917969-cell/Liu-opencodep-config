@@ -1,0 +1,32 @@
+id: ops_command_dispatch
+scene: ops-console
+dimension: business_process
+name_zh: 指挥分发模式
+summary_zh: >
+  用于告警/任务的分级响应与指挥分发，确保从识别到执行的闭环。
+
+goals_zh:
+  - "按优先级分发任务并跟踪执行。"
+  - "记录决策过程与责任人。"
+  - "提供升级/降级与应急预案选项。"
+
+key_interactions_zh:
+  - "在告警/任务上选择分派，指派责任人、时限与预案。"
+  - "支持批量分派与等级升级，自动通知相关人。"
+  - "执行进度在任务板或时间轴中可视化。"
+  - "可撤销或改派，保留审计记录。"
+
+applicable_scenarios_zh:
+  - "供应链风险处置、生产异常指挥、应急演练。"
+
+ui_components:
+  - role: task_board
+    lingjing_core_class: "mission-status-board"
+  - role: dispatch_panel
+    lingjing_core_class: "command-drawer"
+  - role: timeline
+    lingjing_core_class: "event-timeline"
+
+notes_zh:
+  - "分派动作需二次确认，避免误操作。"
+  - "通知与审计应在 `dev_handoff` 中补充。"

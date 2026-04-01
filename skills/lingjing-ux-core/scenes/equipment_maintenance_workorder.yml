@@ -1,0 +1,42 @@
+id: equipment_maintenance_workorder
+name_zh: 设备维修工单
+product_scene: b-system
+summary_zh: >
+  面向运维工程师与生产管理人员的设备维修工单管理场景，
+  用于从故障发现到工单关闭的全过程跟踪与协作。
+
+primary_roles:
+  - id: maintenance_planner
+    name_zh: 维修计划员
+  - id: technician
+    name_zh: 维修技师
+  - id: ops_supervisor
+    name_zh: 运行主管
+
+interaction_modes:
+  - id: real_time_monitor
+    purpose_zh: "通过监控界面或告警列表发现设备异常。"
+  - id: maintenance_workorder
+    purpose_zh: "作为核心载体，管理工单的状态、责任人与处理过程。"
+  - id: collaboration_task
+    purpose_zh: "用于跨班组或跨部门协作处理复杂维修任务。"
+  - id: exception_handling
+    purpose_zh: "用于记录和处理重大或反复出现的故障异常，并推动复盘。"
+
+main_flow:
+  id: maintenance_workorder
+  description_zh: "故障发现→创建工单→分派→执行→确认与关闭的标准工单流。"
+
+ux_goals_zh:
+  - "减少漏记或遗忘处理的故障，确保每个问题都有工单跟踪。"
+  - "让相关人员快速了解工单优先级与当前状态。"
+  - "沉淀维修过程中的经验，为后续优化提供依据。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/aircraft-manufacturing-ops-dashboard.html"
+    description_zh: "运营状态与工单调度示例页面，可作为工单看板、状态分发与信息展示参考。"
+
+
+notes_zh:
+  - "本场景可与三维可视化联动（如从 3D 场景选中设备后打开工单详情），但联动细节不在本技能包约束范围内。"

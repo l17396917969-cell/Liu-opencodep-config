@@ -1,0 +1,221 @@
+# 供应链监控战情室示例 UX 规范输出
+# 基于 design_request + scenes/modes/flows 组合而成，供 UI 技能包与开发使用。
+
+version: 0.1.0
+
+ux_spec:
+  design_request:
+    id: "scm-001"
+    business_context_zh: "为集团供应计划员与运营经理提供供应链战情室，实时监控库存与交付风险。"
+    product_scene: "b-system"
+    target_scene_id: "supply_chain_monitoring"
+    roles:
+      - id: "supply_planner"
+        name_zh: "供应计划员"
+      - id: "ops_manager"
+        name_zh: "运营经理"
+    constraints_zh:
+      - "需适配 16:9 大屏展示，刷新间隔 ≤ 60 秒。"
+      - "需支持按供应商、物料、区域快速筛选。"
+    non_goals_zh:
+      - "本轮不考虑移动端小屏适配。"
+
+  scene:
+    id: "supply_chain_monitoring"
+    name_zh: "供应链监控战情室"
+    summary_zh: "聚焦库存风险与交付风险的一屏战情室，支撑实时监控、异常处置与协作。"
+    ux_goals_zh:
+      - "在单一页面中一眼看出当前是否存在供应风险。"
+      - "从风险总览快速钻取到具体物料/供应商/订单。"
+      - "支持对重要告警进行标记、分配与跟踪。"
+    interaction_modes:
+      - id: "real_time_monitor"
+        purpose_zh: "作为主视图，展示关键 KPI、风险热力图和告警列表。"
+        params:
+          refresh_interval_seconds: 60
+          default_time_range: "last_24_hours"
+      - id: "exception_handling"
+        purpose_zh: "承接严重告警，规范异常从发现到解决与复盘的闭环。"
+      - id: "collaboration_task"
+        purpose_zh: "支撑多人的协作任务分解与跟踪，特别是跨部门供应风险专项。"
+      - id: "analysis_exploration"
+        purpose_zh: "为供应计划员提供自助分析视图，对历史与实时数据进行多维度探索。"
+    main_flow:
+      id: "monitor_alert_handle"
+      description_zh: "监控→预警→分析→处置→复盘的标准任务流骨架。"
+
+  flows:
+    - id: "monitor_alert_handle"
+      name_zh: "监控→预警→分析→处置任务流"
+      steps:
+        - id: "monitor"
+          name_zh: "实时监控"
+          from_mode: "real_time_monitor"
+        - id: "alert_review"
+          name_zh: "预警审查"
+          from_mode: "real_time_monitor"
+        - id: "analyze"
+          name_zh: "原因分析"
+          from_mode: "analysis_exploration"
+        - id: "handle"
+          name_zh: "处置与协作"
+          from_mode: "exception_handling"
+        - id: "review"
+          name_zh: "复盘与关闭"
+          from_mode: "collaboration_task"
+
+  pages:
+    - id: "main_dashboard"
+      name_zh: "供应链战情室主仪表盘"
+      route_path: "/dashboard"
+      page_goal_zh: "提供供应链风险与告警的一屏总览，并作为深入分析与处置的入口。"
+
+      zones:
+        - id: "top_metrics"
+          name_zh: "顶部关键指标区"
+          responsibility_zh: "展示整体供应健康度、库存风险指数、交付风险指数等关键 KPI。"
+        - id: "left_risk_overview"
+          name_zh: "左侧风险总览区"
+          responsibility_zh: "以热力图或分布图展示不同区域/供应商的风险分布。"
+        - id: "center_alerts"
+          name_zh: "中部告警与任务区"
+          responsibility_zh: "展示告警列表与任务看板，支撑从告警到任务的闭环。"
+        - id: "right_detail"
+          name_zh: "右侧详情区"
+          responsibility_zh: "展示选中告警/任务的详细信息与处理历史。"
+      component_roles:
+        - role: "metric_card"
+          lingjing_core_class: "flight-metric-card"
+          mode_id: "real_time_monitor"
+          zone_id: "top_metrics"
+          states: ["normal", "warning", "critical"]
+          interactions_zh:
+            - "点击某个 KPI 卡片时，下方告警列表按相关维度自动过滤。"
+          action_targets:
+            - event: "click"
+              target_type: "filter"
+              description_zh: "联动中部告警列表与任务看板过滤相关记录。"
+
+        - role: "risk_overview_chart"
+          lingjing_core_class: "chart-card"
+          mode_id: "real_time_monitor"
+          zone_id: "left_risk_overview"
+          states: ["normal"]
+          interactions_zh:
+            - "在图表中选择某区域或供应商时，联动告警列表与任务看板。"
+        - role: "alert_list"
+          lingjing_core_class: "mission-status-board"
+          mode_id: "real_time_monitor"
+          zone_id: "center_alerts"
+          states: ["normal", "warning", "critical"]
+          interactions_zh:
+            - "支持按状态、严重程度、时间范围筛选与排序。"
+            - "支持将选中告警一键创建为异常处理任务。"
+          action_targets:
+            - event: "click_row"
+              target_type: "drawer"
+              description_zh: "点击告警项打开右侧详情抽屉。"
+
+        - role: "task_board"
+          lingjing_core_class: "mission-status-board"
+          mode_id: "collaboration_task"
+          component_spec_id: "mission-status-board"
+          zone_id: "center_alerts"
+          states: ["todo", "doing", "blocked", "done"]
+          interactions_zh:
+            - "支持在列之间拖拽任务以变更状态，并记录操作人与时间。"
+          action_targets:
+            - event: "click_card"
+              target_type: "page"
+              target_id: "analysis_view"
+              description_zh: "点击任务卡片进入分析探索视图查看上下文数据。"
+
+
+        - role: "detail_panel"
+          lingjing_core_class: "content-card"
+          mode_id: "exception_handling"
+          zone_id: "right_detail"
+          states: ["detected", "triaged", "in_progress", "resolved", "closed"]
+          interactions_zh:
+            - "展示异常的上下游订单、物料与供应商信息。"
+            - "支持记录处理过程中的评论与附件。"
+
+    - id: "analysis_view"
+      name_zh: "供应链分析探索视图"
+      route_path: "/analysis"
+      page_goal_zh: "为供应计划员提供多维度数据探索能力，分析风险成因与趋势。"
+
+      zones:
+        - id: "filters"
+          name_zh: "筛选区"
+          responsibility_zh: "配置时间、供应商、物料、区域等筛选条件。"
+        - id: "charts"
+          name_zh: "图表区"
+          responsibility_zh: "展示关键指标的趋势与对比分布。"
+        - id: "table"
+          name_zh: "明细表格区"
+          responsibility_zh: "展示符合当前筛选条件的订单/物料明细。"
+      component_roles:
+        - role: "analysis_chart"
+          lingjing_core_class: "chart-card"
+          mode_id: "analysis_exploration"
+          zone_id: "charts"
+          states: ["overview", "filtered", "focused"]
+          interactions_zh:
+            - "在图表中选择时间段或数据子集时，下方表格自动过滤对应记录。"
+        - role: "analysis_table"
+          lingjing_core_class: "advanced-data-table"
+          mode_id: "analysis_exploration"
+          component_spec_id: "advanced-data-table"
+          zone_id: "table"
+
+          states: ["overview", "filtered", "focused"]
+          interactions_zh:
+            - "支持多列排序、分页与导出。"
+            - "点击某行可跳转回主仪表盘并高亮相关告警或任务。"
+          action_targets:
+            - event: "click_row"
+              target_type: "page"
+              target_id: "main_dashboard"
+              description_zh: "点击明细行返回主仪表盘并高亮关联告警。"
+
+
+  navigation:
+    entry_page_id: "main_dashboard"
+    global_navigation:
+      - label_zh: "战情室总览"
+        target_id: "main_dashboard"
+      - label_zh: "分析探索"
+        target_id: "analysis_view"
+    page_links:
+      - source_page_id: "main_dashboard"
+        action_role: "task_board"
+        target_id: "analysis_view"
+        target_type: "page"
+        description_zh: "从任务看板进入分析探索视图。"
+      - source_page_id: "analysis_view"
+        action_role: "analysis_table"
+        target_id: "main_dashboard"
+        target_type: "page"
+        description_zh: "从分析明细返回主仪表盘。"
+
+
+  dev_handoff:
+
+    api_expectations_zh:
+      - "告警列表接口需支持按状态、时间、供应商过滤，并返回总数以支持分页。"
+      - "分析视图数据接口需支持按时间、供应商、物料、区域等多维过滤，并提供聚合结果。"
+    edge_cases_zh:
+      - "当当前筛选条件下无数据时，展示空状态提示，并提供清除筛选的快捷操作。"
+      - "当接口超时或失败时，需展示错误信息并允许用户重试。"
+    tracking_requirements_zh:
+      - "记录每次从 warning→critical 的状态变化事件，用于后续审计。"
+      - "记录用户保存或加载分析视图的操作，以支持后续推荐常用视图。"
+    open_questions_zh:
+      - "是否需要在战情室中区分系统自动关闭与人工关闭的告警？"
+
+  meta:
+    generated_by: "lingjing-ux-core"
+    linked_scene_file: "scenes/supply_chain_monitoring.yml"
+    linked_flow_files:
+      - "flows/monitor_alert_handle.yml"

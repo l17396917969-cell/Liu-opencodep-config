@@ -1,0 +1,128 @@
+version: 0.3.0
+updated: 2026-03-23
+
+design_request:
+  id: "ops-001"
+  business_context_zh: "运控驾驶舱，监控生产/供应链告警并分派处置。"
+  product_scene: "ops-console"
+  target_scene_id: "ops_console_control_tower"
+  roles:
+    - id: ops_lead
+      name_zh: "运控负责人"
+  constraints_zh:
+    - "需支持大屏全屏显示。"
+    - "允许暂停刷新与静音告警。"
+  non_goals_zh:
+    - "不覆盖三维场景。"
+
+scene:
+  id: ops_console_control_tower
+  name_zh: 运控驾驶舱
+  summary_zh: "多源态势+分派闭环"
+  ux_goals_zh:
+    - "一屏掌握态势与优先级。"
+    - "分派执行可审计。"
+  interaction_modes:
+    - id: ops_multi_source_monitor
+      purpose_zh: "多源态势与联动"
+    - id: ops_command_dispatch
+      purpose_zh: "分派与执行"
+  main_flow:
+    id: ops_alert_to_action
+    description_zh: "发现→研判→分派→执行→复盘"
+
+flows:
+  - id: ops_alert_to_action
+    name_zh: 运控告警到行动任务流
+    steps:
+      - id: detect
+        name_zh: 发现与分级
+      - id: triage
+        name_zh: 研判
+      - id: dispatch
+        name_zh: 分派
+      - id: execute
+        name_zh: 执行与跟踪
+      - id: review
+        name_zh: 复盘
+
+pages:
+  - id: ops_dashboard
+    name_zh: 运控驾驶舱主界面
+    route_path: "/ops/dashboard"
+    page_goal_zh: "监控态势并分派处置"
+    zones:
+      - id: top_kpi
+        name_zh: KPI 带
+        responsibility_zh: "展示核心指标，分级着色"
+      - id: map_heat
+        name_zh: 态势图/热力
+        responsibility_zh: "空间分布与分区状态"
+      - id: alert_panel
+        name_zh: 告警列表
+        responsibility_zh: "分级告警、筛选、批量操作"
+      - id: dispatch_board
+        name_zh: 分派/任务板
+        responsibility_zh: "分派、进度、升级/改派"
+    component_roles:
+      - role: kpi_band
+        lingjing_core_class: "flight-metric-card"
+        mode_id: ops_multi_source_monitor
+        interactions_zh:
+          - "点击 KPI 过滤告警列表"
+        action_targets:
+          - event: "click"
+            target_type: "filter"
+            description_zh: "联动告警列表"
+      - role: map_heat
+        lingjing_core_class: "ops-alert-heatmap"
+        mode_id: ops_multi_source_monitor
+        interactions_zh:
+          - "点击区域高亮并过滤告警/任务"
+      - role: alert_list
+        lingjing_core_class: "alert-center-panel"
+        mode_id: ops_multi_source_monitor
+        interactions_zh:
+          - "支持暂停自动刷新、静音告警"
+          - "批量选择后可升级/分派"
+        action_targets:
+          - event: "click"
+            target_type: "drawer"
+            target_id: "dispatch_drawer"
+            description_zh: "打开分派抽屉"
+
+      - role: task_board
+        lingjing_core_class: "mission-status-board"
+        component_spec_id: "mission-status-board"
+        mode_id: ops_command_dispatch
+        interactions_zh:
+          - "拖拽卡片改变状态，支持改派/升级"
+
+navigation:
+  entry_page_id: "ops_dashboard"
+  global_navigation:
+    - label_zh: "驾驶舱"
+      target_id: "ops_dashboard"
+  page_links:
+    - source_page_id: "ops_dashboard"
+      action_role: "alert_list"
+      target_id: "dispatch_drawer"
+      target_type: "drawer"
+      description_zh: "从告警打开分派抽屉"
+
+
+dev_handoff:
+  api_expectations_zh:
+    - "告警接口需支持分级、过滤、静音标记。"
+    - "分派接口需返回责任人、时限、通知结果。"
+  edge_cases_zh:
+    - "无告警时展示空态并保留刷新入口。"
+    - "暂停刷新时提示状态并提供恢复入口。"
+  tracking_requirements_zh:
+    - "记录分派/升级/改派操作与责任人。"
+
+meta:
+  generated_by: "lingjing-ux-core"
+  linked_scene_file: "scenes/ops_console_control_tower.yml"
+  linked_flow_files:
+    - "flows/ops_alert_to_action.yml"

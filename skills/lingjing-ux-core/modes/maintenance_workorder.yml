@@ -1,0 +1,58 @@
+id: maintenance_workorder
+scene: b-system
+dimension: business_process
+name_zh: 设备维修工单模式
+summary_zh: >
+  用于生产或运控场景中，从发现设备故障到创建维修工单、分派、执行和关闭的全生命周期管理，
+  强调信息完整性与进度可视化。
+
+goals_zh:
+  - "确保每一项设备故障都有对应的维修工单记录与跟踪。"
+  - "让相关人员随时了解工单状态与责任人。"
+  - "支持记录维修过程中的关键操作和更换部件，便于后续分析。"
+
+states:
+  - id: created
+    label_zh: 已创建
+    description_zh: "工单已创建，等待分派给具体维修人员或班组。"
+  - id: assigned
+    label_zh: 已分派
+    description_zh: "工单已指定责任人或班组，等待开始执行。"
+  - id: in_progress
+    label_zh: 维修中
+    description_zh: "维修人员正在处理，可能需要多次现场操作与测试。"
+  - id: waiting_parts
+    label_zh: 等待备件
+    description_zh: "维修因缺少备件或外部支持而暂时搁置。"
+  - id: completed
+    label_zh: 已完成
+    description_zh: "现场维修工作已完成，等待确认与关闭。"
+  - id: closed
+    label_zh: 已关闭
+    description_zh: "工单经确认无误后关闭，形成可追溯记录。"
+
+key_interactions_zh:
+  - "支持从告警或巡检记录一键创建维修工单，并自动带入设备与故障信息。"
+  - "工单列表支持按状态、设备、优先级和时间过滤与排序。"
+  - "在工单详情中可以记录故障现象、处理步骤、更换部件、耗时等信息。"
+  - "支持在工单执行过程中添加评论、附件（照片/文档）以及状态变更记录。"
+  - "工单完成时需由指定角色确认并关闭，避免误关。"
+
+applicable_scenarios_zh:
+  - "生产线设备维修工单管理。"
+  - "机场地面保障设备维修管理。"
+  - "重要设施巡检发现问题后的维修闭环。"
+
+ui_components:
+  - role: workorder_board
+    lingjing_core_class: "mission-status-board"  # 看板方式展示各状态工单
+  - role: workorder_list
+    lingjing_core_class: "advanced-data-table"   # 列表方式展示工单
+  - role: workorder_detail
+    lingjing_core_class: "content-card"         # 工单详情与操作区域
+  - role: timeline
+    lingjing_core_class: "activity-timeline"    # 展示工单处理历程
+
+notes_zh:
+  - "本模式可与实时监控模式联动：从监控告警直接创建工单。"
+  - "仅适用于二维后台系统界面，不涉及三维场景。"

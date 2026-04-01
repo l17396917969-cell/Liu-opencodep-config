@@ -1,0 +1,147 @@
+version: 0.2.0
+updated: 2026-03-23
+
+design_request:
+  id: "qbr-2026q1"
+  business_context_zh: "季度经营汇报，包含经营指标与风险对策，需在评审会上展示并收集决策。"
+  product_scene: "presentation"
+  target_scene_id: "presentation_quarterly_review"
+  roles:
+    - id: presenter
+      name_zh: "演讲人"
+  constraints_zh:
+    - "需支持键盘/遥控器翻页。"
+    - "关键图表页可放大。"
+  non_goals_zh:
+    - "不覆盖 3D 场景演示。"
+
+scene:
+  id: presentation_quarterly_review
+  name_zh: 季度经营汇报（HTML 演示文稿）
+  summary_zh: "强调章节导航、数据亮点与 Q&A 闭环。"
+  ux_goals_zh:
+    - "章节清晰、可快速跳转。"
+    - "互动问答可收集与追踪。"
+  interaction_modes:
+    - id: deck_navigation
+      purpose_zh: "章节导航与翻页"
+    - id: audience_engagement
+      purpose_zh: "问答/投票"
+  main_flow:
+    id: presentation_storytelling
+    description_zh: "开场→背景→亮点→决策→Q&A→总结"
+
+flows:
+  - id: presentation_storytelling
+    name_zh: 演示叙事任务流
+    steps:
+      - id: opening
+        name_zh: 开场与目的
+      - id: context
+        name_zh: 背景与现状
+      - id: highlights
+        name_zh: 关键指标亮点
+      - id: decisions
+        name_zh: 决策与行动
+      - id: qna
+        name_zh: Q&A 与反馈
+      - id: closing
+        name_zh: 总结与 CTA
+
+pages:
+  - id: slide_agenda
+    name_zh: 议程页
+    route_path: "/slides/agenda"
+    page_goal_zh: "对齐议程与预期。"
+    zones:
+      - id: chapter_list
+        name_zh: 章节列表
+        responsibility_zh: "展示章节并支持跳转。"
+    component_roles:
+      - role: chapter_nav
+        lingjing_core_class: "slide-toc-list"
+        mode_id: deck_navigation
+        interactions_zh:
+          - "点击章节跳转到对应幻灯，当前章节高亮。"
+  - id: slide_metrics
+    name_zh: 关键指标页
+    route_path: "/slides/metrics"
+    page_goal_zh: "呈现核心 KPI 并支持放大。"
+    zones:
+      - id: metrics_chart
+        name_zh: 指标区
+        responsibility_zh: "展示核心指标，可放大。"
+    component_roles:
+      - role: slide_controls
+        lingjing_core_class: "presentation-slide-indicators"
+        component_spec_id: "slide-deck-controller"
+        mode_id: deck_navigation
+        interactions_zh:
+          - "快捷键翻页，支持放大当前图表（spotlight）。"
+  - id: slide_decisions
+    name_zh: 决策页
+    route_path: "/slides/decisions"
+    page_goal_zh: "列出决策与行动项。"
+    zones:
+      - id: decision_list
+        name_zh: 决策列表
+        responsibility_zh: "列出责任人/截止时间。"
+    component_roles:
+      - role: spotlight
+        lingjing_core_class: "presentation-highlight-box"
+        mode_id: deck_navigation
+        interactions_zh:
+          - "点击决策卡可放大展示细节，再次点击收起。"
+  - id: slide_qna
+    name_zh: Q&A 页
+    route_path: "/slides/qna"
+    page_goal_zh: "收集并回答问题。"
+    zones:
+      - id: qna_panel
+        name_zh: 问答区
+        responsibility_zh: "展示问题列表，支持置顶/已答。"
+    component_roles:
+      - role: qna_panel
+        lingjing_core_class: "content-card"
+        mode_id: audience_engagement
+        interactions_zh:
+          - "问题按热度排序，主持人可置顶或标记已答。"
+
+navigation:
+  entry_page_id: "slide_agenda"
+  global_navigation:
+    - label_zh: "议程"
+      target_id: "slide_agenda"
+    - label_zh: "指标"
+      target_id: "slide_metrics"
+    - label_zh: "决策"
+      target_id: "slide_decisions"
+    - label_zh: "Q&A"
+      target_id: "slide_qna"
+  page_links:
+    - source_page_id: "slide_agenda"
+      action_role: "chapter_nav"
+      target_id: "slide_metrics"
+      target_type: "page"
+      description_zh: "点击议程跳转到指标页"
+    - source_page_id: "slide_metrics"
+      action_role: "slide_controls"
+      target_id: "slide_decisions"
+      target_type: "page"
+      description_zh: "下一页进入决策"
+
+
+dev_handoff:
+  api_expectations_zh:
+    - "Q&A 数据接口需支持排序/置顶标记与已答状态。"
+  edge_cases_zh:
+    - "离线或无网时保留本地缓存的幻灯，可继续翻页。"
+    - "演示控制与听众视图需分离，防止备注泄露。"
+  tracking_requirements_zh:
+    - "记录章节停留时长与互动点击，用于复盘。"
+
+meta:
+  generated_by: "lingjing-ux-core"
+  linked_scene_file: "scenes/presentation_quarterly_review.yml"
+  linked_flow_files:
+    - "flows/presentation_storytelling.yml"

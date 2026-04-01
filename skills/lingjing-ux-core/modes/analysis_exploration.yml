@@ -1,0 +1,49 @@
+id: analysis_exploration
+scene: b-system  # 也可用于 ops-console 等以数据分析为主的后台场景
+dimension: data_intelligence
+name_zh: 分析探索模式
+summary_zh: >
+  用于在供应链、制造运控等场景下，对历史与实时数据进行自助探索、筛选对比与趋势分析，
+  支持用户从总览快速钻取到特定维度和明细记录。
+
+goals_zh:
+  - "支持按多维度灵活筛选与组合查询（时间、供应商、物料、区域等）。"
+  - "帮助用户发现异常模式与趋势，而不仅仅是查看单点数据。"
+  - "沉淀常用分析视图，降低重复配置成本。"
+
+states:
+  - id: overview
+    label_zh: 总览视图
+    description_zh: "默认展示关键指标与核心图表，尚未应用复杂筛选。"
+  - id: filtered
+    label_zh: 已筛选
+    description_zh: "用户已应用一到多个筛选条件，界面仅展示相关数据子集。"
+  - id: focused
+    label_zh: 聚焦分析
+    description_zh: "用户聚焦于某个供应商/物料/区域等特定对象进行深入分析。"
+
+key_interactions_zh:
+  - "提供清晰的筛选区，支持多条件组合筛选与重置。"
+  - "图表与表格联动：在图表中选择某段时间或某类数据时，下方表格自动过滤对应记录。"
+  - "支持按不同维度切换分析视角（如按供应商、按物料、按区域）。"
+  - "允许用户保存当前筛选条件与视图布局，形成可复用的分析视图。"
+  - "在表格中支持排序、分页与导出，以便进一步线下分析。"
+
+applicable_scenarios_zh:
+  - "供应链绩效分析（按供应商/物料的交付表现与风险趋势）。"
+  - "生产节拍与产能利用率分析。"
+  - "库存结构与周转效率分析。"
+
+ui_components:
+  - role: metric_card
+    lingjing_core_class: "flight-metric-card"  # 展示关键分析指标
+  - role: analysis_table
+    lingjing_core_class: "advanced-data-table"  # 承载多维度数据明细
+  - role: analysis_chart
+    lingjing_core_class: "chart-card"          # 展示趋势与对比分布
+  - role: trend_view
+    lingjing_core_class: "metric-trend"        # 展示某指标的时间序列变化
+
+notes_zh:
+  - "本模式通常与实时监控模式配合使用：从实时看板发现问题后，切换到分析探索视图深入分析原因。"
+  - "本模式仅适用于二维平面仪表盘/后台界面，不直接约束三维可视化场景。"

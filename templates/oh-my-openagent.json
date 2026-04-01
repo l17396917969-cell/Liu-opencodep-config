@@ -1,0 +1,146 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+      "model": "kimi-for-coding/k2p5",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "hephaestus": {
+      "model": "my-codex/gpt54",
+      "variant": "medium",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      },
+      "fallback_models": [
+        "my-codex/gpt53"
+      ]
+    },
+    "oracle": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "variant": "high",
+      "fallback_models": [
+        "anthropic/claude-opus-4-6",
+        "kimi-for-coding/k2p5"
+      ]
+    },
+    "explore": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "fallback_models": [
+        "my-codex/gpt53"
+      ]
+    },
+    "multimodal-looker": {
+      "model": "my-codex/gpt54",
+      "fallback_models": [
+        "minimax-cn-coding-plan/MiniMax-M2.7-highspeed"
+      ]
+    },
+    "prometheus": {
+      "model": "kimi-for-coding/k2p5",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      },
+      "interleaved": {
+        "field": "reasoning_content"
+      },
+      "fallback_models": [
+        "my-codex/gpt54",
+        "minimax-cn-coding-plan/MiniMax-M2.7-highspeed"
+      ]
+    },
+    "metis": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "fallback_models": [
+        "kimi-for-coding/k2p5"
+      ]
+    },
+    "momus": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "fallback_models": [
+        "my-codex/gpt54"
+      ]
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "google/gemini-3-flash",
+      "max_tokens": 32768
+    },
+    "ultrabrain": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "variant": "high",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "deep": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "variant": "medium",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "artistry": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "quick": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "unspecified-low": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "unspecified-high": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    },
+    "writing": {
+      "model": "minimax-cn-coding-plan/MiniMax-M2.7-highspeed",
+      "max_tokens": 32768,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000,
+        "clear_thinking": false
+      }
+    }
+  }
+}

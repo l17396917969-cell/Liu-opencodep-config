@@ -1,0 +1,69 @@
+id: selection_interaction
+name_zh: 选择类组件交互规范
+summary_zh: >
+  包含单选 (Radio)、复选 (Checkbox)、下拉选择 (Select) 及开关 (Switch) 等基础选择组件。
+  用于从预设选项中选取一个或多个值。
+
+states:
+  - id: unchecked
+    label_zh: 未选中 (Unchecked)
+    description_zh: "初始状态，未选择该选项。"
+  - id: checked
+    label_zh: 已选中 (Checked)
+    description_zh: "用户执行选择后的激活状态。"
+  - id: indeterminate
+    label_zh: 半选中 (Indeterminate)
+    description_zh: "仅适用于复选框，表示下级节点部分选中。"
+  - id: disabled
+    label_zh: 禁用 (Disabled)
+    description_zh: "不可选择或取消，由于逻辑约束或权限限制。"
+  - id: opening
+    label_zh: 展开中 (Opening)
+    description_zh: "仅适用于下拉选择，展示待选项列表。"
+  - id: focusing
+    label_zh: 聚焦 (Focusing)
+    description_zh: "键盘或鼠标点击激活，显示高亮提示。"
+
+interactions:
+  - id: single_selection
+    name_zh: 单选切换
+    description_zh: "点击单选框或下拉列表项切换选择。"
+    requirements_zh:
+      - "单选框点击后不可通过原件取消，需选择同组其他项。"
+      - "下拉选择完成后，列表应自动收起并更新标题。"
+  - id: multi_selection
+    name_zh: 复选切换
+    description_zh: "点击复选框勾选或取消勾选该项。"
+    requirements_zh:
+      - "复选框应支持‘全选’交互逻辑。"
+      - "下拉复选在选中后不应自动收起列表，以便用户连续操作。"
+  - id: dropdown_search
+    name_zh: 筛选搜索
+    description_zh: "在下拉列表顶部实时过滤建议项。"
+    requirements_zh:
+      - "支持首字母或拼音匹配。"
+      - "无匹配项时应展示‘未找到结果’的占位提示。"
+  - id: cascading
+    name_zh: 级联选择
+    description_zh: "根据上级选择项动态加载并展示下级列表。"
+    requirements_zh:
+      - "上级变更后，下级应重置为初始状态并自动请求新数据。"
+
+accessibility_zh:
+  - "Keyboard: 支持 Tab 键聚焦，Space/Enter 键执行切换，方向键移动焦点。"
+  - "Label: 应确保 <label> 的 for 属性与组件 id 正确绑定。"
+  - "State: 必须向读屏器暴露 aria-checked 或 aria-selected 属性。"
+
+performance_constraints:
+  latency: "点击后状态更新响应 ≤ 100ms。"
+  rendering: "针对超长下拉列表（超过 100 项），应采用虚拟化滚动渲染 (Virtual Scroll)。"
+
+meta:
+  related_lingjing_core_classes:
+    - "form-checkbox"
+    - "form-radio"
+    - "form-select"
+    - "dropdown-menu"
+  notes_zh:
+    - "针对航空系统，重要的开关操作建议配套‘保存’按钮执行生效，而非即时生效。"
+    - "下拉选择项超过 7 个时，建议开启内部搜索功能。"

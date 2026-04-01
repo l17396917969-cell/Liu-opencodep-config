@@ -1,0 +1,76 @@
+id: exception_handling
+name_zh: 异常处理模式
+summary_zh: >
+  针对航空设备故障、供应链中断等突发状况设计的全链路闭环流程，强调快速响应、协同处置与经验复盘。
+
+goals_zh:
+  - "将突发风险转化为可追踪、可管理的异常任务。"
+  - "提供分级预警与自动化升级机制，保障关键节点的响应效率。"
+  - "记录处理全过程，形成知识库沉淀，提升后续预防能力。"
+
+states:
+  - id: detected
+    label_zh: 已发现 (Detected)
+    description_zh: "系统自动识别或人工报单发现异常。"
+    response: "立即锁定受影响资源，启动分级预警。"
+
+  - id: triaged
+    label_zh: 已分拣 (Triaged)
+    description_zh: "相关责任人已认领并完成初步评估。"
+    response: "确认异常等级（P0/P1/P2/P3），分配处理资源。"
+
+  - id: in_progress
+    label_zh: 处理中 (In-progress)
+    description_zh: "技术方案已下发，正在进行修复或替换操作。"
+    response: "每 30 分钟同步一次进度，同步至实时监控看板。"
+
+  - id: resolved
+    label_zh: 已解决 (Resolved)
+    description_zh: "风险点已排除，功能恢复正常。"
+    response: "验证修复效果，发起流程归档申请。"
+
+  - id: closed
+    label_zh: 已关闭 (Closed)
+    description_zh: "已完成复盘，相关单据关闭。"
+    response: "自动归入知识库，触发本周质量通报。"
+
+exception_classification:
+  - type: equipment_failure
+    description_zh: "关键生产设备（机床、检测台）故障。"
+  
+  - type: supply_interruption
+    description_zh: "供应商突发中断、原材料缺货。"
+  
+  - type: quality_defect
+    description_zh: "成品/半成品在检测阶段发现重大缺陷。"
+
+escalation_path:
+  - level_0: "岗位值班人（响应时间 ≤ 15min）"
+  - level_1: "车间主任（响应时间 ≤ 1h）"
+  - level_2: "厂区经理（响应时间 ≤ 4h）"
+  - level_3: "集团总部监控中心（响应时间 ≤ 12h）"
+
+key_interactions_zh:
+  - "异常报告 (Issue Report)：引导式填写故障现象，支持图片、视频直传。"
+  - "处理向导 (Resolution Wizard)：根据历史案例，AI 自动推荐最优解决方案。"
+  - "协同工作区 (Collab Space)：内置实时沟通插件，支持多方远程会诊。"
+  - "复盘报告 (Review Report)：一键生成处理过程时间轴，标注关键决策点。"
+
+applicable_scenarios_zh:
+  - "航空主轴箱温升异常处理流程。"
+  - "供应链物流断供紧急调度。"
+  - "军品生产线停线故障排除。"
+
+ui_components:
+  - role: alert_panel
+    lingjing_core_class: "alert-center-panel"
+  - role: workflow_viewer
+    lingjing_core_class: "status-timeline"
+  - role: chat_panel
+    lingjing_core_class: "ai-assistant"
+  - role: report_viewer
+    lingjing_core_class: "content-card"
+
+notes_zh:
+  - "响应时延是核心考核指标，UI 需突出展示‘当前节点已耗时’。"
+  - "异常处理与实时监控模式高度联动，处理进度需实时反映在监控大屏上。"

@@ -1,0 +1,178 @@
+# 军品采购审批示例 UX 规范输出
+
+version: 0.1.0
+
+ux_spec:
+  design_request:
+    id: "mpa-001"
+    business_context_zh: "为军品采购申请人与各级审批人提供统一的在线审批系统，提升透明度与合规性。"
+    product_scene: "b-system"
+    target_scene_id: "military_procurement_approval"
+    roles:
+      - id: "requester"
+        name_zh: "申请人"
+      - id: "dept_manager"
+        name_zh: "部门负责人"
+      - id: "compliance_officer"
+        name_zh: "合规/纪检人员"
+      - id: "leader"
+        name_zh: "审批领导"
+    constraints_zh:
+      - "审批意见与附件需完整记录，满足审计要求。"
+      - "须支持跨部门、多级审批配置。"
+    non_goals_zh:
+      - "本轮不覆盖手机端审批，仅支持 PC 端后台系统。"
+
+  scene:
+    id: "military_procurement_approval"
+    name_zh: "军品采购审批"
+    summary_zh: "支持军品采购申请从发起到多级审批与归档的后台场景。"
+    ux_goals_zh:
+      - "申请人可以随时查看审批进度和当前状态。"
+      - "审批人可以在一个界面内获取做出决策所需的关键信息。"
+      - "审批过程与结果可以被完整追溯与审计。"
+    interaction_modes:
+      - id: "approval_workflow"
+        purpose_zh: "作为主流程，承载多级审批的关键交互。"
+      - id: "collaboration_task"
+        purpose_zh: "用于处理会签、补充材料和专项问题的协作。"
+    main_flow:
+      id: "procurement_approval"
+      description_zh: "申请发起→部门审核→合规审查→领导审批→结果归档。"
+
+  flows:
+    - id: "procurement_approval"
+      name_zh: "军品采购审批任务流"
+      steps:
+        - id: "request_submit"
+          name_zh: "申请发起"
+          from_mode: "approval_workflow"
+        - id: "dept_review"
+          name_zh: "部门审核"
+          from_mode: "approval_workflow"
+        - id: "compliance_review"
+          name_zh: "合规审查"
+          from_mode: "approval_workflow"
+        - id: "leadership_approval"
+          name_zh: "领导审批"
+          from_mode: "approval_workflow"
+        - id: "result_archive"
+          name_zh: "结果归档"
+          from_mode: "approval_workflow"
+
+  pages:
+    - id: "approval_inbox"
+      name_zh: "审批待办列表"
+      route_path: "/approvals"
+      page_goal_zh: "为审批人提供一览其待处理与已处理的审批事项，并快速进入详情。"
+
+      zones:
+        - id: "filters"
+          name_zh: "筛选区"
+          responsibility_zh: "按状态、申请人、物资类别等筛选审批记录。"
+        - id: "list"
+          name_zh: "列表区"
+          responsibility_zh: "展示待办与已办审批记录。"
+      component_roles:
+        - role: "approval_list"
+          lingjing_core_class: "advanced-data-table"
+          mode_id: "approval_workflow"
+          component_spec_id: "advanced-data-table"
+          zone_id: "list"
+
+          states: ["draft", "pending_approval", "approved", "rejected", "returned"]
+          interactions_zh:
+            - "支持按状态、申请人、提交时间排序和过滤。"
+            - "点击一行进入审批详情页面。"
+          action_targets:
+            - event: "click_row"
+              target_type: "page"
+              target_id: "approval_detail"
+              description_zh: "点击审批记录进入审批详情页。"
+
+
+        - role: "status_badge"
+          lingjing_core_class: "status-dot"
+          mode_id: "approval_workflow"
+          zone_id: "list"
+          states: ["pending_approval", "approved", "rejected", "returned"]
+          interactions_zh:
+            - "以颜色和标签区分不同审批状态，悬停时显示完整状态说明。"
+
+    - id: "approval_detail"
+      name_zh: "审批详情页面"
+      route_path: "/approvals/:id"
+      page_goal_zh: "让审批人在一个界面内完成信息查看、意见填写和审批操作。"
+
+      zones:
+        - id: "request_info"
+          name_zh: "申请信息区"
+          responsibility_zh: "展示采购物资、数量、预算、用途等关键信息。"
+        - id: "approval_actions"
+          name_zh: "审批操作区"
+          responsibility_zh: "承载审批意见填写与操作按钮。"
+        - id: "history"
+          name_zh: "历史记录区"
+          responsibility_zh: "展示已完成审批节点和对应意见。"
+      component_roles:
+        - role: "request_form_readonly"
+          lingjing_core_class: "form-layout"
+          mode_id: "approval_workflow"
+          zone_id: "request_info"
+          states: ["pending_approval", "approved", "rejected", "returned"]
+          interactions_zh:
+            - "以只读方式展示申请表单内容，支持展开/折叠长内容。"
+        - role: "approval_actions"
+          lingjing_core_class: "content-card"
+          mode_id: "approval_workflow"
+          zone_id: "approval_actions"
+          states: ["pending_approval", "returned"]
+          interactions_zh:
+            - "提供同意、驳回、退回修改按钮，并要求填写审批意见。"
+            - "提交前进行必填校验，防止空意见通过。"
+        - role: "approval_timeline"
+          lingjing_core_class: "activity-timeline"
+          mode_id: "approval_workflow"
+          zone_id: "history"
+          states: ["draft", "pending_approval", "approved", "rejected", "returned"]
+          interactions_zh:
+            - "按时间顺序展示已完成的审批节点及意见。"
+
+  navigation:
+    entry_page_id: "approval_inbox"
+    global_navigation:
+      - label_zh: "审批待办"
+        target_id: "approval_inbox"
+      - label_zh: "审批详情"
+        target_id: "approval_detail"
+    page_links:
+      - source_page_id: "approval_inbox"
+        action_role: "approval_list"
+        target_id: "approval_detail"
+        target_type: "page"
+        description_zh: "从审批列表进入详情页。"
+      - source_page_id: "approval_detail"
+        target_id: "approval_inbox"
+        target_type: "page"
+        description_zh: "审批完成或返回后回到审批列表。"
+
+
+  dev_handoff:
+
+    api_expectations_zh:
+      - "审批列表接口需支持按状态、申请人、时间等维度过滤和分页。"
+      - "审批详情接口需返回申请全文、附件列表以及完整审批历史。"
+    edge_cases_zh:
+      - "当审批记录为空时，展示友好空状态并鼓励检查筛选条件。"
+      - "当审批人没有权限处理某条记录时，需明确提示权限不足而非静默失败。"
+    tracking_requirements_zh:
+      - "记录每次审批操作（同意/驳回/退回）的时间、人员与意见内容。"
+      - "记录审批意见内容是否被修改过，以支持审计对比。"
+    open_questions_zh:
+      - "是否需要支持线下签字后再在系统中补录审批结果？"
+
+  meta:
+    generated_by: "lingjing-ux-core"
+    linked_scene_file: "scenes/military_procurement_approval.yml"
+    linked_flow_files:
+      - "flows/procurement_approval.yml"

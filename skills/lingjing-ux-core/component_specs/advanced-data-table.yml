@@ -1,0 +1,81 @@
+id: advanced-data-table
+name_zh: 高级数据表格组件交互规范
+summary_zh: >
+  用于承载复杂业务数据列表的表格组件，支持排序、过滤、分页、多选等操作，
+  适用于供应链监控、审批列表、工单列表等高信息密度场景。
+
+states:
+  - id: loading
+    label_zh: 加载中
+    description_zh: "正在获取数据，显示骨架屏或加载占位，禁止排序/过滤/分页操作。"
+  - id: empty
+    label_zh: 空状态
+    description_zh: "当前筛选条件下无数据，展示空状态提示和可选的操作建议。"
+  - id: error
+    label_zh: 加载失败
+    description_zh: "数据加载失败，展示错误信息与重试入口。"
+  - id: normal
+    label_zh: 正常
+    description_zh: "正常展示数据列表，可进行排序、过滤、分页等操作。"
+  - id: selecting
+    label_zh: 选择中
+    description_zh: "用户正在通过复选框或行点击选择一条或多条记录。"
+
+interactions:
+  - id: sort_column
+    name_zh: 列排序
+    description_zh: "用户点击列头切换排序顺序。"
+    requirements_zh:
+      - "支持升序/降序至少两种排序方向，并通过图标明确标识当前状态。"
+      - "变更排序时应自动回到第一页，以避免用户误解。"
+  - id: filter
+    name_zh: 条件过滤
+    description_zh: "用户通过筛选控件过滤表格数据。"
+    requirements_zh:
+      - "支持常见字段的组合筛选（如状态、时间区间、关键字等）。"
+      - "应用过滤条件后应有明显的视觉提示，并提供一键清空筛选。"
+  - id: paginate
+    name_zh: 分页切换
+    description_zh: "用户在不同页面之间切换，浏览更多记录。"
+    requirements_zh:
+      - "分页控件应始终可见或易触达。"
+      - "切换页面时保持当前筛选和排序条件不变。"
+  - id: row_click
+    name_zh: 行点击
+    description_zh: "用户点击某一行，以查看详情或触发联动过滤。"
+    requirements_zh:
+      - "点击行时应有即时的高亮或选中反馈。"
+      - "如使用行点击进入详情，应避免与多选交互产生冲突（例如区分点击区域）。"
+  - id: selection
+    name_zh: 多选/单选
+    description_zh: "用户通过复选框或行选择一条或多条记录。"
+    requirements_zh:
+      - "在启用多选模式时，应提供全选/全不选能力，并展示已选数量。"
+      - "批量操作前需对即将影响的记录给出明确说明。"
+
+accessibility_zh:
+  - "支持通过键盘在行与列之间移动焦点，并通过 Enter/Space 触发行选择或展开操作。"
+  - "对屏幕阅读器暴露表头名称、当前排序列与排序方向。"
+
+config_options:
+  - id: selection_mode
+    name_zh: 选择模式
+    description_zh: "表格是否支持选择记录以及选择方式。"
+    allowed_values: ["none", "single", "multiple"]
+  - id: pagination_type
+    name_zh: 分页方式
+    description_zh: "表格在数据较多时采用的分页/加载策略。"
+    allowed_values: ["classic", "infinite_scroll"]
+  - id: empty_state_behavior
+    name_zh: 空状态行为
+    description_zh: "当无数据时的提示与可选操作。"
+    allowed_values: ["show_hint_only", "show_create_entry", "show_adjust_filter_suggestion"]
+
+meta:
+  related_lingjing_core_classes:
+    - "advanced-data-table"
+    - "data-table"
+  notes_zh:
+    - "具体列配置与字段含义由场景决定，不在组件规范中约束。"
+    - "颜色、字体与视觉细节由 UI 技能包提供，仅在此定义交互行为。"
+    - "DOM 层级：外层布局容器使用 advanced-data-table（<div>）；其内包含 advanced-data-table-main（左侧主表，占 3fr）与 advanced-data-table-side（右侧辅助列，占 2fr）；实际表格元素（<table>）应使用 data-table 类，禁止在 <table> 上直接使用 advanced-data-table。"

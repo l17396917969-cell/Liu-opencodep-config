@@ -1,0 +1,30 @@
+id: ops_alert_to_action
+name_zh: 运控告警到行动任务流
+scene: ops_console_control_tower
+summary_zh: >
+  描述从发现告警、研判、指派、执行到复盘的闭环。
+
+steps:
+  - id: detect
+    name_zh: 发现与分级
+    from_mode: ops_multi_source_monitor
+    description_zh: "告警出现，分级并确认有效性。"
+  - id: triage
+    name_zh: 研判
+    from_mode: ops_multi_source_monitor
+    description_zh: "查看上下文/历史，确定影响范围与优先级。"
+  - id: dispatch
+    name_zh: 分派
+    from_mode: ops_command_dispatch
+    description_zh: "指派责任人、预案与时限，通知相关人。"
+  - id: execute
+    name_zh: 执行与跟踪
+    from_mode: ops_command_dispatch
+    description_zh: "在任务板/时间轴跟踪进度，支持改派/升级。"
+  - id: review
+    name_zh: 复盘
+    from_mode: ops_command_dispatch
+    description_zh: "记录原因、耗时与改进项，更新预案。"
+
+notes_zh:
+  - "允许并行多任务，需在任务板区分优先级。"

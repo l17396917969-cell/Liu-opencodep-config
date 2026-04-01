@@ -1,0 +1,172 @@
+# 设备维修工单示例 UX 规范输出
+
+version: 0.1.0
+
+ux_spec:
+  design_request:
+    id: "emw-001"
+    business_context_zh: "为运维团队提供设备维修工单管理能力，实现故障从发现到关闭的闭环跟踪。"
+    product_scene: "b-system"
+    target_scene_id: "equipment_maintenance_workorder"
+    roles:
+      - id: "maintenance_planner"
+        name_zh: "维修计划员"
+      - id: "technician"
+        name_zh: "维修技师"
+      - id: "ops_supervisor"
+        name_zh: "运行主管"
+    constraints_zh:
+      - "需与实时监控告警列表打通，一键创建工单。"
+      - "工单状态变更需被记录以便审计。"
+    non_goals_zh:
+      - "本轮不覆盖外部备件系统的详细管理，仅记录关键备件信息。"
+
+  scene:
+    id: "equipment_maintenance_workorder"
+    name_zh: "设备维修工单"
+    summary_zh: "支持设备维修工单从创建、分派、执行到关闭的后台场景。"
+    ux_goals_zh:
+      - "减少漏记或遗忘处理的故障，确保每个异常都有工单跟踪。"
+      - "让相关人员快速掌握工单优先级与状态，合理调度资源。"
+      - "沉淀维修过程中的经验，用于后续分析与优化。"
+    interaction_modes:
+      - id: "real_time_monitor"
+        purpose_zh: "通过监控告警发现设备异常，作为工单创建入口。"
+      - id: "maintenance_workorder"
+        purpose_zh: "管理工单的全生命周期状态与处理过程。"
+      - id: "collaboration_task"
+        purpose_zh: "支撑多人的协作任务分工与进度同步。"
+      - id: "exception_handling"
+        purpose_zh: "记录重大或反复出现的故障，并推动异常复盘。"
+    main_flow:
+      id: "maintenance_workorder"
+      description_zh: "故障发现→创建工单→分派→执行→确认与关闭的标准工单流。"
+
+  flows:
+    - id: "maintenance_workorder"
+      name_zh: "设备维修工单任务流"
+      steps:
+        - id: "issue_detected"
+          name_zh: "故障发现"
+          from_mode: "real_time_monitor"
+        - id: "workorder_create"
+          name_zh: "创建工单"
+          from_mode: "maintenance_workorder"
+        - id: "workorder_assign"
+          name_zh: "分派工单"
+          from_mode: "maintenance_workorder"
+        - id: "workorder_execute"
+          name_zh: "执行维修"
+          from_mode: "maintenance_workorder"
+        - id: "confirm_and_close"
+          name_zh: "确认与关闭"
+          from_mode: "maintenance_workorder"
+
+  pages:
+    - id: "workorder_dashboard"
+      name_zh: "工单看板"
+      route_path: "/workorders"
+      page_goal_zh: "为运维团队提供工单状态一览，并支持快速筛选与跳转详情。"
+
+      zones:
+        - id: "filters"
+          name_zh: "筛选区"
+          responsibility_zh: "按状态、设备、优先级等筛选工单。"
+        - id: "board"
+          name_zh: "看板区"
+          responsibility_zh: "按状态分列展示工单卡片。"
+      component_roles:
+        - role: "workorder_board"
+          lingjing_core_class: "mission-status-board"
+          mode_id: "maintenance_workorder"
+          component_spec_id: "mission-status-board"
+          zone_id: "board"
+
+          states: ["created", "assigned", "in_progress", "waiting_parts", "completed", "closed"]
+          interactions_zh:
+            - "支持按状态列查看工单数量与优先级分布。"
+            - "支持点击工单卡片打开详情页。"
+          action_targets:
+            - event: "click_card"
+              target_type: "page"
+              target_id: "workorder_detail"
+              description_zh: "点击工单卡片进入工单详情页。"
+
+
+    - id: "workorder_detail"
+      name_zh: "工单详情页面"
+      route_path: "/workorders/:id"
+      page_goal_zh: "为维修技师与管理人员提供完整的工单信息与操作入口。"
+
+      zones:
+        - id: "basic_info"
+          name_zh: "基本信息区"
+          responsibility_zh: "展示设备信息、故障描述、优先级与计划时间。"
+        - id: "operation_area"
+          name_zh: "操作区"
+          responsibility_zh: "更新工单状态、记录处理步骤与更换部件。"
+        - id: "history"
+          name_zh: "历史记录区"
+          responsibility_zh: "展示工单状态变更与评论附件记录。"
+      component_roles:
+        - role: "workorder_detail"
+          lingjing_core_class: "content-card"
+          mode_id: "maintenance_workorder"
+          zone_id: "basic_info"
+          states: ["created", "assigned", "in_progress", "waiting_parts", "completed", "closed"]
+          interactions_zh:
+            - "展示工单基础信息，允许部分字段在特定状态下编辑（如优先级）。"
+        - role: "workorder_operations"
+          lingjing_core_class: "content-card"
+          mode_id: "maintenance_workorder"
+          zone_id: "operation_area"
+          states: ["assigned", "in_progress", "waiting_parts", "completed"]
+          interactions_zh:
+            - "提供状态变更按钮（开始维修、等待备件、完成等），并要求记录操作说明。"
+            - "支持添加评论和上传现场照片。"
+        - role: "timeline"
+          lingjing_core_class: "activity-timeline"
+          mode_id: "maintenance_workorder"
+          zone_id: "history"
+          states: ["created", "assigned", "in_progress", "waiting_parts", "completed", "closed"]
+          interactions_zh:
+            - "按时间顺序展示状态变更、评论和附件上传记录。"
+
+  navigation:
+    entry_page_id: "workorder_dashboard"
+    global_navigation:
+      - label_zh: "工单看板"
+        target_id: "workorder_dashboard"
+      - label_zh: "工单详情"
+        target_id: "workorder_detail"
+    page_links:
+      - source_page_id: "workorder_dashboard"
+        action_role: "workorder_board"
+        target_id: "workorder_detail"
+        target_type: "page"
+        description_zh: "从工单看板点击卡片进入详情页。"
+      - source_page_id: "workorder_detail"
+        target_id: "workorder_dashboard"
+        target_type: "page"
+        description_zh: "从详情页返回工单看板。"
+
+
+  dev_handoff:
+
+    api_expectations_zh:
+      - "工单列表接口需支持按状态、设备、优先级过滤，并支持分页。"
+      - "工单详情接口需返回基础信息、处理记录、附件列表以及关联告警信息。"
+    edge_cases_zh:
+      - "当筛选结果为空时，展示空状态并提示检查筛选条件。"
+      - "当工单在操作过程中被他人更新状态时，应提示用户并刷新数据。"
+    tracking_requirements_zh:
+      - "记录每次工单状态变更的时间、操作者与说明。"
+      - "记录从告警一键创建工单的操作，用于分析告警→工单转化率。"
+    open_questions_zh:
+      - "是否需要支持批量关闭低优先级且长期未更新的工单？"
+
+  meta:
+    generated_by: "lingjing-ux-core"
+    linked_scene_file: "scenes/equipment_maintenance_workorder.yml"
+    linked_flow_files:
+      - "flows/maintenance_workorder.yml"

@@ -1,0 +1,63 @@
+test_suite: pattern_validation_suite
+version: 1.0.0
+description_zh: >
+  验证灵境 UX/UI 协同迭代中的交互模式、场景配置与 UI 映射的准确性。
+  旨在通过机器可读的测试用例，确保设计方案在多场景下的鲁棒性。
+
+test_cases:
+  - id: TC-001
+    title: 实时监控模式状态闭环测试
+    target_pattern: patterns/real_time_monitor.yml
+    criteria:
+      - check_field: "states[*].id"
+        expected: ["normal", "warning", "critical"]
+      - check_field: "states[critical].response_rules"
+        expected: "Must include full-screen alert"
+    pass_threshold: 100%
+
+  - id: TC-002
+    title: 多级审批流逻辑验证
+    target_pattern: patterns/multi_level_approval.yml
+    criteria:
+      - check_field: "approval_logics"
+        expected: "Must include parallel and green_channel"
+      - check_field: "response_rules.timeout_escalation"
+        expected: "Must define escalation path"
+    pass_threshold: 100%
+
+  - id: TC-003
+    title: FAA/EASA 合规强约束检测
+    target_compliance: compliance/faa_easa_checklist.yml
+    criteria:
+      - check_field: "checkpoints[0].mandatory"
+        expected: true
+      - check_field: "checkpoints[1].violation_response"
+        expected: "Must block submission"
+    pass_threshold: 100%
+
+  - id: TC-004
+    title: UI-UX 桥接映射准确率
+    target_interface: ../lingjing-ui-core/interfaces/ux_ui_bridge.json
+    criteria:
+      - check_field: "component_mappings.risk_state_critical"
+        expected: ".state-critical"
+      - check_field: "component_mappings.data_panel"
+        expected: "data-panel"
+    pass_threshold: 100%
+
+  - id: TC-005
+    title: 数字孪生场景组合逻辑验证
+    target_configurator: configurator/digital_twin_scene.yml
+    criteria:
+      - check_field: "enabled_patterns"
+        expected: "Must include real_time_monitor and world_space_ui"
+    pass_threshold: 100%
+
+validation_execution_rules:
+  - run_frequency: "Each iteration (Week-end)"
+  - output_format: "JUnit-style XML / Markdown Report"
+  - fail_action: "Block Phase-Gate Transition"
+
+notes_zh:
+  - "本测试用例由 AI 自动化执行工具或人工评审环节调用。"
+  - "任何模式更新均需同步更新对应的测试用例。"

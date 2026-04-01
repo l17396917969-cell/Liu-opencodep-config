@@ -1,0 +1,55 @@
+id: pagination_interaction
+name_zh: 分页组件交互规范
+summary_zh: >
+  数据分页导航组件，用于在大型数据集（如：订单、日志、设备列表）中进行翻页。
+  支持页码跳转、每页条数切换及精简版分页。
+
+states:
+  - id: idle
+    label_zh: 空闲
+    description_zh: "正常展示当前页码与前后翻页按钮。"
+  - id: active
+    label_zh: 当前选中
+    description_zh: "当前所在的页码，通常高亮展示。"
+  - id: loading
+    label_zh: 加载中
+    description_zh: "切换页码请求数据中，此时应禁用分页操作。"
+  - id: disabled
+    label_zh: 已禁用
+    description_zh: "无法继续翻页（如：首页的前一页、末页的后一页）。"
+
+interactions:
+  - id: page_jump
+    name_zh: 页码跳转
+    description_zh: "点击特定页码快速定位。"
+    requirements_zh:
+      - "跳转完成后，表格或列表应自动回到顶部。"
+      - "页码过多时应显示省略号，并提供‘跳至第 X 页’输入框。"
+  - id: prev_next_jump
+    name_zh: 上下翻页
+    description_zh: "点击‘上一页’或‘下一页’顺序浏览。"
+    requirements_zh:
+      - "支持通过键盘 Left/Right 键翻页。"
+  - id: page_size_change
+    name_zh: 每页条数切换
+    description_zh: "在下拉菜单选择每页展示的条数（如：10, 20, 50, 100）。"
+    requirements_zh:
+      - "条数变更后应重置当前页码为第 1 页。"
+
+accessibility_zh:
+  - "ARIA: 必须具备 role='navigation' 与 aria-label='分页导航'。"
+  - "Current Page: 必须标记 aria-current='page'。"
+  - "Keyboard: Tab 键应能在翻页按钮与页码间轮询聚焦。"
+
+performance_constraints:
+  latency: "点击页码后加载状态展示 ≤ 200ms。"
+  rendering: "针对复杂列表，切换页码后应先销毁旧 DOM 节点再渲染新节点。"
+
+meta:
+  related_lingjing_core_classes:
+    - "pagination"
+    - "pagination-item"
+    - "pagination-link"
+  notes_zh:
+    - "默认分页条数建议设置为 10 或 20。"
+    - "针对航空系统日志场景，建议在分页控件旁显示‘总条数’。"

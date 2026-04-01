@@ -1,0 +1,131 @@
+version: 0.2.0
+updated: 2026-03-23
+
+design_request:
+  id: "web-landing-001"
+  business_context_zh: "面向航空工业潜在客户的官网落地页，目标是预约演示与下载白皮书。"
+  product_scene: "website"
+  target_scene_id: "website_marketing_landing"
+  roles:
+    - id: prospect
+      name_zh: "潜在客户"
+  constraints_zh:
+    - "首屏首屏可视区内必须有主 CTA。"
+    - "页面需 3 秒内可交互。"
+  non_goals_zh:
+    - "本轮不覆盖移动端小屏。"
+
+scene:
+  id: website_marketing_landing
+  name_zh: 官网落地页（品牌叙事+转化）
+  summary_zh: "通过叙事+佐证+CTA 引导完成预约/下载。"
+  ux_goals_zh:
+    - "首屏 5 秒传达价值与 CTA。"
+    - "佐证区提升信任并引导向下滚动。"
+  interaction_modes:
+    - id: marketing_storytelling
+      purpose_zh: "章节叙事与锚点跳转"
+    - id: cta_conversion
+      purpose_zh: "CTA 与表单提交"
+  main_flow:
+    id: marketing_conversion
+    description_zh: "抵达→了解→佐证→提交→确认"
+
+flows:
+  - id: marketing_conversion
+    name_zh: 落地页转化任务流
+    steps:
+      - id: arrive_hero
+        name_zh: 首屏抵达
+      - id: explore_value
+        name_zh: 价值探索
+      - id: review_proof
+        name_zh: 佐证查看
+      - id: fill_form
+        name_zh: 线索提交
+      - id: confirmation
+        name_zh: 成功与后续
+
+pages:
+  - id: landing_main
+    name_zh: 官网落地页
+    route_path: "/"
+    page_goal_zh: "完成预约演示或下载白皮书。"
+    zones:
+      - id: hero
+        name_zh: 首屏 Hero
+        responsibility_zh: "传达核心价值，提供主/次 CTA。"
+      - id: value_sections
+        name_zh: 价值与方案区
+        responsibility_zh: "阐述问题-方案-价值，支持锚点跳转。"
+      - id: proof
+        name_zh: 佐证区
+        responsibility_zh: "展示案例、数据徽章、资质证书。"
+      - id: cta_form
+        name_zh: 转化表单区
+        responsibility_zh: "收集线索，提供提交反馈与兜底联系。"
+    component_roles:
+      - role: hero_section
+        lingjing_core_class: "website-hero"
+        mode_id: marketing_storytelling
+        interactions_zh:
+          - "主 CTA 点击滚动到表单区；次 CTA 下载白皮书。"
+        action_targets:
+          - event: "click"
+            target_type: "anchor"
+            target_id: "landing_main"
+            description_zh: "滚动到表单区"
+
+      - role: story_nav
+        lingjing_core_class: "website-nav"
+        mode_id: marketing_storytelling
+        interactions_zh:
+          - "点击章节锚点平滑跳转，对应区域高亮。"
+      - role: proof_cards
+        lingjing_core_class: "content-card"
+        mode_id: marketing_storytelling
+        interactions_zh:
+          - "点击案例卡可展开摘要或跳转到案例页。"
+      - role: lead_form
+        lingjing_core_class: "website-cta-card"
+        component_spec_id: "hero-cta"
+        mode_id: cta_conversion
+        states: ["default", "loading", "error", "success"]
+        interactions_zh:
+          - "实时校验必填项，提交失败保留已填数据并显示错误。"
+          - "成功后展示感谢提示与下一步预约链接。"
+
+navigation:
+  entry_page_id: "landing_main"
+  global_navigation:
+    - label_zh: "产品"
+      target_id: "landing_main"
+    - label_zh: "解决方案"
+      target_id: "landing_main"
+    - label_zh: "案例"
+      target_id: "landing_main"
+    - label_zh: "联系"
+      target_id: "landing_main"
+  page_links:
+    - source_page_id: "landing_main"
+      action_role: "hero_section"
+      target_id: "landing_main"
+      target_type: "anchor"
+      description_zh: "主 CTA 滚动到表单区"
+
+
+dev_handoff:
+  api_expectations_zh:
+    - "表单提交接口需返回提交状态与错误文案。"
+    - "下载 CTA 应返回文件元信息（大小、类型）。"
+  edge_cases_zh:
+    - "无案例数据时展示空状态与联系销售 CTA。"
+    - "网络慢时显示加载骨架，保留 CTA 可点击。"
+  tracking_requirements_zh:
+    - "记录 CTA 点击、表单开始/完成、失败原因。"
+
+meta:
+  generated_by: "lingjing-ux-core"
+  linked_scene_file: "scenes/website_marketing_landing.yml"
+  linked_flow_files:
+    - "flows/marketing_conversion.yml"

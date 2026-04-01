@@ -1,0 +1,32 @@
+id: deck_navigation
+scene: presentation
+dimension: business_process
+name_zh: 幻灯导航模式
+summary_zh: >
+  用于 HTML 演示文稿的导航与节奏控制，强调清晰的章节定位、
+  平滑跳转与演讲者提示，保障现场讲述的可控性。
+
+goals_zh:
+  - "演讲者可快速跳转到任意章节或备份页。"
+  - "听众随时知道所在章节与剩余内容。"
+  - "关键页支持高亮/放大重点数据。"
+
+key_interactions_zh:
+  - "顶部或侧边章节导航，支持点击跳转与当前章节高亮。"
+  - "键盘/遥控器快捷键：上一页、下一页、跳转到指定章节（数字键）。"
+  - "演讲者视图可显示计时、备注、下一页预览（可选）。"
+  - "图表页支持“放大关键数据”动作，返回后保持当前位置。"
+
+applicable_scenarios_zh:
+  - "季度经营复盘、项目路演、方案宣讲。"
+
+ui_components:
+  - role: chapter_nav
+    lingjing_core_class: "slide-toc-list"
+  - role: slide_controls
+    lingjing_core_class: "presentation-slide-indicators"
+  - role: spotlight
+    lingjing_core_class: "presentation-highlight-box"
+
+notes_zh:
+  - "保持动效轻量，避免干扰叙事；必要时提供无动效模式。"

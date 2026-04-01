@@ -1,0 +1,34 @@
+id: ai_assistant_workspace
+name_zh: AI 助手工作台
+product_scene: ai-assistant
+summary_zh: >
+  面向多轮对话与工具编排的工作台，支持澄清、规划、执行与复核的可视化呈现。
+
+primary_roles:
+  - id: user
+    name_zh: 用户
+  - id: ai_assistant
+    name_zh: AI 助手
+
+interaction_modes:
+  - id: assistant_multi_turn_planning
+    purpose_zh: "澄清与规划"
+  - id: assistant_tool_execution
+    purpose_zh: "工具编排与执行"
+
+main_flow:
+  id: assistant_request_to_delivery
+  description_zh: "澄清→规划→执行→复核"
+
+ux_goals_zh:
+  - "让用户看到计划、进度与每次工具调用。"
+  - "高风险操作需确认，可随时暂停。"
+  - "结果可审计并便于二次使用。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/ai-assistant-workspace.html"
+    description_zh: "AI 助手工作台布局参考，可映射到对话/计划/执行日志区域。"
+
+notes_zh:
+  - "需支持对话历史与执行日志并存，避免上下文丢失。"

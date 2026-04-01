@@ -1,0 +1,32 @@
+id: audience_engagement
+scene: presentation
+dimension: business_process
+name_zh: 听众互动模式
+summary_zh: >
+  用于演示中的互动环节，支持问答、投票与反馈收集，
+  让演讲与听众之间形成闭环。
+
+goals_zh:
+  - "收集听众问题并按优先级处理。"
+  - "在关键节点快速获得反馈或投票结果。"
+  - "保证互动不打断主叙事，可在结束后回顾。"
+
+key_interactions_zh:
+  - "听众可通过二维码/链接提交问题，主持人可置顶或标记已答。"
+  - "轻量投票/打分控件，实时展示结果或延迟到总结页展示。"
+  - "Q&A 模式下，进入回答时高亮对应问题卡片，并允许备注/跟进人。"
+  - "互动结束后，可导出问答/投票结果或发送邮件给参会者。"
+
+applicable_scenarios_zh:
+  - "路演答辩、季度总结、培训演示。"
+
+ui_components:
+  - role: qna_panel
+    lingjing_core_class: "content-card"
+  - role: poll_widget
+    lingjing_core_class: "content-card"
+  - role: feedback_summary
+    lingjing_core_class: "content-card"
+
+notes_zh:
+  - "确保互动入口明显但不遮挡主要内容；移动端扫码流程需清晰。"

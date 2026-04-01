@@ -1,0 +1,173 @@
+version: 0.1.0
+updated: 2026-03-23
+type: ue5_web_overlay_contract_schema
+
+description_zh: >
+  定义 UE5 三维场景与 Web Overlay 之间的桥接协议结构，统一事件信封、公共字段、事件方向、
+  超时、重试、兼容性与 UI 消费约束。供 UX 规范、UI mock、前端实现与 UE5 侧共同引用。
+
+event_envelope:
+  required:
+    schema_version: string
+    event_version: string
+    event_id: string
+    event_type: string
+    timestamp: string
+    scene_id: string
+    source: string
+    payload: object
+  optional:
+    correlation_id: string
+    trace_id: string
+    priority: string
+    replayable: boolean
+    ack_required: boolean
+
+common_objects:
+  object_ref:
+    required:
+      - object_id
+      - object_name
+      - object_type
+      - risk_level
+      - status_text
+    optional:
+      - model_path
+      - business_id
+      - tags
+  screen_projection:
+    required:
+      - screen_position
+      - is_occluded
+      - is_offscreen
+    optional:
+      - world_position
+      - distance_to_camera
+      - cluster_id
+  alert_ref:
+    required:
+      - alert_id
+      - severity
+      - alert_status
+      - raised_at
+    optional:
+      - recommendation
+      - owner
+      - related_object_id
+  layer_ref:
+    required:
+      - layer_id
+      - layer_name
+      - visibility
+      - sync_status
+    optional:
+      - permission
+      - group_id
+  detail_snapshot:
+    required:
+      - primary_metrics
+      - last_updated_at
+      - stale
+    optional:
+      - secondary_metrics
+      - trend_data
+      - history
+      - actions
+
+event_directions:
+  ue5_to_web:
+    - scene.ready
+    - scene.degraded
+    - camera.changed
+    - object.hovered
+    - object.selected
+    - object.updated
+    - alert.raised
+    - alert.cleared
+    - layer.visibility.changed
+  web_to_ue5:
+    - ui.focus_object
+    - ui.open_detail
+    - ui.toggle_layer
+    - ui.change_view
+    - ui.ack_alert
+    - ui.navigate_business_page
+
+event_registry:
+  scene.ready:
+    direction: ue5_to_web
+    payload_required:
+      - runtime_mode
+      - scene_state
+      - camera
+  scene.degraded:
+    direction: ue5_to_web
+    payload_required:
+      - reason
+      - degraded_state
+      - fallback_source
+  object.selected:
+    direction: ue5_to_web
+    payload_required:
+      - object
+      - projection
+      - detail
+  object.updated:
+    direction: ue5_to_web
+    payload_required:
+      - object
+      - changed_fields
+  alert.raised:
+    direction: ue5_to_web
+    payload_required:
+      - alert
+      - object
+  layer.visibility.changed:
+    direction: ue5_to_web
+    payload_required:
+      - layer
+  ui.focus_object:
+    direction: web_to_ue5
+    payload_required:
+      - object_id
+      - focus_mode
+  ui.toggle_layer:
+    direction: web_to_ue5
+    payload_required:
+      - layer_id
+      - visibility
+  ui.ack_alert:
+    direction: web_to_ue5
+    payload_required:
+      - alert_id
+      - operator
+
+timeout_rules:
+  ack_timeout_ms: 1500
+  sync_warning_ms: 300
+  stale_timeout_ms: 5000
+  scene_ready_timeout_ms: 8000
+
+retry_policy:
+  retryable_events:
+    - ui.toggle_layer
+    - ui.ack_alert
+    - ui.focus_object
+  max_retries: 2
+  backoff_ms: [300, 900]
+  notes_zh:
+    - "scene.ready、object.selected 等状态类事件不通过客户端重试修复，而应等待最新快照。"
+
+compatibility_rules:
+  schema_versioning: "所有事件必须携带 schema_version 与 event_version。"
+  forward_compatibility: "消费者应忽略未知字段，不得因新增字段报错。"
+  backward_compatibility: "删除字段前至少保留一轮兼容期。"
+
+ui_consumption_rules:
+  - "UI 订阅对象必须使用 object_id / alert_id / layer_id 进行局部更新，不全量重绘整页。"
+  - "scene.degraded 与 detail.stale 必须转化为可见的状态标记。"
+  - "Marker、Detail Panel、TopBar 对同一对象的风险级别必须同步。"
+
+validation_hints_zh:
+  - "Mock Bridge、示例页与测试用例都必须从同一份 interfaces/ue5_web_bridge.json 派生字段。"
+  - "协议字段名使用 snake_case，事件类型使用 dot.notation。"

@@ -1,0 +1,54 @@
+scenario_id: digital_twin_factory_monitor
+name_zh: 数字孪生工厂实时监控场景
+description_zh: "面向智慧工厂运维人员，通过 2D 监控面板与 3D 数字孪生模型的联动，实现设备实时监控与异常快速闭环。"
+
+enabled_patterns:
+  - id: real_time_monitor
+    dimension: data_intelligence
+    config:
+      refresh_interval: 30s
+      alert_thresholds:
+        temperature: "> 85°C (Warning), > 105°C (Critical)"
+        vibration: "> 0.5mm/s (Warning), > 1.2mm/s (Critical)"
+      auto_zoom_to_3d_object: true
+
+  - id: exception_handling
+    dimension: business_process
+    config:
+      auto_ticket_generation: true
+      ticket_priority: "Match Alert Level (Critical -> High)"
+      escalation_time: "15 min (Normal), 5 min (Critical)"
+
+  - id: world_space_ui
+    dimension: physical_digital_fusion
+    config:
+      tag_display_distance: 100m
+      occlusion_handling: "Ghosting / Semi-transparent"
+      anchor_style: "Dynamic Vector Line"
+
+target_roles:
+  - id: plant_manager
+    name_zh: 厂区经理 (Plant Manager)
+    permissions: "View All, Approve High-Value Repair"
+  - id: maintenance_engineer
+    name_zh: 运维工程师 (Maintenance Engineer)
+    permissions: "Receive Alerts, Create/Execute Tickets"
+
+associated_ui_templates:
+  - id: digital_twin_dashboard_v2
+    lingjing_ui_template: "digital_twin_dashboard"
+    layout_zones:
+      top_kpi: "Core Factory Indicators (OEE, Yield)"
+      left_alerts: "Critical Alerts List (Real-time)"
+      center_3d: "UE5 Digital Twin Main View"
+      right_details: "Selected Object Detail Panel"
+
+compliance_checkpoints:
+  - id: safety_interlock
+    description_zh: "高危设备指令下发需二次指纹/面部识别验证。"
+  - id: data_audit
+    description_zh: "所有告警确认操作需记录操作人、时间及当前现场快照。"
+
+performance_requirements:
+  fps: "≥ 60 (2D UI Overlay)"
+  data_sync_latency: "≤ 500ms (Between 3D & 2D)"

@@ -1,0 +1,130 @@
+# lingjing-ux-core UX 标准输出结构示意
+# 用于指导 AI 与下游工具如何组织交互设计结果，非严格 JSON Schema。
+
+version: 0.1.0
+updated: 2026-03-20
+
+# 1. 设计请求（来自产品/需求阶段的输入回显）
+design_request:
+  id: "scm-001"                  # 可选：本次设计请求唯一标识
+  business_context_zh: "..."      # 必填：业务背景与目标概述
+  product_scene: "b-system"       # 必填：对应 SKILL 中的产品场景
+  target_scene_id: "..."          # 可选：复用的场景 ID，例如 supply_chain_monitoring
+  roles:                           # 参与的主要角色
+    - id: "supply_planner"
+      name_zh: "供应计划员"
+  constraints_zh:                  # 关键约束，如实时性、安全等级、设备环境等
+    - "..."
+  non_goals_zh:                    # 明确本轮不覆盖的范围
+    - "..."
+
+# 2. 场景层（引用或内联自 scenes/*.yml）
+scene:
+  id: "supply_chain_monitoring"
+  name_zh: "供应链监控战情室"
+  summary_zh: "..."
+  ux_goals_zh:
+    - "..."
+  interaction_modes:               # 实际启用的交互模式实例
+    - id: "real_time_monitor"
+      purpose_zh: "..."
+      params:
+        refresh_interval_seconds: 60
+  main_flow:
+    id: "monitor_alert_handle"
+    description_zh: "..."
+
+# 3. 任务流层（可直接引用 flows/*.yml，也可内联展开结果版本）
+flows:
+  - id: "monitor_alert_handle"
+    name_zh: "监控→预警→分析→处置任务流"
+    steps:
+      - id: "monitor"
+        name_zh: "实时监控"
+      - id: "alert_review"
+        name_zh: "预警审查"
+      - id: "analyze"
+        name_zh: "原因分析"
+      - id: "handle"
+        name_zh: "处置与协作"
+      - id: "review"
+        name_zh: "复盘与关闭"
+
+# 4. 页面与组件职责层（供 UI 技能包和前端开发使用）
+pages:
+  - id: "main_dashboard"
+    name_zh: "供应链战情室主仪表盘"
+    route_path: "/dashboard"      # 多页面 / 可点击工程场景下应填写；表达业务路由，真实文件落点由调用方项目结构决定
+
+    page_goal_zh: "..."
+    zones:                         # 页面区域划分与职责，仅描述行为
+
+      - id: "top_metrics"
+        name_zh: "顶部关键指标区"
+        responsibility_zh: "展示整体健康度与关键 KPI。"
+      - id: "center_alerts"
+        name_zh: "告警与任务区"
+        responsibility_zh: "展示告警列表与任务看板。"
+    component_roles:               # 组件角色与 lingjing-ui-core 组件映射
+      - role: "metric_card"
+        lingjing_core_class: "flight-metric-card"
+        mode_id: "real_time_monitor"
+        states: ["normal", "warning", "critical"]
+        interactions_zh:
+          - "点击指标卡可联动下方列表过滤相关记录。"
+        action_targets:            # 可选：交互后跳转/联动的目标
+          - event: "click"
+            target_type: "filter"   # filter | page | modal | drawer | tab | anchor
+            description_zh: "联动下方列表过滤相关记录"
+
+      - role: "task_board"
+        lingjing_core_class: "mission-status-board"
+        mode_id: "collaboration_task"
+        component_spec_id: "mission-status-board"  # 可选：关联的组件交互规范 ID
+        states: ["todo", "doing", "blocked", "done"]
+        interactions_zh:
+          - "支持在列之间拖拽任务以变更状态。"
+        action_targets:
+          - event: "click_card"
+            target_type: "page"
+            target_id: "workorder_detail"        # canonical 字段；其语义由 target_type 决定
+            target_page_id: "workorder_detail"   # 兼容历史产物，可省略；新输出优先使用 target_id
+            description_zh: "点击卡片跳转工单详情页"
+
+
+# 4.1 页面间导航（多页面 / 可点击工程场景下必填）
+navigation:
+  entry_page_id: "main_dashboard"          # 入口页；多页面场景下应填写
+  global_navigation:                        # 可选：顶部导航 / 侧边栏 / 标签栏主入口
+    - label_zh: "主仪表盘"
+      target_id: "main_dashboard"
+  page_links:                               # 明确页面间的跳转路径
+    - source_page_id: "main_dashboard"
+      action_role: "metric_card"           # 可选：由哪个组件角色触发
+      target_id: "workorder_detail"        # canonical 字段；page / modal / drawer / anchor 均使用该字段
+      target_type: "page"                  # page | modal | drawer | anchor
+      description_zh: "点击 KPI 卡片可打开详情页"
+
+
+
+
+# 5. 开发交接层（对接口、边界情况与审计的要求）
+dev_handoff:
+  output_file_hint: "src/pages/workorders/[id].vue"   # 可选：仅作为 UI 落点提示，不替代 route_path
+  api_expectations_zh:
+
+    - "告警列表接口需支持按状态、时间、供应商过滤，并返回总数以支持分页。"
+  edge_cases_zh:
+    - "当无告警数据时，展示空状态提示，并提供刷新入口。"
+    - "当接口超时或失败时，需展示错误信息并允许重试。"
+  tracking_requirements_zh:
+    - "记录每次从 warning→critical 的状态变化，用于后续审计。"
+  open_questions_zh:
+    - "是否需要单独区分系统自动关闭与人工关闭的告警？"
+
+# 6. 元信息（可选，用于后续自动化工具）
+meta:
+  generated_by: "lingjing-ux-core"
+  linked_scene_file: "scenes/supply_chain_monitoring.yml"
+  linked_flow_files:
+    - "flows/monitor_alert_handle.yml"

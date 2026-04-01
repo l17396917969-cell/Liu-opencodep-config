@@ -1,0 +1,40 @@
+id: military_procurement_approval
+name_zh: 军品采购审批
+product_scene: b-system
+summary_zh: >
+  面向军品采购申请人与各级审批人的后台系统场景，
+  用于发起、跟踪和处理军品采购申请，确保流程合规可追溯。
+
+primary_roles:
+  - id: requester
+    name_zh: 申请人
+  - id: dept_manager
+    name_zh: 部门负责人
+  - id: compliance_officer
+    name_zh: 合规/纪检人员
+  - id: leader
+    name_zh: 审批领导
+
+interaction_modes:
+  - id: approval_workflow
+    purpose_zh: "作为主流程，承载从发起到多级审批的核心交互。"
+  - id: collaboration_task
+    purpose_zh: "用于处理审批过程中的会签、补充材料与专项问题跟踪。"
+
+main_flow:
+  id: procurement_approval
+  description_zh: "申请发起→部门审核→合规审查→领导审批→结果归档的标准审批流。"
+
+ux_goals_zh:
+  - "让申请人清楚了解审批进度与当前状态。"
+  - "让审批人高效获取必要信息并给出合规的审批意见。"
+  - "确保审批过程与结果可追溯、可审计。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/b-system-complete.html"
+    description_zh: "通用 B 端列表与操作页示例，可作为审批待办列表、筛选区与信息层次参考。"
+
+
+notes_zh:
+  - "本场景仅约束二维后台审批系统的交互，不直接约束与外部执行系统的对接细节。"

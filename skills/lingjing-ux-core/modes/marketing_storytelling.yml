@@ -1,0 +1,39 @@
+id: marketing_storytelling
+scene: website  # website / b-system / presentation / ai-assistant / ops-console ...
+dimension: business_process
+name_zh: 品牌叙事模式
+summary_zh: >
+  用于营销/官网落地页的叙事结构，从问题提出到价值证明，再到行动号召，
+  通过分段讲述和佐证素材引导访客完成转化。
+
+goals_zh:
+  - "在首屏 5 秒内传达核心价值并给出明确 CTA。"
+  - "通过故事线与证据块降低访客的不确定感，提升滚动深度与点击率。"
+  - "让访客始终知道自己所处章节，方便跳转到关键信息。"
+
+key_interactions_zh:
+  - "首屏 Hero 提供主 CTA（试用/联系销售）和次 CTA（下载白皮书/查看产品视频）。"
+  - "章节导航可锚点跳转（问题 → 方案 → 价值 → 证据 → CTA），支持粘性悬浮。"
+  - "证据块（客户案例/数据徽章/资质）可展开查看详情或跳转到案例页。"
+  - "滚动到关键节点时触发轻量动效或提示，引导完成表单/预约。"
+  - "底部提供兜底 CTA 与联系方式，避免用户迷失。"
+
+applicable_scenarios_zh:
+  - "产品官网/解决方案落地页（Aviation 智能平台）。"
+  - "行业化故事页（供应链可视化、数字孪生）。"
+
+ui_components:
+  - role: hero_section
+    lingjing_core_class: "website-hero"
+  - role: story_nav
+    lingjing_core_class: "website-nav"
+  - role: proof_cards
+    lingjing_core_class: "content-card"
+  - role: testimonials
+    lingjing_core_class: "content-card"
+  - role: footer_cta
+    lingjing_core_class: "website-cta"
+
+notes_zh:
+  - "弱化安全/合规口吻，强调品牌可信度与叙事流。"
+  - "CTA 文案需与访客阶段匹配：首屏主 CTA 明确承诺，次 CTA 提供低阻力试探。"

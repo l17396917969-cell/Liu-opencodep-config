@@ -1,0 +1,48 @@
+# lingjing-ux-core 组件交互规范结构示意
+# 用于约束 component_specs/*.yml 的基本字段结构，便于 AI 与工具统一解析。
+
+version: 0.1.0
+updated: 2026-03-20
+
+type: component_spec_schema
+
+description_zh: >
+  描述通用 UI 组件在交互层面的行为契约（状态机、交互规则、可配置项与可用性要求），
+  不包含视觉样式与具体技术实现。
+
+# 组件标识与基本信息
+id: "component_id"          # 例如 advanced-data-table, mission-status-board
+name_zh: "组件中文名称"
+summary_zh: "组件在系统中的交互职责简要说明。"
+
+# 组件可处于的交互状态集合
+states:
+  - id: "state_id"
+    label_zh: "状态标签"
+    description_zh: "该状态下用户可见的表现与允许的操作。"
+
+# 关键交互行为定义
+interactions:
+  - id: "interaction_id"
+    name_zh: "交互名称"
+    description_zh: "该交互的目的与触发方式（例如点击、拖拽、键盘操作等）。"
+    requirements_zh:
+      - "针对该交互的具体 UX 要求，例如必须有即时反馈、错误提示等。"
+
+# 可用性与无障碍要求
+accessibility_zh:
+  - "针对键盘操作、屏幕阅读器等的要求。"
+
+# 可配置项（供场景化配置使用）
+config_options:
+  - id: "option_id"
+    name_zh: "配置项名称"
+    description_zh: "配置项对交互行为的影响说明。"
+    allowed_values: ["..."]
+
+# 元信息
+meta:
+  related_lingjing_core_classes:
+    - "示例：advanced-data-table"
+  notes_zh:
+    - "可在具体组件规范中补充更多细节，但应遵守上述基础结构。"

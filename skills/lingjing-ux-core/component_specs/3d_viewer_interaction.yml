@@ -1,0 +1,62 @@
+id: 3d_viewer_interaction
+name_zh: 3D 视图器组件交互规范 (2D 交互层)
+summary_zh: >
+  面向 3D 数字孪生模型、态势感知图层的 2D 交互容器。
+  通过 2D UI 叠加层实现 3D 对象的标注、参数监控及视角同步。
+
+states:
+  - id: idle
+    label_zh: 默认
+    description_zh: "3D 模型正常渲染，展示基础态势分布。"
+  - id: focusing
+    label_zh: 焦点定位 (Focus)
+    description_zh: "用户点击 2D 告警项，3D 相机自动追踪并缩放至特定组件。"
+  - id: scanning
+    label_zh: 扫描中 (Scan)
+    description_zh: "正在加载 3D 场景数据包，展示加载进度及占位 3D 线框。"
+  - id: object_active
+    label_zh: 对象选中
+    description_zh: "3D 对象被点击，2D 侧边栏弹出该组件的详细运行参数。"
+  - id: viewport_sync
+    label_zh: 视角同步
+    description_zh: "2D 小地图与 3D 主视图视角联动同步。"
+
+interactions:
+  - id: viewport_control
+    name_zh: 视角控制 (Viewport)
+    description_zh: "通过 2D 预设按钮（如：‘顶视’、‘侧视’、‘内部’）切换 3D 视角。"
+    requirements_zh:
+      - "视角切换应具备平滑动画（建议时长 800ms-1500ms）。"
+      - "支持一键恢复‘主视角 (Home View)’。"
+  - id: tag_interaction
+    name_zh: 3D 标签交互
+    description_zh: "点击 3D 空间内的 UI 标签，在 2D 层展开详细监控面板。"
+    requirements_zh:
+      - "标签应具备‘距离消隐’逻辑：距离过远时不显示文字详情。"
+      - "标签位置应跟随 3D 对象动态投影至 2D 屏幕空间。"
+  - id: layer_toggle
+    name_zh: 图层切换
+    description_zh: "在 2D 侧栏开关 3D 场景中的特定图层（如：热图、管线、遮挡物）。"
+    requirements_zh:
+      - "图层开启/关闭应有即时的视觉反馈（如：Opacity 渐变）。"
+  - id: snapshot_capture
+    name_zh: 场景快照
+    description_zh: "点击 2D 按钮截取当前 3D 画面并作为异常证据上传。"
+
+accessibility_zh:
+  - "Support Tab Navigation: 通过键盘切换不同的 3D 预设视角按钮。"
+  - "Aria-labeling: 为 3D 热点、异常点提供读屏描述（如：‘主轴 - 异常 - 点击查看详情’）。"
+  - "Contrast: 2D 叠加层必须有半透明背景（Glassmorphism），保障文字可读性。"
+
+performance_constraints:
+  fps: "2D UI 层必须稳定在 60fps 以上，不被 3D 渲染开销拖累。"
+  latency: "3D 对象选中到 2D 面板弹出时延 ≤ 200ms。"
+
+meta:
+  related_lingjing_core_classes:
+    - "3d-viewer"
+    - "world-space-ui"
+    - "digital-twin-dashboard"
+  notes_zh:
+    - "针对航空系统，建议主视图支持‘X-Ray (X 射线)’模式以查看内部组件故障。"
+    - "3D 场景加载成功后，UI 需展示‘场景已就绪’的简短提示。"

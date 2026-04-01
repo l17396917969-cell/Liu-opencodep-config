@@ -1,0 +1,45 @@
+id: filter-toolbar
+name_zh: 筛选工具条交互规范
+summary_zh: >
+  用于列表/看板/图表的全局筛选与标签，支持组合条件与快速清空。
+
+states:
+  - id: default
+    label_zh: 默认
+    description_zh: "展示主要筛选控件。"
+  - id: expanded
+    label_zh: 展开
+    description_zh: "显示更多高级筛选条件。"
+  - id: applied
+    label_zh: 已应用
+    description_zh: "有条件生效并展示标签。"
+
+interactions:
+  - id: apply_filters
+    name_zh: 应用筛选
+    description_zh: "选择条件后应用并刷新结果。"
+    requirements_zh:
+      - "应用后展示已选标签，并提供一键清空。"
+  - id: save_preset
+    name_zh: 保存预设
+    description_zh: "将当前条件保存为预设。"
+  - id: clear_all
+    name_zh: 清空
+    description_zh: "清除所有条件并恢复默认。"
+
+accessibility_zh:
+  - "控件可聚焦，标签可通过键盘删除。"
+
+config_options:
+  - id: preset_scope
+    name_zh: 预设范围
+    description_zh: "个人/团队共享。"
+    allowed_values: ["personal", "team"]
+  - id: visibility
+    name_zh: 可见性
+    description_zh: "默认展开/折叠。"
+    allowed_values: ["expanded", "collapsed"]
+
+meta:
+  related_lingjing_core_classes:
+    - "filter-bar"

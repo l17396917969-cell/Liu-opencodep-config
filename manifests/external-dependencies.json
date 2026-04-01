@@ -1,0 +1,89 @@
+{
+  "version": "1.0.0",
+  "description": "外部依赖清单 - 需要用户手动安装的系统依赖",
+  "dependencies": {
+    "system": [
+      {
+        "name": "node",
+        "display_name": "Node.js",
+        "check_cmd": "node --version",
+        "min_version": "18.0.0",
+        "required": false,
+        "purpose": "运行可选的 Node.js 脚本（如 lint 工具）",
+        "install_guide": {
+          "macos": "brew install node",
+          "windows": "winget install OpenJS.NodeJS 或从 https://nodejs.org 下载安装包",
+          "linux_apt": "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs",
+          "linux_yum": "curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash - && sudo yum install -y nodejs"
+        }
+      },
+      {
+        "name": "python3",
+        "display_name": "Python 3",
+        "check_cmd": "python3 --version",
+        "min_version": "3.9.0",
+        "required": true,
+        "purpose": "运行安装脚本和部分 skill 工具",
+        "install_guide": {
+          "macos": "brew install python@3.11",
+          "windows": "winget install Python.Python.3.11 或从 https://python.org 下载",
+          "linux": "sudo apt-get install python3 python3-pip -y"
+        }
+      },
+      {
+        "name": "git",
+        "display_name": "Git",
+        "check_cmd": "git --version",
+        "min_version": "2.30.0",
+        "required": true,
+        "purpose": "克隆仓库和更新 skills",
+        "install_guide": {
+          "macos": "xcode-select --install 或 brew install git",
+          "windows": "winget install Git.Git 或从 https://git-scm.com 下载",
+          "linux": "sudo apt-get install git -y"
+        }
+      }
+    ],
+    "npm_global": [
+      {
+        "name": "agent-browser",
+        "package": "agent-browser",
+        "check_cmd": "agent-browser --version",
+        "install_cmd": "npm install -g agent-browser",
+        "required": false,
+        "purpose": "Browser automation for agent-browser skill",
+        "related_skill": "agent-browser"
+      },
+      {
+        "name": "opencode",
+        "package": "opencode",
+        "check_cmd": "opencode --version",
+        "install_cmd": "npm install -g opencode",
+        "required": true,
+        "purpose": "OpenCode CLI 工具",
+        "note": "必须先安装 opencode 才能使用本配置"
+      }
+    ],
+    "pip": [
+      {
+        "name": "uv",
+        "package": "uv",
+        "check_cmd": "uv --version",
+        "install_cmd": "pip install uv",
+        "required": false,
+        "purpose": "快速的 Python 包管理器（推荐）"
+      }
+    ],
+    "mcp_servers": [
+      {
+        "name": "minimax-coding-plan-mcp",
+        "package": "minimax-coding-plan-mcp",
+        "install_cmd": "uvx minimax-coding-plan-mcp",
+        "check_cmd": "uvx minimax-coding-plan-mcp --help",
+        "required": false,
+        "purpose": "MiniMax 模型提供商的 MCP 服务器",
+        "note": "配置文件中会自动使用 uvx 调用"
+      }
+    ]
+  }
+}

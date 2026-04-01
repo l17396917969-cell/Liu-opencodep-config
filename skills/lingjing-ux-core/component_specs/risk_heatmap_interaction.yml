@@ -1,0 +1,62 @@
+id: risk_heatmap_interaction
+name_zh: 风险热力图组件交互规范
+summary_zh: >
+  用于全局态势感知，通过颜色深浅及区块大小表示不同业务维度（如：供应商、物流路径、设备组）的风险等级。
+  支持从全局热力图向特定风险点的多级钻取。
+
+states:
+  - id: loading
+    label_zh: 加载中
+    description_zh: "正在计算热力权重及坐标分布，显示呼吸态背景。"
+  - id: idle
+    label_zh: 默认
+    description_zh: "展示各区域风险分布，无特定选中项。"
+  - id: hovering
+    label_zh: 悬停预览
+    description_zh: "鼠标滑过区块，区块边框高亮，并弹出悬浮窗展示具体指标。"
+  - id: active
+    label_zh: 已选中
+    description_zh: "点击区块，区块获得焦点，同时触发侧边栏详情联动。"
+  - id: drilling
+    label_zh: 钻取中
+    description_zh: "用户点击‘查看明细’，进入下一级热力子图，执行缩放平滑动画。"
+  - id: exception
+    label_zh: 计算异常
+    description_zh: "数据源断开或权重计算错误，展示灰色占位状态。"
+
+interactions:
+  - id: hover_tooltip
+    name_zh: 悬浮窗详情
+    description_zh: "展示区块名、风险分值、关键预警指标（KPI）。"
+    requirements_zh:
+      - "Tooltip 响应延迟 ≤ 150ms。"
+      - "支持自适应位置，避免遮挡区块本身。"
+  - id: click_drilldown
+    name_zh: 深度钻取
+    description_zh: "点击区块进入细分视图。"
+    requirements_zh:
+      - "必须提供‘返回上一级’的路径导航。"
+      - "钻取过程应保持视觉焦点的一致性（Zoom 动画）。"
+  - id: color_mapping
+    name_zh: 颜色语义映射
+    description_zh: "颜色深浅与风险分值线性对应。"
+    requirements_zh:
+      - "必须支持红、橙、黄、绿、蓝等符合航空标准的语义色。"
+      - "提供显式的热力图例 (Legend)。"
+
+accessibility_zh:
+  - "Support Tab Navigation: 支持通过键盘在不同风险块之间切换焦点。"
+  - "ARIA Labels: 每个区块需包含描述性 aria-label（如：‘上海仓 - 高风险 - 85 分’）。"
+  - "Color Accessibility: 提供‘色盲模式’，通过纹理差异区分风险等级。"
+
+performance_constraints:
+  fps: "在高密度区块（≥ 500 个）展示时，保持渲染帧率 ≥ 30fps。"
+  render_cost: "单次重绘耗时 ≤ 100ms。"
+
+meta:
+  related_lingjing_core_classes:
+    - "visualization-components"
+    - "risk-heatmap"
+  notes_zh:
+    - "针对航空系统，建议每 5 分钟自动刷新一次权重分布。"
+    - "热力图必须支持响应式缩放，确保在大屏和小屏下均能识别关键风险点。"

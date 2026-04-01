@@ -1,0 +1,28 @@
+auto_check_rules:
+  - id: rule_missing_audit
+    description_zh: "检查 ux_spec 是否包含必选的审计项"
+    target: "ux_spec.dev_handoff.tracking_requirements_zh"
+    logic: "length > 0"
+    severity: "error"
+
+  - id: rule_illegal_state
+    description_zh: "检查组件状态是否在 interaction_modes 中定义"
+    target: "pages[*].component_roles[*].states"
+    logic: "subset_of(associated_mode.states)"
+    severity: "warning"
+
+  - id: rule_high_latency
+    description_zh: "检查性能约束是否超过 300ms"
+    target: "performance_constraints.ui_latency"
+    logic: "value <= 300"
+    severity: "warning"
+
+  - id: rule_compliance_check
+    description_zh: "强制校验 FAA/EASA 合规勾选项"
+    target: "ux_spec.compliance_checkpoints"
+    logic: "includes_all(mandatory_checkpoints)"
+    severity: "error"
+
+execution_environment:
+  engine: "JSON Schema Validator + Custom Regex"
+  report_format: "YAML Summary"

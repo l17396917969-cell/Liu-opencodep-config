@@ -1,0 +1,53 @@
+id: hero-cta
+name_zh: Hero 区 CTA 交互规范
+summary_zh: >
+  首屏 Hero 的主/次 CTA 及其反馈，确保快速理解价值并引导下一步。
+
+states:
+  - id: default
+    label_zh: 默认
+    description_zh: "可点击，文案清晰，含次 CTA。"
+  - id: loading
+    label_zh: 提交中
+    description_zh: "展示加载/禁用，防止重复触发。"
+  - id: disabled
+    label_zh: 不可用
+    description_zh: "因条件未满足或网络不可用暂时禁用。"
+
+interactions:
+  - id: primary_click
+    name_zh: 主 CTA 点击
+    description_zh: "触发锚点滚动或打开表单/抽屉。"
+    requirements_zh:
+      - "触发后立即给出视觉与文案反馈。"
+      - "如需加载接口，展示 loading 状态并防抖。"
+  - id: secondary_click
+    name_zh: 次 CTA 点击
+    description_zh: "提供低摩擦路径，如下载资料或查看视频。"
+    requirements_zh:
+      - "跳转或下载前确认文件大小/格式。"
+  - id: failure_recover
+    name_zh: 失败兜底
+    description_zh: "当 CTA 关联请求失败时的处理。"
+    requirements_zh:
+      - "提示失败原因，提供重试/备用渠道（邮件/电话）。"
+
+accessibility_zh:
+  - "按钮支持键盘触发与聚焦样式。"
+
+config_options:
+  - id: primary_target
+    name_zh: 主 CTA 目标
+    description_zh: "主 CTA 行为类型。"
+    allowed_values: ["anchor", "modal", "external_link"]
+  - id: secondary_behavior
+    name_zh: 次 CTA 行为
+    description_zh: "备用路径类型。"
+    allowed_values: ["download", "video", "doc"]
+
+meta:
+  related_lingjing_core_classes:
+    - "website-hero"
+    - "website-btn-primary"
+  notes_zh:
+    - "UI 样式与动画由 UI 技能包提供，此处仅描述行为。"

@@ -1,0 +1,31 @@
+id: procurement_approval
+name_zh: 军品采购审批任务流
+scene: military_procurement_approval
+summary_zh: >
+  描述军品采购申请从发起、部门审核、领导审批到结果归档的标准任务流，
+  强调多级把关与合规记录。
+
+steps:
+  - id: request_submit
+    name_zh: 申请发起
+    from_mode: approval_workflow
+    description_zh: "申请人在系统中填写军品采购申请表并提交，完成初步信息校验。"
+  - id: dept_review
+    name_zh: 部门审核
+    from_mode: approval_workflow
+    description_zh: "业务部门负责人审核需求合理性、预算与物资类别。"
+  - id: compliance_review
+    name_zh: 合规审查
+    from_mode: approval_workflow
+    description_zh: "合规或纪检部门进行制度与法规层面的审查，必要时要求补充材料。"
+  - id: leadership_approval
+    name_zh: 领导审批
+    from_mode: approval_workflow
+    description_zh: "具备签批权限的领导根据前序意见做出最终批准或驳回决定。"
+  - id: result_archive
+    name_zh: 结果归档
+    from_mode: approval_workflow
+    description_zh: "将审批结果与关键材料归档，并将通过的申请推送到后续执行系统。"
+
+notes_zh:
+  - "具体审批节点数量和顺序可按单位制度配置，本任务流描述的是典型骨架。"

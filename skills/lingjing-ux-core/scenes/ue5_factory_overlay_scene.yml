@@ -1,0 +1,176 @@
+version: 0.1.0
+updated: 2026-03-23
+
+design_request:
+  id: ue5-overlay-001
+  business_context_zh: "面向数字孪生工厂与态势监控场景，构建叠加于 UE5 三维视口上方的 Web 信息展示层。"
+  product_scene: "ops-console"
+  target_scene_id: "ue5_factory_overlay_scene"
+  roles:
+    - id: operations_commander
+      name_zh: "运控指挥员"
+    - id: maintenance_engineer
+      name_zh: "运维工程师"
+  constraints_zh:
+    - "主界面采用深色驾驶舱/数字孪生风。"
+    - "Marker 默认轻量点位，选中后展开卡片。"
+    - "主界面高密度，详情面板中密度。"
+    - "动效强度为中等，告警反馈需明显。"
+  non_goals_zh:
+    - "不定义 UE5 原生 UMG/蓝图控件实现。"
+    - "不覆盖 XR 与移动端专项适配。"
+
+scene:
+  id: ue5_factory_overlay_scene
+  name_zh: UE5 工厂 Overlay 场景
+  summary_zh: "三维主视口 + Web Overlay 组件联动的最小闭环场景。"
+  ux_goals_zh:
+    - "在不遮挡核心视区的前提下提供高密度监控与告警处置能力。"
+    - "保证选中对象、告警、图层切换在 Web 与 UE5 间语义一致。"
+    - "支持开发态 mock 与生产态内嵌共用一套规范。"
+  interaction_modes:
+    - id: web_overlay_runtime
+      purpose_zh: "统一运行模式、同步策略与降级规则。"
+    - id: real_time_monitor
+      purpose_zh: "承载高频监控、告警分级与处置。"
+    - id: world_space_ui
+      purpose_zh: "将三维对象映射为轻量锚点与展开卡片。"
+  main_flow:
+    id: ue5_overlay_monitor_handle
+    description_zh: "场景就绪 → 监控巡检 → 对象选中/告警触发 → 详情分析 → 图层操作/处置 → 恢复与审计"
+
+references:
+  patterns:
+    runtime: "patterns/web_overlay_runtime.yml"
+    layers: "patterns/information_layer_hierarchy.yml"
+    screen_space: "patterns/screen_space_overlay.yml"
+  schema: "schema/ue5_web_overlay_contract.yml"
+  interface: "interfaces/ue5_web_bridge.json"
+
+flows:
+  - id: ue5_overlay_monitor_handle
+    name_zh: UE5 Overlay 监控处置流
+    steps:
+      - id: scene_ready
+        name_zh: 场景初始化完成
+      - id: monitor
+        name_zh: 常态巡检与告警观察
+      - id: object_focus
+        name_zh: 对象选中与聚焦
+      - id: analyze
+        name_zh: 详情分析与趋势查看
+      - id: act
+        name_zh: 图层切换/业务处置
+      - id: recover
+        name_zh: 恢复同步与审计留痕
+
+pages:
+  - id: ue5_overlay_dashboard
+    name_zh: UE5 Overlay 标准主界面
+    route_path: "/ue5/overlay/dashboard"
+    page_goal_zh: "一屏完成监控、定位、分析与处置。"
+    zones:
+      - id: topbar
+        name_zh: 顶部 HUD
+        responsibility_zh: "展示场景标题、时间、桥接状态、视角快捷操作。"
+      - id: left_alert_stack
+        name_zh: 左侧告警中心
+        responsibility_zh: "展示高优先级告警、筛选、快速处置入口。"
+      - id: center_marker_layer
+        name_zh: 中部世界锚点层
+        responsibility_zh: "承载对象点位、选中展开与离屏引导。"
+      - id: right_detail
+        name_zh: 右侧详情面板
+        responsibility_zh: "展示选中对象指标、趋势、历史与业务动作。"
+      - id: floating_layer_switcher
+        name_zh: 浮动图层开关
+        responsibility_zh: "控制图层显隐并同步反馈。"
+      - id: critical_banner
+        name_zh: 关键告警带
+        responsibility_zh: "承载 degraded/critical 提示。"
+    component_roles:
+      - role: topbar_hud
+        lingjing_core_class: "topbar-hud"
+        component_spec_id: "topbar_hud_interaction"
+        mode_id: "web_overlay_runtime"
+        states: ["default", "compact", "context_locked", "degraded"]
+        interactions_zh:
+          - "支持视角切换、状态揭示、对象聚焦反馈。"
+      - role: world_marker
+        lingjing_core_class: "world-marker"
+        component_spec_id: "world_marker_interaction"
+        mode_id: "world_space_ui"
+        states: ["normal", "warning", "critical", "selected", "occluded", "offscreen", "collapsed"]
+        interactions_zh:
+          - "点击点位聚焦对象并展开卡片。"
+          - "critical 优先级高于普通点位。"
+      - role: detail_panel
+        lingjing_core_class: "detail-panel"
+        component_spec_id: "detail_panel_interaction"
+        mode_id: "real_time_monitor"
+        states: ["hidden", "loading", "visible", "pinned", "stale", "error"]
+        interactions_zh:
+          - "支持固定、刷新、查看趋势与进入业务页。"
+      - role: alert_center
+        lingjing_core_class: "alert-center"
+        component_spec_id: "alert_center_interaction"
+        mode_id: "real_time_monitor"
+        states: ["normal", "focused", "acknowledged", "escalated", "muted", "resolved"]
+        interactions_zh:
+          - "支持聚焦、确认、升级、解决。"
+      - role: layer_switcher
+        lingjing_core_class: "layer-switcher"
+        component_spec_id: "layer_switcher_interaction"
+        mode_id: "web_overlay_runtime"
+        states: ["on", "off", "syncing", "disabled", "mixed"]
+        interactions_zh:
+          - "支持图层切换、分组开关与权限提示。"
+    action_targets:
+      - event: "object.selected"
+        source_role: "world_marker"
+        target_type: "panel_sync"
+        description_zh: "同步 Detail Panel 与 TopBar 的上下文。"
+      - event: "alert.raised"
+        source_role: "alert_center"
+        target_type: "state_sync"
+        description_zh: "同步 Marker、Detail Panel、TopBar 风险状态。"
+      - event: "ui.toggle_layer"
+        source_role: "layer_switcher"
+        target_type: "bridge"
+        description_zh: "发起图层显隐切换请求。"
+
+navigation:
+  entry_page_id: "ue5_overlay_dashboard"
+  global_navigation:
+    - label_zh: "Overlay 主界面"
+      target_id: "ue5_overlay_dashboard"
+  page_links: []
+
+
+dev_handoff:
+  api_expectations_zh:
+    - "UE5 侧需提供 object.selected、object.updated、alert.raised、layer.visibility.changed 的稳定事件。"
+    - "详情数据接口需返回 primary_metrics、secondary_metrics、trend_data 与 last_updated_at。"
+  edge_cases_zh:
+    - "scene.ready 前页面必须显示初始化占位，不得抛出空对象错误。"
+    - "桥接中断时需展示 degraded 标记并冻结不可信状态。"
+    - "对象离屏或遮挡时 Marker 需切换到简化态。"
+  tracking_requirements_zh:
+    - "记录告警确认、升级、解决、图层切换、焦点切换操作。"
+    - "记录 critical → resolved 的完整链路及操作人。"
+  open_questions_zh:
+    - "生产态是否需要支持多场景切换的跨场景缓存策略？"
+
+meta:
+  generated_by: "lingjing-ux-core"
+  linked_scene_file: "scenes/ue5_factory_overlay_scene.yml"
+  linked_pattern_files:
+    - "patterns/web_overlay_runtime.yml"
+    - "patterns/information_layer_hierarchy.yml"
+    - "patterns/screen_space_overlay.yml"
+  linked_component_spec_files:
+    - "component_specs/topbar_hud_interaction.yml"
+    - "component_specs/world_marker_interaction.yml"
+    - "component_specs/detail_panel_interaction.yml"
+    - "component_specs/alert_center_interaction.yml"
+    - "component_specs/layer_switcher_interaction.yml"

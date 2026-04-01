@@ -1,0 +1,37 @@
+id: cta_conversion
+scene: website
+dimension: business_process
+name_zh: 转化引导模式
+summary_zh: >
+  用于表单提交、预约演示、下载资料等转化目标场景，
+  通过多步引导与信任强化降低放弃率。
+
+goals_zh:
+  - "提升主 CTA 点击率与表单完成率。"
+  - "清晰展示价值交换（用户获得什么，成本是什么）。"
+  - "在提交失败/等待时提供明确反馈与兜底渠道。"
+
+key_interactions_zh:
+  - "主 CTA 支持锚点滚动或弹出表单抽屉；表单字段逐步显示，先收集低摩擦信息（姓名、邮箱），再收集可选信息。"
+  - "表单实时校验，必填项清晰标注；提交中显示加载状态，可重试。"
+  - "提供隐私与合规提示（可弱化语气，但需可见）。"
+  - "成功后展示感谢页或轻量 Toast，并给出后续动作（预约日程、下载、加入社群）。"
+  - "失败时保留用户已填数据，并提供备用联络方式。"
+
+applicable_scenarios_zh:
+  - "试用申请、预约演示、白皮书下载。"
+  - "活动报名、线索收集。"
+
+ui_components:
+  - role: primary_cta
+    lingjing_core_class: "website-btn-primary"
+  - role: lead_form
+    lingjing_core_class: "website-cta-card"
+  - role: consent_hint
+    lingjing_core_class: "content-card"
+  - role: success_banner
+    lingjing_core_class: "content-card"
+
+notes_zh:
+  - "表单字段分组呈现，减少首屏认知负荷；必要时提供分段进度。"
+  - "所有 CTA 必须具备悬停与点击反馈，避免“无响应”错觉。"

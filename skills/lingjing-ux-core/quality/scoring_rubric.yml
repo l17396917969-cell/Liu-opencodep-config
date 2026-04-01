@@ -1,0 +1,66 @@
+id: ux_quality_scoring_rubric
+version: 1.0.0
+description_zh: >
+  灵境 UX 质量评分标准，用于量化评估设计方案的专业性、合规性与易用性。
+  总分 100 分，及格线 80 分。
+
+dimensions:
+  - id: compliance
+    name_zh: 行业合规性 (Compliance)
+    weight: 30
+    criteria:
+      - label: "是否完全符合 FAA/EASA 检查清单强制项"
+        points: 20
+      - label: "是否具备完整的审计追踪 (Audit Trail) 定义"
+        points: 10
+
+  - id: interaction_fluency
+    name_zh: 交互流畅度 (Fluency)
+    weight: 25
+    criteria:
+      - label: "核心任务点击次数是否 ≤ 3 次"
+        points: 10
+      - label: "状态反馈时延是否 ≤ 200ms (UX 定义值)"
+        points: 10
+      - label: "异常处理路径是否闭环"
+        points: 5
+
+  - id: accessibility
+    name_zh: 无障碍与易用性 (Accessibility)
+    weight: 20
+    criteria:
+      - label: "是否符合 WCAG 2.1 AA 对比度与标签要求"
+        points: 10
+      - label: "是否支持全键盘操作 (Tab/Enter)"
+        points: 10
+
+  - id: performance
+    name_zh: 性能与扩展性 (Performance)
+    weight: 15
+    criteria:
+      - label: "2D UI 层预期帧率是否 ≥ 60fps"
+        points: 10
+      - label: "是否定义了数据预加载与缓存策略"
+        points: 5
+
+  - id: consistency
+    name_zh: 规范一致性 (Consistency)
+    weight: 10
+    criteria:
+      - label: "是否 100% 命中 component_specs 中的标准状态"
+        points: 10
+
+scoring_levels:
+  - range: [90, 100]
+    label: "卓越 (Excellent)"
+    action: "直接发布"
+  - range: [80, 89]
+    label: "合格 (Good)"
+    action: "微调后发布"
+  - range: [0, 79]
+    label: "不合格 (Fail)"
+    action: "强制返工"
+
+automation_hooks:
+  - trigger: "On ux_spec Generation"
+    check: "compliance_check + state_machine_integrity"

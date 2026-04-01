@@ -1,0 +1,112 @@
+id: alert_center_interaction
+name_zh: Alert Center 交互规范
+summary_zh: >
+  面向高密度实时告警列表，负责告警分级、筛选、确认、升级、解决与联动定位。
+  该组件是主界面的高频操作区，需要兼顾扫描效率与操作安全性。
+
+states:
+  - id: normal
+    label_zh: 常规列表态
+    description_zh: "展示实时告警流、筛选条件与基础统计。"
+  - id: focused
+    label_zh: 聚焦态
+    description_zh: "用户聚焦单条告警时高亮对应对象并允许快速处置。"
+  - id: acknowledged
+    label_zh: 已确认态
+    description_zh: "告警已被人工确认，保留可追溯记录。"
+  - id: escalated
+    label_zh: 已升级态
+    description_zh: "告警升级为更高优先级或转派上级。"
+  - id: muted
+    label_zh: 静默态
+    description_zh: "视觉仍保留，但声音/强提醒被抑制。"
+  - id: resolved
+    label_zh: 已解决态
+    description_zh: "告警已关闭，列表中保留审计痕迹。"
+
+entry_conditions:
+  - "alert.raised 新增告警进入 normal。"
+  - "用户选择或定位某条告警进入 focused。"
+  - "确认、升级、静默、解决操作驱动对应状态迁移。"
+
+exit_conditions:
+  - "取消聚焦或切换到其他告警后退出 focused。"
+  - "resolved 可转入历史视图或被过滤隐藏。"
+
+interactions:
+  - id: focus_alert
+    name_zh: 聚焦告警
+    description_zh: "点击告警项联动 World Marker 与 Detail Panel。"
+    requirements_zh:
+      - "单击即可完成对象定位，不得要求多级展开。"
+  - id: acknowledge_alert
+    name_zh: 确认告警
+    description_zh: "人工确认已知告警，记录操作人与时间。"
+    requirements_zh:
+      - "确认后需保留审计信息与状态变化痕迹。"
+  - id: escalate_alert
+    name_zh: 升级告警
+    description_zh: "将告警升级并触发更高优先级联动。"
+    requirements_zh:
+      - "critical 升级动作需显式确认，防止误触。"
+  - id: resolve_alert
+    name_zh: 关闭告警
+    description_zh: "将告警标记为已解决。"
+    requirements_zh:
+      - "关闭后应同步刷新 marker 与 detail 状态。"
+
+bridge_events:
+  subscribe:
+    - alert.raised
+    - alert.cleared
+    - object.selected
+    - scene.degraded
+  publish:
+    - ui.focus_object
+    - ui.ack_alert
+
+data_contract:
+  consume_fields:
+    - alert.alert_id
+    - alert.severity
+    - alert.alert_status
+    - alert.raised_at
+    - alert.recommendation
+    - object.object_id
+    - object.object_name
+  expose_fields:
+    - active_alert_id
+    - filter_state
+
+accessibility_zh:
+  - "告警列表必须具备列表语义，并支持键盘逐项浏览。"
+  - "严重级别需文本可见，如 P1/P0、critical/warning。"
+  - "确认、升级、关闭等动作必须有防误触设计与反馈。"
+
+config_options:
+  - id: default_filter
+    name_zh: 默认筛选器
+    description_zh: "决定初始展示的告警范围。"
+    allowed_values: ["all", "critical_only", "unresolved_only"]
+  - id: auto_focus_policy
+    name_zh: 自动聚焦策略
+    description_zh: "定义新告警是否自动抢占焦点。"
+    allowed_values: ["never", "critical_only", "all"]
+
+performance_constraints:
+  ui_latency: "<= 150ms"
+  max_visible_items: "主列表建议首屏 8-12 条"
+
+meta:
+  related_lingjing_core_classes:
+    - "alert-center"
+    - "alert-center__drawer"
+    - "alert-center__drawer-summary"
+    - "alert-center__drawer-content"
+    - "alert-center__severity"
+    - "alert-center__badge"
+    - "alert-center__action"
+  notes_zh:
+    - "高密度主界面中，Alert Center 应优先服务扫描和定位，再提供操作。"
+    - "DOM 结构强制要求：每条告警项必须使用 <details class='alert-center__drawer'> + <summary class='alert-center__drawer-summary'>，禁止用普通 <div> 替代。<summary> 内固定三列：① severity 圆点（alert-center__severity）② 标题区（alert-center__drawer-headline > p.alert-center__item-title）③ 状态值（alert-center__drawer-state）。详情区放在 <details> 内的 .alert-center__drawer-content 中。"
+    - "严重级别修饰符：alert-center__drawer--critical（红）/ --warning（橙）/ 无修饰符（正常）；alert-center__severity--critical / --warning / --success / --info 对应圆点颜色。"

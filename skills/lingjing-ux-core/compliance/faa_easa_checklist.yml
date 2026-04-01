@@ -1,0 +1,57 @@
+id: faa_easa_compliance_checklist
+name_zh: FAA/EASA 行业合规检查清单
+description_zh: >
+  针对航空零部件制造、维修 (MRO) 与供应链管理的全球最高标准（FAA-14 CFR, EASA Part 145）制定的交互合规底线。
+
+goals_zh:
+  - "将繁琐的行业法规转化为可量化、可自动执行的 UI/UX 检查点。"
+  - "在设计阶段即识别出不符合适航要求的风险点。"
+  - "确保每个适航指令 (AD) 均在系统中闭环执行并记录。"
+
+checkpoints:
+  - id: id_traceability
+    label_zh: 1. 零部件唯一标识溯源 (Traceability)
+    regulation_ref: "FAA 21.321 / EASA Part 21"
+    ux_rule: "所有航材类数据面板必须展示 PN (Part Number) 与 SN (Serial Number)。"
+    mandatory: true
+    violation_response: "阻断提交，提示‘PN/SN 缺失或不符合正则’。"
+
+  - id: signature_verification
+    label_zh: 2. 电子签名法律效力 (Digital Signature)
+    regulation_ref: "FAA AC 120-78A"
+    ux_rule: "涉及质量放行、适航批准 (Form 1 / 8130-3) 的审批，必须调用‘二次身份验证’模式。"
+    mandatory: true
+    violation_response: "标记为‘未通过合规校验’，禁止发放出库单。"
+
+  - id: status_indicators
+    label_zh: 3. 状态指示一致性 (Standardized Status)
+    regulation_ref: "FAA AC 20-175"
+    ux_rule: "禁止使用非标准配色表示风险。P0 级异常强制使用红闪 (.state-critical)。"
+    mandatory: true
+    violation_response: "UI 质量检查报告中标注‘非法视觉反馈’。"
+
+  - id: audit_integrity
+    label_zh: 4. 审计日志防篡改 (Immutable Audit)
+    regulation_ref: "EASA Part 145.A.55"
+    ux_rule: "审计详情页禁止提供‘删除’或‘编辑’审计流水的功能。"
+    mandatory: true
+    violation_response: "组件库底层禁用该模块的 Delete Action。"
+
+  - id: language_accessibility
+    label_zh: 5. 语言与术语一致性 (Consistency)
+    regulation_ref: "ICAO Doc 9713"
+    ux_rule: "关键术语（如：Serviceable, Unserviceable, As-is）必须同时提供英文标准术语，不可仅用中文。"
+    mandatory: false
+    violation_response: "提示‘建议补充行业标准术语对照’。"
+
+validation_workflow:
+  - step: 1
+    action: "扫描交互模式 (Patterns) 是否包含必选合规点。"
+  - step: 2
+    action: "在 UI 落地阶段，对比样式类名与合规配色方案。"
+  - step: 3
+    action: "输出《FAA/EASA 合规差异性报告》，标注满足项与改进建议。"
+
+notes_zh:
+  - "本清单是灵境 UX 技能包的‘红线’，任何模式设计均不得违背本清单的强制项。"
+  - "定期更新适航指令 (AD) 库，确保检查逻辑的时效性。"

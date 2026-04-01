@@ -1,0 +1,60 @@
+id: audit_trail
+name_zh: 审计追踪模式
+summary_zh: >
+  全生命周期记录业务系统中关键操作、时间、责任人、终端、操作前后数据对比，为航空合规审计、责任溯源提供结构化证据。
+
+goals_zh:
+  - "满足 FAA/EASA、军工保密等内外部审计的合规要求。"
+  - "记录关键业务操作（如：库存变更、审批、权限调整）的全生命周期轨迹。"
+  - "支持一键比对操作前后的数据快照 (Data Snapshot)，直观展示差异。"
+
+states:
+  - id: recorded
+    label_zh: 已记录 (Recorded)
+    description_zh: "后台自动静默捕获该项操作流，不干扰用户主流程。"
+
+  - id: suspicious_alert
+    label_zh: 异常追踪 (Suspicious Alert)
+    description_zh: "检测到非常规操作（如：异地、非工作时间大规模导出）。"
+    response: "系统自动标记并通知安全管理员，必要时阻断当前操作。"
+
+  - id: verified
+    label_zh: 已核验 (Verified)
+    description_zh: "经审计员复核通过的合规操作。"
+
+  - id: snapshot_diff
+    label_zh: 快照对比 (Snapshot Diff)
+    description_zh: "多版本数据同时展示，以红色/绿色高亮具体变动字段。"
+
+audit_fields:
+  - timestamp: "精确至毫秒 (ISO 8601)"
+  - actor: "工号、姓名、角色、所属单位"
+  - terminal: "IP、MAC、设备型号、地理位置"
+  - action: "创建、修改、删除、导出、查询、打印"
+  - resource: "受影响的业务对象 ID (如：订单号、料号)"
+  - payload: "操作前 (Before) 与操作后 (After) 的 JSON 完整快照"
+
+key_interactions_zh:
+  - "轨迹时间轴 (Audit Timeline)：以卡片形式在侧边栏或独立页展示操作全过程。"
+  - "一键溯源 (One-click Trace)：在业务单据详情页，点击‘查看操作记录’，弹出覆盖该单据的历史审计流。"
+  - "导出审计报告 (Export Audit Report)：支持按时间段、人员、模块生成符合行业标准的审计 PDF 文档。"
+  - "差异比对视图 (Diff View)：类似代码仓库的 Diff，左右对照展示修改前后的具体字段。"
+
+applicable_scenarios_zh:
+  - "所有涉及审批结论、金额变更、安全设置的功能模块。"
+  - "航空主轴箱维修记录（记录每次测量值的微调历史）。"
+  - "军品采购供应商准入评分变更（记录评分人及其打分依据）。"
+
+ui_components:
+  - role: timeline
+    lingjing_core_class: "activity-timeline"
+  - role: diff_viewer
+    lingjing_core_class: "advanced-data-table"
+  - role: side_panel
+    lingjing_core_class: "drawer"
+  - role: badge
+    lingjing_core_class: "status-badge-group"
+
+notes_zh:
+  - "审计数据的完整性受区块链或强一致性数据库保护，不可被普通业务人员篡改。"
+  - "UX 侧重于‘让审计过程可见、可理解、可分析’，提高审计效率。"

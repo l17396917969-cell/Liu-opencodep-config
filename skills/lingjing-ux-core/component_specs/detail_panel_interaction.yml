@@ -1,0 +1,108 @@
+id: detail_panel_interaction
+name_zh: Detail Panel 交互规范
+summary_zh: >
+  面向选中对象的右侧详情面板，负责承载结构化指标、趋势、历史与业务动作。
+  其阅读密度应低于主监控区，以便用户在高压态势中快速定位重点。
+
+states:
+  - id: hidden
+    label_zh: 隐藏态
+    description_zh: "无选中对象或用户主动收起时不展示内容。"
+  - id: loading
+    label_zh: 加载态
+    description_zh: "对象切换或明细刷新时展示骨架与最小上下文。"
+  - id: visible
+    label_zh: 可见态
+    description_zh: "展示对象当前详情、指标、趋势与辅助动作。"
+  - id: pinned
+    label_zh: 固定态
+    description_zh: "用户固定当前对象后，面板不随 hover 或普通选中变化。"
+  - id: stale
+    label_zh: 数据陈旧态
+    description_zh: "显示最后更新时间与 stale 标记，但保留最近可信数据。"
+  - id: error
+    label_zh: 异常态
+    description_zh: "接口失败或桥接中断时展示错误提示与重试入口。"
+
+entry_conditions:
+  - "object.selected 后进入 loading，再进入 visible。"
+  - "用户执行固定操作后进入 pinned。"
+  - "数据超时进入 stale；获取失败进入 error。"
+
+exit_conditions:
+  - "取消选中或关闭动作后由 visible 返回 hidden。"
+  - "解除固定后由 pinned 跟随最新选中对象变化。"
+
+interactions:
+  - id: pin_context
+    name_zh: 固定上下文
+    description_zh: "固定当前对象详情，避免被其他 hover/选中打断。"
+    requirements_zh:
+      - "固定态必须可明显识别，并支持一键解除。"
+  - id: refresh_detail
+    name_zh: 刷新详情
+    description_zh: "主动请求拉取当前对象最新指标与趋势。"
+    requirements_zh:
+      - "刷新期间保留旧数据与 loading 反馈，不闪空。"
+  - id: open_business_action
+    name_zh: 打开业务动作
+    description_zh: "从详情面板进入工单、处置页或业务系统。"
+    requirements_zh:
+      - "跳转动作需带 object_id 和上下文信息。"
+  - id: inspect_trend
+    name_zh: 查看趋势
+    description_zh: "切换趋势、历史、操作记录等分组信息。"
+    requirements_zh:
+      - "分组切换不得改变面板宽度与布局骨架。"
+
+bridge_events:
+  subscribe:
+    - object.selected
+    - object.updated
+    - alert.raised
+    - scene.degraded
+  publish:
+    - ui.open_detail
+    - ui.navigate_business_page
+
+data_contract:
+  consume_fields:
+    - object.object_id
+    - object.object_name
+    - object.risk_level
+    - detail.primary_metrics
+    - detail.secondary_metrics
+    - detail.trend_data
+    - detail.last_updated_at
+    - detail.stale
+  expose_fields:
+    - pinned
+    - active_tab
+    - selected_object_id
+
+accessibility_zh:
+  - "面板标题、刷新、固定、关闭等操作必须具备明确 aria-label。"
+  - "stale / error / critical 状态必须在标题区与内容区至少一处文字可见。"
+  - "指标表格或列表应保持语义结构，支持读屏器逐项读取。"
+
+config_options:
+  - id: default_tab
+    name_zh: 默认标签页
+    description_zh: "定义首次打开时展示的详情分组。"
+    allowed_values: ["overview", "metrics", "trend", "history"]
+  - id: pin_behavior
+    name_zh: 固定策略
+    description_zh: "定义固定态是否允许继续接收局部字段刷新。"
+    allowed_values: ["snapshot_only", "live_update"]
+
+performance_constraints:
+  ui_latency: "<= 180ms"
+  loading_transition: "骨架切换建议 <= 200ms"
+
+meta:
+  related_lingjing_core_classes:
+    - "detail-panel"
+    - "data-panel"
+    - "drawer-shell"
+  notes_zh:
+    - "详情层默认为中密度，不建议堆叠超过 3 组主信息区。"

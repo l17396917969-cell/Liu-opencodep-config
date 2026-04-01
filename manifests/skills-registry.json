@@ -1,0 +1,159 @@
+{
+  "version": "1.0.0",
+  "description": "OpenCode Skills 注册表 - 定义所有可安装的 skills",
+  "last_updated": "2025-04-01",
+  "skills": {
+    "frontend-design": {
+      "name": "frontend-design",
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality",
+      "type": "markdown-only",
+      "source": "skills/frontend-design/",
+      "destination": "{config_dir}/skills/frontend-design/",
+      "size": "small",
+      "dependencies": [],
+      "optional_tools": [],
+      "category": "design"
+    },
+    "agent-browser": {
+      "name": "agent-browser",
+      "description": "Browser automation CLI for AI agents",
+      "type": "markdown-only",
+      "source": "skills/agent-browser/",
+      "destination": "{config_dir}/skills/agent-browser/",
+      "size": "medium",
+      "dependencies": ["agent-browser-cli"],
+      "optional_tools": [],
+      "install_note": "需要全局安装 agent-browser CLI: npm install -g agent-browser",
+      "category": "automation"
+    },
+    "lingjing-ux-core": {
+      "name": "lingjing-ux-core",
+      "description": "灵境航空工业智能平台 UX 技能包 - UE5 Web Overlay / B端系统 / 官网等场景",
+      "type": "resource-bundle",
+      "source": "skills/lingjing-ux-core/",
+      "destination": "{config_dir}/skills/lingjing-ux-core/",
+      "size": "large",
+      "dependencies": [],
+      "optional_tools": {
+        "ux-spec-lint": {
+          "command": "node scripts/ux-spec-lint.js",
+          "requires": "node",
+          "description": "UX 规范类名校验工具"
+        }
+      },
+      "category": "ux-design"
+    },
+    "skill-creator": {
+      "name": "skill-creator",
+      "description": "Guide for creating effective OpenCode skills",
+      "type": "markdown-with-scripts",
+      "source": "skills/skill-creator/",
+      "destination": "{config_dir}/skills/skill-creator/",
+      "size": "medium",
+      "dependencies": [],
+      "optional_tools": {
+        "init_skill": {
+          "command": "python scripts/init_skill.py",
+          "requires": "python",
+          "description": "初始化新 skill 的脚本"
+        },
+        "package_skill": {
+          "command": "python scripts/package_skill.py",
+          "requires": "python",
+          "description": "打包 skill 的脚本"
+        }
+      },
+      "category": "development"
+    },
+    "vibe-stack-guardian": {
+      "name": "vibe-stack-guardian",
+      "description": "Vibe Coding 技术栈合规检查工具",
+      "type": "markdown-only",
+      "source": "skills/vibe-stack-guardian/",
+      "destination": "{config_dir}/skills/vibe-stack-guardian/",
+      "size": "small",
+      "dependencies": [],
+      "category": "development"
+    },
+    "find-skills": {
+      "name": "find-skills",
+      "description": "Helps users discover and install agent skills",
+      "type": "markdown-only",
+      "source": "skills/find-skills/",
+      "destination": "{config_dir}/skills/find-skills/",
+      "size": "small",
+      "dependencies": [],
+      "category": "utility"
+    }
+  },
+  "collections": {
+    "superpowers": {
+      "name": "superpowers",
+      "description": "16个开发超能力 skills 集合",
+      "type": "collection",
+      "source": "skills/superpowers/",
+      "destination": "{config_dir}/skills/superpowers/",
+      "items": [
+        "brainstorming",
+        "writing-plans",
+        "executing-plans",
+        "systematic-debugging",
+        "test-driven-development",
+        "using-git-worktrees",
+        "subagent-driven-development",
+        "dispatching-parallel-agents",
+        "requesting-code-review",
+        "receiving-code-review",
+        "verification-before-completion",
+        "finishing-a-development-branch",
+        "writing-skills",
+        "using-superpowers"
+      ],
+      "size": "large",
+      "dependencies": [],
+      "category": "development"
+    }
+  },
+  "presets": {
+    "minimal": {
+      "name": "最小安装",
+      "description": "仅包含核心配置，无额外 skills",
+      "skills": [],
+      "collections": []
+    },
+    "standard": {
+      "name": "标准安装",
+      "description": "推荐配置，包含常用 skills",
+      "skills": [
+        "frontend-design",
+        "vibe-stack-guardian",
+        "skill-creator",
+        "find-skills"
+      ],
+      "collections": ["superpowers"]
+    },
+    "full": {
+      "name": "完整安装",
+      "description": "所有 skills，包含大型资源包",
+      "skills": [
+        "frontend-design",
+        "agent-browser",
+        "lingjing-ux-core",
+        "vibe-stack-guardian",
+        "skill-creator",
+        "find-skills"
+      ],
+      "collections": ["superpowers"]
+    },
+    "aviation": {
+      "name": "航空工业专用",
+      "description": "针对灵境航空工业平台的专用配置",
+      "skills": [
+        "lingjing-ux-core",
+        "frontend-design",
+        "vibe-stack-guardian"
+      ],
+      "collections": ["superpowers"]
+    }
+  }
+}

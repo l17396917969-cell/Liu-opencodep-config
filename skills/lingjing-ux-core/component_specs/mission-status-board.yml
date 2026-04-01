@@ -1,0 +1,61 @@
+id: mission-status-board
+name_zh: 任务/工单看板组件交互规范
+summary_zh: >
+  用于按状态列展示任务、工单或告警的看板组件，支持拖拽变更状态、
+  快速查看数量与优先级分布，适用于任务协作、维修工单、异常处理等场景。
+
+states:
+  - id: loading
+    label_zh: 加载中
+    description_zh: "正在加载各状态列的数据，显示骨架列与占位卡片。"
+  - id: empty
+    label_zh: 空状态
+    description_zh: "当前筛选条件下某些状态列可能为空，应展示友好的空状态提示。"
+  - id: normal
+    label_zh: 正常
+    description_zh: "各状态列正常展示任务卡片，支持拖拽与点击。"
+  - id: dragging
+    label_zh: 拖拽中
+    description_zh: "用户正在拖拽任务卡片在列之间移动。"
+
+interactions:
+  - id: drag_change_status
+    name_zh: 拖拽变更状态
+    description_zh: "用户通过拖拽任务卡片到另一列来变更任务状态。"
+    requirements_zh:
+      - "拖拽过程中应有明确的目标列高亮与放置位置提示。"
+      - "状态变更前后需有视觉反馈，并在后台记录操作人与时间。"
+      - "如变更状态涉及业务校验（例如禁止跨越某些中间状态），应在拖拽结束时给出错误提示并回退。"
+  - id: card_click
+    name_zh: 卡片点击
+    description_zh: "用户点击任务卡片查看详情或在侧边打开详细面板。"
+    requirements_zh:
+      - "点击卡片时应突出当前选中项，避免与其他选中状态混淆。"
+      - "在详情面板中应展示关键字段（标题、状态、负责人、截止时间等）。"
+  - id: column_summary
+    name_zh: 列汇总
+    description_zh: "在每一列顶部展示该状态下任务数量和可能的优先级分布。"
+    requirements_zh:
+      - "数量变化时应即时更新，保持与底层数据一致。"
+      - "可选地以颜色或标记区分高优先级任务占比。"
+
+accessibility_zh:
+  - "为无法使用拖拽的用户提供替代交互（如在详情中通过下拉菜单变更状态）。"
+  - "为屏幕阅读器提供列名称、任务标题、当前状态等信息。"
+
+config_options:
+  - id: allowed_transitions
+    name_zh: 允许的状态转移
+    description_zh: "控制哪些状态对之间允许通过拖拽直接转换。"
+    allowed_values: ["由具体场景配置为状态对列表，例如: todo->doing, doing->done"]
+  - id: column_order
+    name_zh: 状态列顺序
+    description_zh: "看板中各状态列的展示顺序。"
+    allowed_values: ["由具体场景配置为状态id序列"]
+
+meta:
+  related_lingjing_core_classes:
+    - "mission-status-board"
+  notes_zh:
+    - "具体列的含义与状态枚举由场景或模式（如协作任务模式、维修工单模式）定义。"
+    - "视觉风格由 UI 技能包提供，本规范仅约束交互行为与可配置项。"

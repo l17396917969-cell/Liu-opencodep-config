@@ -1,0 +1,33 @@
+{
+  "_meta": {
+    "linter": "ux-spec-lint.js v1.0.0",
+    "ui_skill_version": "3.1.6"
+  },
+  "file": "examples/ux_spec_military_procurement_approval.yml",
+  "timestamp": "2026-03-25T06:08:54.404Z",
+  "pass": false,
+  "summary": {
+    "total_classes": 5,
+    "pass": 3,
+    "warn": 1,
+    "error": 1
+  },
+  "errors": [
+    {
+      "line": 119,
+      "class": "form-layout",
+      "reason": "not_in_registry",
+      "message": "\"form-layout\" 不在 class_registry.json 中，可能是拼写错误或未收录的类名"
+    }
+  ],
+  "warnings": [
+    {
+      "line": 134,
+      "class": "activity-timeline",
+      "reason": "alias",
+      "message": "\"activity-timeline\" 是别名，应归一化为: \"status-timeline\"",
+      "fix": "status-timeline"
+    }
+  ],
+  "delivery_gate": "FAIL — 存在 ERROR 项，禁止将此 ux_spec 传递给 UI 落地环节，必须先修复"
+}

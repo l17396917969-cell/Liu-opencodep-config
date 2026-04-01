@@ -1,0 +1,57 @@
+id: slide-deck-controller
+name_zh: 幻灯控制器交互规范
+summary_zh: >
+  控制 HTML 演示文稿的播放/跳转/放大，兼顾演讲者节奏与听众可见性。
+
+states:
+  - id: normal
+    label_zh: 正常播放
+    description_zh: "可上一页/下一页，显示当前章节。"
+  - id: spotlight
+    label_zh: 重点高亮
+    description_zh: "放大/高亮当前页的关键数据或区域。"
+  - id: presenter_view
+    label_zh: 演讲者视图
+    description_zh: "仅演讲端可见备注、计时、下一页预览。"
+
+interactions:
+  - id: next_prev
+    name_zh: 翻页
+    description_zh: "快捷键或点击控制上一页/下一页。"
+    requirements_zh:
+      - "翻页有过渡提示，避免误触连续翻多页。"
+  - id: jump_to_section
+    name_zh: 跳转章节
+    description_zh: "通过章节导航或数字键跳转到指定页。"
+    requirements_zh:
+      - "跳转后保持章节高亮，支持返回上一位置。"
+  - id: toggle_spotlight
+    name_zh: 重点高亮切换
+    description_zh: "放大当前图表或数据点。"
+    requirements_zh:
+      - "放大时弱化其他元素，支持 Esc 或再次点击退出。"
+  - id: presenter_notes
+    name_zh: 备注显示
+    description_zh: "演讲者视图中显示备注与计时。"
+    requirements_zh:
+      - "备注与主屏隔离，不外泄给听众。"
+
+accessibility_zh:
+  - "键盘可完成全部翻页与章节跳转。"
+
+config_options:
+  - id: transition_style
+    name_zh: 切换动效
+    description_zh: "幻灯切换的动画风格。"
+    allowed_values: ["none", "fade", "slide"]
+  - id: spotlight_mode
+    name_zh: 高亮方式
+    description_zh: "放大/遮罩/指针等高亮策略。"
+    allowed_values: ["zoom", "mask", "pointer"]
+
+meta:
+  related_lingjing_core_classes:
+    - "presentation-slide-indicators"
+    - "slide-toc-list"
+  notes_zh:
+    - "演讲场景需防误触，建议为快捷键设置防抖。"

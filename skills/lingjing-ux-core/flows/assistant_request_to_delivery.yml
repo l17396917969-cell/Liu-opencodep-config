@@ -1,0 +1,26 @@
+id: assistant_request_to_delivery
+name_zh: 助手请求到交付任务流
+scene: ai_assistant_workspace
+summary_zh: >
+  描述用户请求从澄清、规划、执行到交付与复核的闭环。
+
+steps:
+  - id: clarify
+    name_zh: 澄清
+    from_mode: assistant_multi_turn_planning
+    description_zh: "收集目标、约束、优先级。"
+  - id: plan
+    name_zh: 规划
+    from_mode: assistant_multi_turn_planning
+    description_zh: "产出子任务与里程碑，征求确认。"
+  - id: execute
+    name_zh: 执行
+    from_mode: assistant_tool_execution
+    description_zh: "逐步调用工具并记录日志。"
+  - id: review
+    name_zh: 复核
+    from_mode: assistant_tool_execution
+    description_zh: "总结结果、对比目标、列出待办或风险。"
+
+notes_zh:
+  - "失败/阻塞时可回退到澄清或规划步骤。"

@@ -1,0 +1,70 @@
+id: multi_level_approval
+name_zh: 多级审批模式
+summary_zh: >
+  针对航空采购、军品资质审核、质量放行等高严谨业务设计的结构化审批流，强调流程透明与责任合规。
+
+goals_zh:
+  - "确保审批路径符合航空合规与安全标准。"
+  - "提供并行、串行及紧急通道等多种审批逻辑。"
+  - "自动记录审计追踪，支持审批超时升级机制。"
+
+states:
+  - id: draft
+    label_zh: 草稿 (Draft)
+    description_zh: "申请人正在编辑，尚未提交。"
+  
+  - id: pending_approval
+    label_zh: 待审批 (Pending)
+    description_zh: "申请已提交，等待当前节点负责人操作。"
+  
+  - id: approved
+    label_zh: 已通过 (Approved)
+    description_zh: "当前节点或全流程已完成审批。"
+  
+  - id: rejected
+    label_zh: 已驳回 (Rejected)
+    description_zh: "审批未通过，需说明驳回原因及后续处理建议。"
+  
+  - id: returned
+    label_zh: 补充材料 (Return for Info)
+    description_zh: "材料不全，退回申请人进行修正。"
+
+approval_logics:
+  - type: sequential
+    description_zh: "串行审批：A 完成后 B 才能开始。"
+  
+  - type: parallel
+    description_zh: "并行审批：A 和 B 同时进行，支持‘全部通过’或‘任一通过’策略。"
+  
+  - type: green_channel
+    description_zh: "紧急绿色通道：针对高优先级任务，可跳过非核心节点直接由高级领导决策。"
+
+response_rules:
+  - timeout_escalation: "超过 24 小时未操作，自动推送提醒；超过 48 小时，自动升级至上一级主管。"
+  - audit_requirement: "所有‘驳回’操作必须附加至少 50 字的说明及证明附件。"
+  - safety_interlock: "涉及关键物资发放的审批，通过后需二次身份验证。"
+
+key_interactions_zh:
+  - "流程可视化：通过流程图清晰展示当前所在节点、已处理节点及后续预期路径。"
+  - "一键催办：针对待审批项，申请人可发起有限次数的催办提醒。"
+  - "批量审批：支持在列表页对常规低风险项进行批量审核。"
+  - "附件预览：在审批流侧边栏直接预览 PDF/图片，无需跳转页面。"
+
+applicable_scenarios_zh:
+  - "军工产品采购合同审批。"
+  - "航空设备出库与质量放行。"
+  - "涉密人员权限变更申请。"
+
+ui_components:
+  - role: timeline
+    lingjing_core_class: "status-timeline"
+  - role: modal
+    lingjing_core_class: "modal-dialog"
+  - role: data_table
+    lingjing_core_class: "advanced-data-table"
+  - role: badge
+    lingjing_core_class: "badge"
+
+notes_zh:
+  - "审批流的逻辑分支应在后端流转引擎中定义，UX 侧重于表达、干预及结果反馈。"
+  - "绿色通道必须有权限管控，严禁越权调用。"

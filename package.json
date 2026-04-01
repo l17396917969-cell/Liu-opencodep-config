@@ -1,0 +1,23 @@
+{
+  "name": "oh-my-opencode",
+  "version": "1.0.0",
+  "description": "一键配置 OpenCode 完整开发环境的自动化工具包",
+  "author": "luisworld",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luisworld/oh-my-opencode.git"
+  },
+  "scripts": {
+    "install": "python install/install.py",
+    "update": "python install/install.py --update",
+    "doctor": "python install/install.py --doctor"
+  },
+  "keywords": [
+    "opencode",
+    "ai",
+    "agent",
+    "configuration",
+    "skills"
+  ]
+}

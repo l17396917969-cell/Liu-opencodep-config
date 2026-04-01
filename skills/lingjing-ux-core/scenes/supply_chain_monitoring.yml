@@ -1,0 +1,39 @@
+id: supply_chain_monitoring
+name_zh: 供应链监控战情室
+product_scene: b-system
+summary_zh: >
+  面向供应计划员与运营人员的供应链战情室，聚焦库存风险、交付风险和关键预警的实时监控与处置。
+
+primary_roles:
+  - id: supply_planner
+    name_zh: 供应计划员
+  - id: ops_manager
+    name_zh: 运营经理
+
+interaction_modes:
+  - id: real_time_monitor
+    purpose_zh: "作为主视图，展示关键 KPI、风险热力图和告警列表。"
+    params:
+      refresh_interval_seconds: 60
+      default_time_range: "last_24_hours"
+  - id: exception_handling
+    purpose_zh: "承接严重告警，规范异常从发现到解决与复盘的闭环。"
+  - id: collaboration_task
+    purpose_zh: "支撑多人的协作任务分解与跟踪，特别是跨部门供应风险专项。"
+
+main_flow:
+  id: monitor_alert_handle
+  description_zh: "监控→预警→分析→处置→复盘的标准任务流骨架。"
+
+ux_goals_zh:
+  - "在单一页面中一眼看出当前是否存在供应风险。"
+  - "从风险总览快速钻取到具体物料/供应商/订单。"
+  - "支持对重要告警进行标记、分配与跟踪。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/aviation-supply-chain-control-tower.html"
+    description_zh: "供应链控制塔示例页面，可作为视觉与信息布局参考。"
+
+notes_zh:
+  - "本场景当前仅约束二维仪表盘交互，不直接约束三维可视化场景。"

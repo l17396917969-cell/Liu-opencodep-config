@@ -1,0 +1,149 @@
+{
+  "version": "0.1.0",
+  "updated": "2026-03-23",
+  "schema": "schema/ue5_web_overlay_contract.yml",
+  "scene_profile": {
+    "scene_id": "ue5_factory_overlay_scene",
+    "theme": "dark_cockpit_digital_twin",
+    "marker_style": "lightweight_point_expand_to_card_on_select",
+    "density": {
+      "main": "high",
+      "detail": "medium"
+    },
+    "motion_level": "medium"
+  },
+  "runtime_modes": [
+    "production_embedded",
+    "development_mock",
+    "degraded_safe_mode"
+  ],
+  "component_roles": {
+    "topbar_hud": "topbar-hud",
+    "world_marker": "world-marker",
+    "detail_panel": "detail-panel",
+    "alert_center": "alert-center",
+    "layer_switcher": "layer-switcher",
+    "overlay_root": "ue5-overlay-root"
+  },
+  "shared_fields": {
+    "event_envelope": [
+      "schema_version",
+      "event_version",
+      "event_id",
+      "event_type",
+      "timestamp",
+      "scene_id",
+      "source",
+      "payload"
+    ],
+    "object": [
+      "object_id",
+      "object_name",
+      "object_type",
+      "risk_level",
+      "status_text",
+      "world_position",
+      "screen_position",
+      "is_occluded",
+      "is_offscreen",
+      "distance_to_camera"
+    ],
+    "alert": [
+      "alert_id",
+      "severity",
+      "alert_status",
+      "raised_at",
+      "recommendation"
+    ],
+    "layer": [
+      "layer_id",
+      "layer_name",
+      "visibility",
+      "sync_status",
+      "permission"
+    ],
+    "detail": [
+      "primary_metrics",
+      "secondary_metrics",
+      "trend_data",
+      "last_updated_at",
+      "stale"
+    ]
+  },
+  "events": {
+    "ue5_to_web": {
+      "scene.ready": {
+        "payload": ["runtime_mode", "scene_state", "camera"],
+        "ui_targets": ["topbar_hud", "overlay_root"]
+      },
+      "scene.degraded": {
+        "payload": ["reason", "degraded_state", "fallback_source"],
+        "ui_targets": ["topbar_hud", "detail_panel", "alert_center"]
+      },
+      "camera.changed": {
+        "payload": ["camera", "screen_bounds"],
+        "ui_targets": ["world_marker"]
+      },
+      "object.hovered": {
+        "payload": ["object", "screen_position"],
+        "ui_targets": ["world_marker", "topbar_hud"]
+      },
+      "object.selected": {
+        "payload": ["object", "projection", "detail"],
+        "ui_targets": ["world_marker", "detail_panel", "topbar_hud"]
+      },
+      "object.updated": {
+        "payload": ["object", "changed_fields"],
+        "ui_targets": ["world_marker", "detail_panel"]
+      },
+      "alert.raised": {
+        "payload": ["alert", "object"],
+        "ui_targets": ["alert_center", "world_marker", "detail_panel", "topbar_hud"]
+      },
+      "alert.cleared": {
+        "payload": ["alert_id", "object_id"],
+        "ui_targets": ["alert_center", "world_marker", "detail_panel"]
+      },
+      "layer.visibility.changed": {
+        "payload": ["layer"],
+        "ui_targets": ["layer_switcher", "topbar_hud"]
+      }
+    },
+    "web_to_ue5": {
+      "ui.focus_object": {
+        "payload": ["object_id", "focus_mode"],
+        "source_component": "world_marker"
+      },
+      "ui.open_detail": {
+        "payload": ["object_id", "panel_mode"],
+        "source_component": "detail_panel"
+      },
+      "ui.toggle_layer": {
+        "payload": ["layer_id", "visibility"],
+        "source_component": "layer_switcher"
+      },
+      "ui.change_view": {
+        "payload": ["view_id", "camera_preset"],
+        "source_component": "topbar_hud"
+      },
+      "ui.ack_alert": {
+        "payload": ["alert_id", "operator"],
+        "source_component": "alert_center"
+      },
+      "ui.navigate_business_page": {
+        "payload": ["target_page", "object_id"],
+        "source_component": "detail_panel"
+      }
+    }
+  },
+  "mock_sequences": [
+    "scene.ready -> object.selected -> alert.raised",
+    "layer.visibility.changed -> object.updated",
+    "scene.degraded -> scene.ready"
+  ],
+  "acceptance_bindings": {
+    "selected_object_sync": ["world_marker", "detail_panel", "topbar_hud"],
+    "alert_sync": ["world_marker", "alert_center", "detail_panel"],
+    "layer_sync": ["layer_switcher", "ue5_runtime"]
+  }
+}

@@ -1,0 +1,35 @@
+id: website_marketing_landing
+name_zh: 官网落地页（品牌叙事+转化）
+product_scene: website
+summary_zh: >
+  面向潜在客户的营销落地页，通过分段叙事与佐证提升信任，促成试用/预约/下载等转化。
+
+primary_roles:
+  - id: prospect
+    name_zh: 潜在客户
+  - id: marketing_manager
+    name_zh: 市场经理
+
+interaction_modes:
+  - id: marketing_storytelling
+    purpose_zh: "负责叙事节奏与章节跳转。"
+  - id: cta_conversion
+    purpose_zh: "负责 CTA、表单提交与成功/失败反馈。"
+
+main_flow:
+  id: marketing_conversion
+  description_zh: "抵达→了解→佐证→提交→确认的落地页转化流程。"
+
+ux_goals_zh:
+  - "首屏 5 秒内传达价值，并提供明确的主/次 CTA。"
+  - "分段叙事可快速跳转到关键信息（方案、案例、价格/试用）。"
+  - "表单提交成功率提升，失败有兜底联系渠道。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/website-landing.html"
+    description_zh: "官网落地页布局参考，可映射到本场景的区域与组件角色。"
+
+notes_zh:
+  - "弱化安全/合规口吻，但保留隐私/使用条款可见性。"
+  - "动效宜轻量，优先保证加载速度与可读性。"

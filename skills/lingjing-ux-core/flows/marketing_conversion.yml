@@ -1,0 +1,30 @@
+id: marketing_conversion
+name_zh: 落地页转化任务流
+scene: website_marketing_landing
+summary_zh: >
+  描述访客在官网/落地页从首次到达、了解价值、查看佐证、提交线索到确认的标准流程。
+
+steps:
+  - id: arrive_hero
+    name_zh: 首屏抵达
+    from_mode: marketing_storytelling
+    description_zh: "访客进入页面，看到核心价值与主 CTA。"
+  - id: explore_value
+    name_zh: 价值探索
+    from_mode: marketing_storytelling
+    description_zh: "浏览问题-方案-价值章节，跳转锚点或滚动查看。"
+  - id: review_proof
+    name_zh: 佐证查看
+    from_mode: marketing_storytelling
+    description_zh: "查看案例/数据/资质，增强信任。"
+  - id: fill_form
+    name_zh: 线索提交
+    from_mode: cta_conversion
+    description_zh: "点击 CTA 打开或锚点滚动到表单，填写并提交。"
+  - id: confirmation
+    name_zh: 成功与后续
+    from_mode: cta_conversion
+    description_zh: "展示成功反馈与后续行动（预约、下载、加入群）。"
+
+notes_zh:
+  - "若表单失败，提供备用联系渠道并保留已填数据。"

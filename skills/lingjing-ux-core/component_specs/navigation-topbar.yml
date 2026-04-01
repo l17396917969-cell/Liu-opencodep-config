@@ -1,0 +1,55 @@
+id: navigation-topbar
+name_zh: 顶部导航栏交互规范
+summary_zh: >
+  用于官网/控制台的顶部导航，支持章节锚点跳转、二级菜单、CTA 插槽与粘性悬浮。
+
+states:
+  - id: default
+    label_zh: 默认
+    description_zh: "透明或浅色背景，常规布局。"
+  - id: sticky
+    label_zh: 悬浮
+    description_zh: "滚动到阈值后吸顶，背景与阴影增强对比。"
+  - id: mobile
+    label_zh: 移动收起
+    description_zh: "折叠为汉堡菜单，保留主 CTA。"
+
+interactions:
+  - id: anchor_jump
+    name_zh: 锚点跳转
+    description_zh: "点击导航项滚动到页面章节。"
+    requirements_zh:
+      - "当前章节高亮，跳转后保持状态。"
+      - "滚动距离应考虑固定头部的遮挡。"
+  - id: secondary_menu
+    name_zh: 二级菜单
+    description_zh: "悬停/点击展开二级项，点击后关闭。"
+    requirements_zh:
+      - "可用键盘导航展开/关闭，焦点环显式。"
+  - id: cta_slot
+    name_zh: CTA 插槽
+    description_zh: "在右侧放置主 CTA（试用/预约）。"
+    requirements_zh:
+      - "CTA 需有悬停/禁用/加载反馈。"
+
+accessibility_zh:
+  - "Tab 顺序与视觉顺序一致；支持 Enter/Space 触发。"
+  - "汉堡菜单展开时锁定背景滚动，Esc 关闭。"
+
+config_options:
+  - id: sticky_threshold
+    name_zh: 吸顶阈值
+    description_zh: "滚动多少像素后进入吸顶状态。"
+    allowed_values: ["64px", "128px", "custom"]
+  - id: cta_variant
+    name_zh: CTA 形态
+    description_zh: "主 CTA 的样式与文案策略。"
+    allowed_values: ["primary", "ghost", "text"]
+
+meta:
+  related_lingjing_core_classes:
+    - "website-nav"
+    - "b-header"
+    - "topbar-hud"
+  notes_zh:
+    - "视觉风格由 UI 技能包控制，此处只定义交互。"

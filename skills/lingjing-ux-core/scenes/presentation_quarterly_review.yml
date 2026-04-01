@@ -1,0 +1,35 @@
+id: presentation_quarterly_review
+name_zh: 季度经营汇报（HTML 演示文稿）
+product_scene: presentation
+summary_zh: >
+  面向管理层与项目干系人的季度经营复盘/项目路演，强调章节导航、数据亮点展示和 Q&A 闭环。
+
+primary_roles:
+  - id: presenter
+    name_zh: 演讲人
+  - id: reviewer
+    name_zh: 评审/管理者
+
+interaction_modes:
+  - id: deck_navigation
+    purpose_zh: "负责章节导航、页间跳转、演讲者视图。"
+  - id: audience_engagement
+    purpose_zh: "负责 Q&A、投票/反馈收集。"
+
+main_flow:
+  id: presentation_storytelling
+  description_zh: "开场→背景→亮点→决策→Q&A→总结的演示叙事流程。"
+
+ux_goals_zh:
+  - "听众始终知道当前位置与剩余章节，避免迷失。"
+  - "关键数据可放大/高亮，便于讲述与截屏。"
+  - "互动环节可收集并追踪问题/投票结果。"
+
+related_examples:
+  - repo: lingjing-ui-core
+    path: "examples/aviation-presentation.html"
+    description_zh: "演示文稿布局参考，可映射到导航与幻灯控制组件。"
+
+notes_zh:
+  - "动画应克制，关键页面可提供无动效切换选项。"
+  - "讲稿/备注可在演讲者视图显示，不在听众视图露出。"

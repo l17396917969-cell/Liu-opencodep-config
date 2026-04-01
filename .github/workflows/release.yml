@@ -1,0 +1,111 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (如 v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release Package
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          mkdir -p dist
+          
+          # Create package excluding .git and node_modules
+          tar -czf "dist/oh-my-opencode-${VERSION}.tar.gz" \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.DS_Store' \
+            --exclude='__pycache__' \
+            --exclude='*.pyc' \
+            --exclude='dist' \
+            .
+          
+          # Create zip for Windows users
+          zip -r "dist/oh-my-opencode-${VERSION}.zip" \
+            -x '*.git*' \
+            -x '*node_modules*' \
+            -x '*.DS_Store' \
+            -x '*__pycache__*' \
+            -x '*.pyc' \
+            -x 'dist/*' \
+            .
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "## What's New" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo HEAD)..HEAD >> $GITHUB_OUTPUT || echo "- Initial release" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "## Installation" >> $GITHUB_OUTPUT
+          echo '```bash' >> $GITHUB_OUTPUT
+          echo "# 下载并解压" >> $GITHUB_OUTPUT
+          echo "curl -L https://github.com/${{ github.repository }}/releases/download/${VERSION}/oh-my-opencode-${VERSION}.tar.gz | tar -xz" >> $GITHUB_OUTPUT
+          echo "cd oh-my-opencode" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "# 运行安装" >> $GITHUB_OUTPUT
+          echo "python install/install.py" >> $GITHUB_OUTPUT
+          echo '```' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-template-repo:
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Checkout Template Branch
+        uses: actions/checkout@v4
+        with:
+          ref: template
+          fetch-depth: 0
+
+      - name: Setup Template Branch
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Copy main branch content to template branch
+          git checkout main -- .
+          
+          # Remove unnecessary files for template
+          rm -rf .github/workflows/release.yml
+          
+          # Commit changes
+          git add -A
+          git commit -m "Update template from main" || echo "No changes"
+          git push origin template || echo "Push failed"

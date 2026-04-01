@@ -1,0 +1,31 @@
+id: maintenance_workorder
+name_zh: 设备维修工单任务流
+scene: equipment_maintenance_workorder
+summary_zh: >
+  描述设备从发现故障到创建维修工单、执行、确认与关闭的标准任务流，
+  支持与告警系统和巡检系统联动。
+
+steps:
+  - id: issue_detected
+    name_zh: 故障发现
+    from_mode: real_time_monitor
+    description_zh: "通过实时监控告警或人工巡检发现设备异常。"
+  - id: workorder_create
+    name_zh: 创建工单
+    from_mode: maintenance_workorder
+    description_zh: "根据异常信息创建维修工单，并录入初步判断与优先级。"
+  - id: workorder_assign
+    name_zh: 分派工单
+    from_mode: maintenance_workorder
+    description_zh: "将工单分派给具体维修人员或班组，并约定处理时间。"
+  - id: workorder_execute
+    name_zh: 执行维修
+    from_mode: maintenance_workorder
+    description_zh: "维修人员现场处理故障，记录操作过程与更换部件情况。"
+  - id: confirm_and_close
+    name_zh: 确认与关闭
+    from_mode: maintenance_workorder
+    description_zh: "由指定角色验证维修效果，确认无误后关闭工单。"
+
+notes_zh:
+  - "可根据不同设备类型和业务需求增加额外步骤，如安全评估或试运行。"

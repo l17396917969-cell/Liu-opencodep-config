@@ -1,0 +1,44 @@
+id: real_time_monitor
+scene: b-system  # website / b-system / presentation / ai-assistant / ops-console ...
+dimension: data_intelligence
+name_zh: 实时监控模式
+summary_zh: >
+  用于高频刷新、预警驱动的运控/供应链看板场景，强调快速发现异常并支持从总览钻取到明细。
+
+goals_zh:
+  - "及时发现关键指标异常，并区分正常/预警/严重级别。"
+  - "支持从总览视图快速钻取到具体设备/订单/航段明细。"
+  - "避免信息噪声，突出当前需要处理的事项。"
+
+states:
+  - id: normal
+    label_zh: 正常
+    description_zh: "关键指标在安全阈值内，仅展示轻量趋势与当前状态。"
+  - id: warning
+    label_zh: 预警
+    description_zh: "指标接近阈值或轻度异常，列表中突出显示并允许预判处理。"
+  - id: critical
+    label_zh: 严重告警
+    description_zh: "指标超过阈值或发生重大异常，需要立即行动，并触发升级流程。"
+
+key_interactions_zh:
+  - "默认开启自动刷新（例如每 30~60 秒），用户可手动暂停/恢复刷新。"
+  - "点击告警卡片或列表项，在侧边抽屉或详情面板中展开详细信息。"
+  - "支持按状态（正常/预警/严重）、区域、设备类型等维度筛选和搜索。"
+  - "从总览 KPI 区点击某指标时，跳转或联动到对应明细视图。"
+
+applicable_scenarios_zh:
+  - "供应链战情室看板（库存风险、交付风险）。"
+  - "制造运控中心（产线节拍、设备状态监控）。"
+  - "维修与保障指挥台（任务进度与资源占用）。"
+
+ui_components:
+  - role: metric_card
+    lingjing_core_class: "flight-metric-card"
+  - role: alert_panel
+    lingjing_core_class: "alert-center-panel"
+  - role: task_board
+    lingjing_core_class: "mission-status-board"
+
+notes_zh:
+  - "本模式仅适用于二维平面仪表盘/后台界面，不直接约束3D场景中的摄像机、视角切换或3D对象交互。"

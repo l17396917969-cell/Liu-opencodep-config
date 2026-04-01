@@ -1,0 +1,94 @@
+id: layer_switcher_interaction
+name_zh: Layer Switcher 交互规范
+summary_zh: >
+  面向 UE5 场景图层显示控制，负责图层开关、分组、同步状态、权限提示与异常反馈。
+  该组件通常以低密度浮层方式出现，但其状态必须可靠映射到 UE5 场景。
+
+states:
+  - id: on
+    label_zh: 已开启
+    description_zh: "图层在 Web 与 UE5 中均处于可见状态。"
+  - id: off
+    label_zh: 已关闭
+    description_zh: "图层处于隐藏状态。"
+  - id: syncing
+    label_zh: 同步中
+    description_zh: "切换请求已发出，等待 UE5 回执。"
+  - id: disabled
+    label_zh: 禁用态
+    description_zh: "因权限、运行模式或场景状态限制而不可操作。"
+  - id: mixed
+    label_zh: 混合态
+    description_zh: "组内子图层状态不一致。"
+
+entry_conditions:
+  - "scene.ready 后加载当前图层快照。"
+  - "图层切换动作后先进入 syncing，再根据回执进入 on/off/mixed。"
+  - "权限不足或 degraded 限制时进入 disabled。"
+
+exit_conditions:
+  - "同步完成退出 syncing。"
+  - "权限恢复或场景恢复后退出 disabled。"
+
+interactions:
+  - id: toggle_layer
+    name_zh: 切换图层
+    description_zh: "切换单个图层显隐。"
+    requirements_zh:
+      - "切换动作应立即显示 syncing 反馈。"
+      - "未收到回执前不得假定切换成功。"
+  - id: toggle_group
+    name_zh: 切换图层组
+    description_zh: "按分组批量控制图层。"
+    requirements_zh:
+      - "组内存在不同状态时显示 mixed。"
+  - id: explain_permission
+    name_zh: 权限提示
+    description_zh: "图层被禁用时提供原因与处理建议。"
+    requirements_zh:
+      - "禁用原因必须明确，如权限不足、场景未 ready、degraded 限制。"
+
+bridge_events:
+  subscribe:
+    - scene.ready
+    - scene.degraded
+    - layer.visibility.changed
+  publish:
+    - ui.toggle_layer
+
+data_contract:
+  consume_fields:
+    - layer.layer_id
+    - layer.layer_name
+    - layer.visibility
+    - layer.sync_status
+    - layer.permission
+  expose_fields:
+    - active_layer_ids
+    - syncing_layer_ids
+
+accessibility_zh:
+  - "图层开关应支持键盘切换，并带明确的 checked/unchecked 语义。"
+  - "syncing 与 disabled 必须可被读屏器识别。"
+
+config_options:
+  - id: grouping_mode
+    name_zh: 分组模式
+    description_zh: "定义图层的分组方式。"
+    allowed_values: ["system", "space", "risk", "custom"]
+  - id: disabled_strategy
+    name_zh: 禁用策略
+    description_zh: "定义禁用态是否允许查看原因说明。"
+    allowed_values: ["tooltip_only", "inline_message"]
+
+performance_constraints:
+  ui_latency: "<= 150ms"
+  ack_timeout: "<= 1500ms"
+
+meta:
+  related_lingjing_core_classes:
+    - "layer-switcher"
+    - "ue-toggle"
+    - "ue-status-indicator"
+  notes_zh:
+    - "Layer Switcher 默认采用低密度浮层，不应与 TopBar 抢占主导航位置。"

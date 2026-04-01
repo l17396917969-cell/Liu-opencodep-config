@@ -1,0 +1,61 @@
+id: approval_flow_interaction
+name_zh: 审批流程组件交互规范
+summary_zh: >
+  可视化展现业务流转状态的组件，支持串行、并行、会签及驳回等逻辑展示。
+  适用于所有业务审批场景，如采购、资质、设备入库等。
+
+states:
+  - id: idle
+    label_zh: 默认
+    description_zh: "展示审批链条全貌，高亮当前节点。"
+  - id: pending
+    label_zh: 待处理 (Pending)
+    description_zh: "当前角色具备操作权限，显示审批动作按钮。"
+  - id: processing
+    label_zh: 处理中 (Processing)
+    description_zh: "用户执行‘通过’或‘驳回’，等待后端更新流转。"
+  - id: approved
+    label_zh: 已通过 (Approved)
+    description_zh: "节点已核准，展示绿色签名及时间戳。"
+  - id: rejected
+    label_zh: 已驳回 (Rejected)
+    description_zh: "节点不符合要求，展示红色驳回图标及原因摘要。"
+  - id: skipped
+    label_zh: 已跳过 (Skipped)
+    description_zh: "紧急绿色通道或其他逻辑自动跳过的节点，展示灰色。”
+
+interactions:
+  - id: step_expand
+    name_zh: 节点展开
+    description_zh: "点击节点查看详细审批意见、附件及处理时长。"
+    requirements_zh:
+      - "手风琴模式展示详情，避免页面过长。"
+      - "支持查看多级会签详情（平行节点）。"
+  - id: audit_linking
+    name_zh: 审计联动
+    description_zh: "点击节点状态一键跳转至对应的审计日志。"
+    requirements_zh:
+      - "保持业务上下文一致性。"
+  - id: action_trigger
+    name_zh: 审批动作
+    description_zh: "点击‘通过’、‘驳回’或‘退回补充’。"
+    requirements_zh:
+      - "驳回动作强制要求填写‘驳回理由’弹窗。"
+      - "涉及核心合规节点，点击通过后执行二次身份验证。"
+
+accessibility_zh:
+  - "Support Tab Navigation: 通过 Tab 键在各审批节点之间流转。"
+  - "Reading Order: 严格按照业务逻辑顺序朗读各节点状态。"
+  - "High Contrast: 区分当前活跃节点与历史节点。"
+
+performance_constraints:
+  latency: "点击展开详情反馈 ≤ 150ms。"
+  dom_cleanup: "对于超长审批流（超过 20 节点），应回收非活跃节点的 DOM 内容。"
+
+meta:
+  related_lingjing_core_classes:
+    - "status-timeline"
+    - "activity-timeline"
+  notes_zh:
+    - "针对航空系统，每个审批节点应具备‘平均处理时效’对标数据。"
+    - "流程变更记录应在页签中同步展示。"

@@ -1,0 +1,44 @@
+id: collaboration_task
+scene: b-system
+dimension: business_process
+name_zh: 协作任务流模式
+summary_zh: >
+  用于需要多人协作完成的任务场景，如供应链异常处理、跨部门协调与专项行动跟踪。
+
+goals_zh:
+  - "明确每个任务的负责人、参与人和截止时间。"
+  - "让相关方及时获知任务进展，减少沟通成本。"
+  - "沉淀处理过程中的知识与经验。"
+
+states:
+  - id: todo
+    label_zh: 待开始
+    description_zh: "任务已创建，但尚未开始执行。"
+  - id: doing
+    label_zh: 进行中
+    description_zh: "任务正在执行，允许拆分子任务与更新进度。"
+  - id: blocked
+    label_zh: 阻塞
+    description_zh: "任务因外部因素无法推进，需要协助或决策。"
+  - id: done
+    label_zh: 已完成
+    description_zh: "任务已完成，结果和文档已上传。"
+
+key_interactions_zh:
+  - "支持将告警/异常转换为协作任务，并自动带入上下文信息。"
+  - "任务支持评论、@提及和附件上传。"
+  - "允许在任务板上按状态拖拽任务（如看板式视图）。"
+  - "完成任务时需填写简单总结，便于后续复盘。"
+
+applicable_scenarios_zh:
+  - "供应链风险专项排查行动。"
+  - "多部门协同解决供应短缺问题。"
+
+ui_components:
+  - role: task_board
+    lingjing_core_class: "mission-status-board"
+  - role: task_card
+    lingjing_core_class: "content-card"
+
+notes_zh:
+  - "适合作为异常处理流的后续协作载体，与 exception_handling 模式联动。"
