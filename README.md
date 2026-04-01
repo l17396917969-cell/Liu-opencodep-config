@@ -2,8 +2,10 @@
 
 一键配置 OpenCode 完整开发环境的自动化工具包。
 
-[![Release](https://img.shields.io/github/v/release/luisworld/oh-my-opencode)](https://github.com/luisworld/oh-my-opencode/releases)
+[![Release](https://img.shields.io/github/v/release/l17396917969-cell/Liu-opencodep-config)](https://github.com/l17396917969-cell/Liu-opencodep-config/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> **注意**：Windows 用户请使用 **CMD** 或 **PowerShell** 运行安装命令，不要使用 Git Bash。
 
 ## ✨ 特性
 
@@ -46,34 +48,55 @@
 
 ## 🚀 快速开始
 
-### 方式一：使用 GitHub Template（推荐）
+## 🚀 快速开始
 
-1. 点击 GitHub 页面的 **"Use this template"** 按钮
-2. 创建你自己的仓库
-3. 克隆到本地：
+### 前置条件
 
-```bash
-git clone https://github.com/YOUR_USERNAME/oh-my-opencode.git
+确保已安装：
+- **Python 3.9+** ([下载](https://python.org/downloads))
+- **Git** ([下载](https://git-scm.com/download/win))
+- **Node.js** (可选，用于 agent-browser)
+
+### Windows 安装（CMD 或 PowerShell）
+
+**推荐使用 CMD：**
+
+```cmd
+# 1. 下载并解压
+cd %USERPROFILE%\Downloads
+curl -L -o Liu-opencodep-config.zip https://github.com/l17396917969-cell/Liu-opencodep-config/releases/download/v1.0.0/oh-my-opencode-1.0.0.zip
+tar -xf Liu-opencodep-config.zip
+
+# 2. 进入目录
 cd oh-my-opencode
+
+# 3. 运行安装
+python install\install.py
 ```
 
-### 方式二：下载 Release
+**或使用 PowerShell：**
 
-```bash
-# macOS/Linux
-curl -L https://github.com/luisworld/oh-my-opencode/releases/latest/download/oh-my-opencode-latest.tar.gz | tar -xz
+```powershell
+# 1. 下载并解压
+Invoke-WebRequest -Uri "https://github.com/l17396917969-cell/Liu-opencodep-config/releases/download/v1.0.0/oh-my-opencode-1.0.0.zip" -OutFile "Liu-opencodep-config.zip"
+Expand-Archive -Path "Liu-opencodep-config.zip" -DestinationPath "." -Force
+
+# 2. 进入目录
 cd oh-my-opencode
 
-# Windows (PowerShell)
-Invoke-WebRequest -Uri https://github.com/luisworld/oh-my-opencode/releases/latest/download/oh-my-opencode-latest.zip -OutFile oh-my-opencode.zip
-Expand-Archive oh-my-opencode.zip -DestinationPath .
-cd oh-my-opencode
+# 3. 运行安装
+python install\install.py
 ```
 
-### 运行安装
+### macOS/Linux 安装
 
 ```bash
-python install/install.py
+# 下载并解压
+curl -L https://github.com/l17396917969-cell/Liu-opencodep-config/releases/download/v1.0.0/oh-my-opencode-1.0.0.tar.gz | tar -xz
+cd oh-my-opencode
+
+# 运行安装
+python3 install/install.py
 ```
 
 安装向导会引导你：
@@ -85,21 +108,42 @@ python install/install.py
 
 ### 安装命令
 
-```bash
+**Windows (CMD/PowerShell)：**
+
+```cmd
 # 交互式安装
-python install/install.py
+python install\install.py
 
 # 使用预设安装
-python install/install.py --preset standard
+python install\install.py --preset standard
 
 # 指定 skills 安装
-python install/install.py --skills frontend-design,find-skills
+python install\install.py --skills frontend-design,find-skills
 
 # 强制覆盖现有配置
-python install/install.py --force
+python install\install.py --force
 
 # 仅安装配置，跳过 skills
-python install/install.py --skip-skills
+python install\install.py --skip-skills
+```
+
+**macOS/Linux：**
+
+```bash
+# 交互式安装
+python3 install/install.py
+
+# 使用预设安装
+python3 install/install.py --preset standard
+
+# 指定 skills 安装
+python3 install/install.py --skills frontend-design,find-skills
+
+# 强制覆盖现有配置
+python3 install/install.py --force
+
+# 仅安装配置，跳过 skills
+python3 install/install.py --skip-skills
 ```
 
 ### 可用 Presets
@@ -230,29 +274,88 @@ RECOMMENDED_CONFIGURATIONS["my-api"] = {
 
 ## 🔧 故障排除
 
-### 依赖检查失败
+### Windows 常见问题
 
-```bash
-# 运行诊断
-python install/install.py doctor
+#### 1. "python" 不是内部或外部命令？
+
+**原因**：Python 未添加到系统 PATH。
+
+**解决方案**：
+```cmd
+# 方法 1：重新安装 Python，勾选 "Add Python to PATH"
+# 方法 2：使用 Python Launcher
+py install\install.py
 ```
 
-### uvx 路径检测失败
+#### 2. PowerShell 执行策略错误
 
-手动指定 uvx 路径：
-```bash
-which uvx  # 找到路径后，在安装时手动输入
+**错误信息**：`无法加载文件，因为在此系统上禁止运行脚本`
+
+**解决方案**：
+```powershell
+# 以管理员身份运行 PowerShell，执行：
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### 模型连接失败
+#### 3. 找不到配置文件目录
+
+**Windows 配置文件位置**：
+```
+C:\Users\<你的用户名>\AppData\Roaming\opencode\
+```
+
+快速打开：
+```cmd
+explorer %APPDATA%\opencode
+```
+
+#### 4. uvx 路径检测失败
+
+**解决方案**：
+```cmd
+# 找到 uvx 位置
+where uvx
+
+# 或手动指定完整路径
+C:\Users\<用户名>\AppData\Local\Programs\Python\Python311\Scripts\uvx.exe
+```
+
+### 通用问题
+
+#### 依赖检查失败
+
+**Windows：**
+```cmd
+python install\install.py doctor
+```
+
+**macOS/Linux：**
+```bash
+python3 install/install.py doctor
+```
+
+#### 模型连接失败
 
 1. 检查 API Key 是否正确
 2. 确认 Base URL 是否可访问
 3. 检查网络连接（某些 API 需要代理）
+4. 尝试在浏览器中访问 API 文档确认服务状态
 
 ## 📝 配置示例
 
-安装完成后，你的 `~/.config/opencode/opencode.json` 可能像这样：
+安装完成后，你的配置文件位置：
+
+**Windows：**
+```
+C:\Users\<用户名>\AppData\Roaming\opencode\opencode.json
+```
+
+**macOS/Linux：**
+```
+~/.config/opencode/opencode.json
+```
+
+配置示例：
 
 ```json
 {
