@@ -9,11 +9,24 @@
 
 ---
 
-## 🤖 30 秒快速安装（让 AI 帮你装）
+## 🚀 OpenCode 用户？一句话安装！
 
-**别自己动手了，让 AI 来！**
+**你已经在用 OpenCode 了？那最简单！**
 
-复制以下内容，粘贴到你的 AI IDE (Claude Code、Cursor、AmpCode、Windsurf 等)：
+直接在 OpenCode 聊天框里发送：
+
+```
+帮我安装 oh-my-opencode（https://github.com/l17396917969-cell/Liu-opencodep-config）。
+请下载项目、运行安装脚本、并引导我完成配置。
+```
+
+然后 **看着 OpenCode 自动完成所有步骤** 就行。需要输入 API Key 时它会问你。
+
+---
+
+## 🤖 其他 AI IDE 用户（Cursor、Claude Code、Windsurf 等）
+
+复制以下内容粘贴给 AI：
 
 ```
 请帮我安装 oh-my-opencode：
@@ -24,10 +37,8 @@
 项目说明：一键配置 OpenCode 的自动化工具，包含 20+ Skills 和交互式模型配置向导。
 ```
 
-**完事。** AI 会帮你处理所有步骤。
-
 <details>
-<summary>🤔 没 AI IDE？点击查看手动安装指南</summary>
+<summary>🤔 想手动安装？点击查看详细步骤</summary>
 
 ---
 
